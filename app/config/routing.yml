@@ -1,0 +1,23 @@
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+register_sendMsg:
+      path:     /register/sendMsg
+      defaults: { _controller: AppBundle:Registration:sendMsg }
+
+register_validateMsg:
+      path:     /register/validateMsg
+      defaults: { _controller: AppBundle:Registration:validateMsg }
+
+app_agreement:
+    path: /agreement
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    static/agreement.html.twig
+
+yyc_foundation:
+    resource: "@YYCFoundationBundle/Resources/config/routing.yml"

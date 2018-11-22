@@ -1,0 +1,155 @@
+{% extends 'common/base_list.html.twig' %}
+
+{% block list_filter %}
+	<form class="form-horizontal table-form-filter clearfix" id="formFilterBar">
+		<div class="filter-input" data-form-name="vars[mixed]" data-form-value="{{vars['mixed']}}">
+            <div class='value-current search-icon-end'></div>
+        </div>
+        <div class="filter-select" data-form-name="vars[status]" data-form-value="{{vars['status']}}">
+            <div class="value-current">单据状态</div>
+        </div>
+        <div class="filter-select" data-form-name="vars[dateType]|vars[startDate]|vars[endDate]" data-form-value="{{vars['dateType']~"|"~vars['startDate']~'|'~vars['endDate']}}">
+            <div class="value-current">提交日期</div>
+        </div>
+	</form>
+{% endblock %}
+
+{% block list_content %}
+    <table class="table">
+    	<thead>
+			<tr>
+				<th>评估单号</th>
+				<th>车架号</th>
+				<th>单据状态</th>
+				<th>评估结果</th>
+				<th>年款</th>
+				<th>车型</th>
+				<th>提交时间</th>
+				<th>审核时间</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for order in pagination %}
+			<tr>
+                <td>
+                    {{ order.orderNo }}
+                    {% if order.businessNumber %}
+                        <br>({{order.businessNumber}})
+                    {% endif %}
+                </td>
+			    <td>{{ order.report ? order.report.vin : '' }}</td>
+			    {% if order.report %}
+			    	{% if ((order.status == 1 and order.report.status == 0 ) or (order.status == 2 and order.report.status == 0)) %}
+			    		<td>待审核</td>
+			    	{% elseif order.report.status == 1 %}
+			    		<td>通过</td>
+			    	{% elseif order.report.status == 2 %}
+						<td>拒绝</td>
+					{% else %}
+						<td>状态异常</td>
+					{% endif %}
+				{% else %}
+					<td>待审核</td>
+				{% endif %}
+			    {% if order.report %}
+			    	{% if ((order.status == 1 and order.report.status == 0 ) or (order.status == 2 and order.report.status == 0)) %}
+			    		<td>无</td>
+			    	{% elseif order.report.status == 1 %}
+			    		{% if fieldDisplay.passedPrice %}
+			    			{% set reportData = order.report.report %}
+				    		<td class="long">
+                                {% if fieldDisplay.purchasePrice and fieldDisplay.sellPrice %}
+                                    {% if reportData.field_4010 is defined and reportData.field_4010.value and reportData.field_4012 is defined and reportData.field_4012.value %}
+                                        评估收购价{{ reportData.field_4010.value }}元,评估销售价{{ reportData.field_4012.value }}元
+                                    {% elseif reportData.field_4010 is defined and reportData.field_4010.value %}
+                                        评估收购价{{ reportData.field_4010.value }}元
+                                    {% elseif reportData.field_4012 is defined and reportData.field_4012.value  %}
+                                        评估销售价{{ reportData.field_4012.value }}元
+                                    {% else %}
+                                        
+                                    {% endif %}
+                                {% elseif fieldDisplay.purchasePrice %}
+                                    {% if reportData.field_4010 is defined and reportData.field_4010.value %}
+                                        审核价格{{ reportData.field_4010.value }}元
+                                    {% else %}
+                                        
+                                    {% endif %}
+                                {% elseif fieldDisplay.sellPrice %}
+                                    {% if reportData.field_4012 is defined and reportData.field_4012.value %}
+                                        审核价格{{ reportData.field_4012.value }}元
+                                    {% else %}
+                                        
+                                    {% endif %}
+                                {% endif %}
+				    		</td>
+				    	{% else %}
+				    		<td>通过</td>
+				    	{% endif %}
+			    	{% elseif order.report.status == 2 %}
+						<td>
+							失败原因：
+							{% if order.report.getReport.field_result.options.textarea is defined %}
+								{{ order.report.getReport.field_result.options.textarea }}
+							{% endif %}
+						</td>
+					{% else %}
+						<td>状态异常</td>
+					{% endif %}
+				{% else %}
+					<td>无</td>
+				{% endif %}
+                {% if order.report %}
+                    <td>{{ order.report.report ? order.report.report.field_2040['value'] : '' }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+				<td>{{ order.report ? order.report.model : '' }}</td>
+			    <td>{{ order.submitedAt|date("Y-m-d H:i:s") }}</td>
+			    {% if order.report %}
+					<td>{{ order.report.examedAt ? order.report.examedAt|date("Y-m-d H:i:s") : ''}}</td>
+				{% else %}
+					<td></td>
+			    {% endif %}
+			    <td>
+			    	<a class="btn-td" href="{{ path('order_show', { 'id': order.id }) }}">详情</a>
+					{% if fieldDisplay.report %}
+						{% if order.report %}
+							{% if order.report.status != 0 %}
+								{% if '先锋太盟' == order.loadOfficer.Company %}
+									<a class="btn-td" href="{{ path('pdfreport', { 'orderid': order.id, '_format': 'pdf' }) }}" target="_blank">报告</a>
+								{% else %}
+									<a class="btn-td" href="{{ path('pdfreport', { 'orderid': order.id}) }}" target="_blank">报告</a>
+								{% endif %}
+							{% else %}
+								<span class="btn-not">报告</span>
+							{% endif %}
+						{% else %}
+						    <span class="btn-not">报告</span>
+						{% endif %}
+					{% endif %}
+					{% if fieldDisplay.maintain %}
+						{% if order.report %}
+							{% if order.report.status != 0 %}
+								{% if order.report.getMaintain == 0 %}
+									<span class="btn-not-maintain">暂无维保记录</span>
+								{% else %}
+										<a href="{{ url('yyc_common_show', { 'id': order.report.getMaintain , 'report': order.report.id }) }}"
+										   class="btn-td" target="_blank">查看维保详情</a>
+								{% endif %}
+							{% else %}
+								<span class="btn-not-maintain">暂无维保记录</span>
+							{% endif %}
+						{% else %}
+							<span class="btn-not-maintain">暂无维保记录</span>
+						{% endif %}
+					{% endif %}
+                    {% if order.businessNumber %}
+                        <br><span style="visibility:hidden;">dummy</span>
+                    {% endif %}
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

@@ -1,0 +1,222 @@
+{% extends 'common/base_list.html.twig' %}
+
+{% block list_filter %}
+    <form class="form-horizontal table-form-filter clearfix" id="formFilterBar">
+        <div class="filter-input" data-form-name="vars[mixed]" data-form-value="">
+            <div class='value-current search-icon-end'></div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block list_content %}
+    <table class="table" >
+        <thead>
+            <tr>
+                <th>评估单号</th>
+                <th>车架号</th>
+                <th>品牌</th>
+                <th>车系</th>
+                <th>年款</th>
+                <th>车型</th>
+                <th>提交人</th>
+                <th>锁定人</th>
+                <th>金融公司</th>
+                <th>经销商</th>
+                <th>提交时间</th>
+                {% if showExamer %}
+                    <th>审核人</th>
+                {% endif %}
+                <th>终审时间</th>
+                <th>通知结果</th>
+                <th>通知次数</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in pagination %}
+                <tr>
+                    <td>
+                        {{ order.orderNo }}
+                        {% if order.businessNumber %}
+                            <br>({{order.businessNumber}})
+                        {% endif %}
+                    </td>
+                    <td>{{ order.report ? order.report.vin : '' }}</td>
+                    <td>{{ order.report ? order.report.brand : '' }}</td>
+                    <td>{{ order.report ? order.report.series : '' }}</td>
+
+                    {% if order.report %}
+                        <td>{{ order.report.report ? order.report.report.field_2040['value'] : '' }}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+
+                    <td>{{ order.report ? order.report.model : '' }}</td>
+                    <td>{{ order.loadOfficer ? order.loadOfficer.name : '' }}</td>
+                    <td>{{ order.lockOwner ? order.lockOwner.name : '' }}</td>
+                    <td>{{ order.company ? order.company.company : ''}}</td>
+                    <td>{{ order.agencyName }}</td>
+                    <td>{{ order.submitedAt|date("Y-m-d H:i:s") }}</td>
+                    {% if showExamer %}
+                        <td>{{ order.report ? order.report.examer.name : '' }}</td>{% endif %}
+                    <td>{{ order.report ? order.report.examedAt|date("Y-m-d H:i:s") : '' }}</td>
+                    <td>
+                        {% if order.notifiedStatus == 1 %}
+                            成功
+                        {% elseif order.notifiedStatus == 2 %}
+                            失败
+                        {% elseif order.notifiedStatus == 0 and order.notifiedTimes > 0 %}
+                            正在通知
+                        {% else %}
+                            老单子或未到通知阶段或不需要通知
+                        {% endif %}
+                    </td>
+                    <td>{{ order.notifiedTimes }}次</td>
+                    <td style="white-space:wrap;">
+                      <div style="display:inline-flex;width:135px;margin-right:20px;">
+                        <span>
+                            {% if order.disable == 1 %}
+                                {% if order.status == 0 %}
+                                    已删除(用户自己删除)
+                                {% else %}
+                                    已删除(异常处理)
+                                {% endif %}
+                            {% elseif order.status == 0 %}
+                                {% if order.lastBack %}
+                                    已退回
+                                {% else %}
+                                    草稿箱
+                                {% endif %}
+                            {% elseif order.report and order.report.hplExaming == 1 and (order.status == 1 or order.status == 3) %}
+                                第三方复审中
+                            {% elseif order.status == 1 %}
+                                {% if not order.report %}
+                                    待审核
+                                {% else %}
+                                    审核中
+                                {% endif %}
+                            {% elseif order.status == 3 %}
+                                {% if not order.report.startAt %}
+                                    待复审
+                                {% else %}
+                                    复审中
+                                {% endif %}
+                            {% elseif order.status == 2 %}
+                                审核完成
+                            {% else %}
+                                未知状态
+                            {% endif %}
+                        </span>
+                      </div>
+                      <div style="display:inline-flex;">
+                        <span style="margin-right:20px;">
+                            <a href="{{ path('order_show', { 'id': order.id }) }}"
+                               class="btn-td">详情</a>
+                        </span>
+                        {% if showReport %}
+                            {% if order.report and order.report.status != 0 %}
+                                <span style="margin-right:48px;"><a href="{{ path('pdfreport', { 'orderid': order.id, '_format': 'html' }) }}" class="btn-td" target="_blank">报告</a></span>
+                            {% else %}
+                                <span style="margin-right:20px;" class="btn-not">暂无报告</span>
+                            {% endif %}
+                        {% else %}
+                            <span style="margin-right:20px;" class="btn-not">暂无报告</span>
+                        {% endif %}
+                        {% if order.parent %}
+                            <span style="margin-right:20px;">
+                                <a href="{{ path('order_all') }}?id={{ order.parent.id }}"
+                                   class="btn-td">
+                                   [父单]
+                                </a>
+                            </span>
+                        {% endif %}
+                        {% if order.fork %}
+                            <span style="margin-right:20px;">
+                                <a href="{{ path('order_all') }}?id={{ order.fork.id }}"
+                                   class="btn-td">
+                                   [处理后单]
+                                </a>
+                            </span>
+                        {% endif %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            {% if order.disable != 1 %}
+                                {% if order.status == 1 or order.status == 3 %}
+                                    {% if order.report %}
+                                        {% if order.report.hplExaming != 1 %}
+                                            <span style="margin-right:20px;"><a href="#" class="btn-td" onclick="changePrice({{ order.id }})" data-price="{{ order.valuation }}" id="price">[修改预售价格]</a></span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span style="margin-right:20px;"><a href="#" class="btn-td" onclick="changePrice({{ order.id }})" data-price="{{ order.valuation }}" id="price">[修改预售价格]</a></span>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+
+                      {% if order.notifiedStatus != 0 %}
+                          <a href="#" class="btn-td" id="notify" onclick="renotify('{{ order.orderNo }}')">重新通知</a>
+                      {% endif %}
+                      </div>
+                      {% if order.businessNumber %}
+                          <br><span style="visibility:hidden;">dummy</span>
+                      {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function changePrice(orderId)
+        {
+            var oldPrice = $("#price").attr("data-price");
+            var price=prompt("原始预售价格为"+ oldPrice +"，请输入新的预售价格");
+            var reg = new RegExp("^[0-9]*$");
+            if (price != null) {
+                if (price == '') {
+                    alert('预售价格不能为空');
+                } else if (!reg.test(price)) {
+                    alert("预售价格必须是数字!");
+                } else {
+                    var url = "{{ path('order_update_valuation',  {'id': 'order_id'}) }}";
+                    var url = url.replace("order_id", orderId);
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {price: price},
+                    })
+                    .done(function(data) {
+                        console.log(data.success);
+                        if (data.success == true) {
+                            $("#price").attr("data-price",data.price);
+                            commonMethod.showTopTips('修改成功');
+                        } else {
+                            commonMethod.showTopTips(data.msg);
+                        }
+                    })
+                }
+            }
+        }
+
+        function renotify(orderNo)
+        {
+            if ($("#notify").hasClass('disabled')) {
+                return ;
+            }
+
+            $("#notify").addClass('disabled');
+            event.preventDefault();
+
+            $.ajax({
+                url: "{{ path('order_notify') }}",
+                type: 'POST',
+                data: {orderNo: orderNo},
+            })
+            .done(function(data) {
+                commonMethod.showTopTips(data.msg);
+            })
+        }
+        
+    </script>
+{% endblock %}

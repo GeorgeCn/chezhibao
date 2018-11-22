@@ -1,0 +1,118 @@
+{% extends 'common/base_list.html.twig' %}
+
+{% block content_additional %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class="page-additional">
+            <a class="add-new had-icon link" href="{{path('user_new')}}"><i class="icon-font-yonghuguanli"></i>新增用户</a>
+        </div>
+    {% elseif is_granted('ROLE_LOADOFFICER_MANAGER') or is_granted('ROLE_ADMIN_HPL') %}
+        <div class="page-additional">
+            <a class="add-new had-icon link" href="{{path('user_apply_new')}}"><i class="icon-font-yonghuguanli"></i>新增授权</a>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block list_filter %}
+    <form class="form-horizontal table-form-filter clearfix" id="formFilterBar">
+        <div class="filter-select" data-form-name="vars[company]" data-form-value="{{vars['company']}}" data-child-search="had" data-child-url="{{path('config_get_all_companies')}}">
+            <div class="value-current">所在金融公司</div>
+        </div>
+        <div class="filter-select" data-form-name="vars[agency]" data-form-value="{{vars['agency']}}" data-child-search="had" data-child-url="{{path('get_agencies', {'company': vars['company']})}}">
+            <div class="value-current">经销商</div>
+        </div>
+        <div class="filter-input" data-form-name="vars[name]" data-form-value="{{vars['name']}}">
+            <div class='value-current search-icon-end'>用户姓名</div>
+        </div>
+        <div class="filter-input" data-form-name="vars[mobile]" data-form-value="{{vars['mobile']}}">
+            <div class='value-current search-icon-end'>手机号码</div>
+        </div>
+        <div class="filter-input" data-form-name="vars[username]" data-form-value="{{vars['username']}}">
+            <div class='value-current search-icon-end'>登录账号</div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block list_content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>用户 Id</th>
+                <th>登录账号</th>
+                <th>姓名</th>
+                {% if is_granted('ROLE_ADMIN') %}<th>创建时间</th>{% endif %}
+                <th>所在金融公司</th>
+                <th>所属经销商</th>
+                {% if is_granted('ROLE_EXAMER_HPL') or is_granted('ROLE_ADMIN_HPL') or is_granted('ROLE_LOADOFFICER_MANAGER') %}<th>级别</th>{% endif %}
+                <th>手机号码</th>
+                <th>省份</th>
+                <th>城市</th>
+                <th>创建人</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agencyRel in pagination %}
+                <tr>
+                    <td>{{ agencyRel.user.id }}</td>
+                    <td>{{ agencyRel.user.username }}</td>
+                    <td>{{ agencyRel.user.name }}</td>
+                    {% if is_granted('ROLE_ADMIN') %}<td>{{ agencyRel.user.createdAt ? agencyRel.user.createdAt|date("Y-m-d H:i:s") : ''}}</td>{% endif %}
+                    <td>{{ agencyRel.company.company }}</td>
+                    <td>{{ agencyRel.agency.name }}</td>
+                    {% if is_granted('ROLE_EXAMER_HPL') or is_granted('ROLE_ADMIN_HPL') or is_granted('ROLE_LOADOFFICER_MANAGER') %}
+                        {% if agencyRel.user.hasRole('ROLE_LOADOFFICER') %}
+                            <td>低</td>
+                        {% elseif agencyRel.user.hasRole('ROLE_LOADOFFICER_MANAGER') %}
+                            <td>中</td>
+                        {% elseif agencyRel.user.hasRole('ROLE_ADMIN_HPL') %}
+                            <td>高</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    {% endif %}
+                    <td>{{ agencyRel.user.mobile }}</td>
+                    {% if agencyRel.user.province.name is defined %}
+                    <td>{{ agencyRel.user.province.name}}</td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+                    {% if agencyRel.user.city.name is defined %}
+                    <td>{{ agencyRel.user.city.name}}</td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+                    {% if agencyRel.creater.name is defined %}
+                    <td>{{ agencyRel.creater.name }}</td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+                        <td>
+                    {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('user_edit', { 'id': agencyRel.user.id }) }}" class="btn-td">编辑</a>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN_HPL') or is_granted('ROLE_LOADOFFICER_MANAGER') %}
+                        {% set agencyId = agencyRel.agency.id %}
+                            <a href="{{ path('user_forbidden', { 'id': agencyRel.id }) }}" class="btn-td confirmation">禁用</a>
+                    {%  endif %}
+                        </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+{% block javascripts %}
+    {{parent()}}
+    <script>
+        $('.table-new-box').on("click",".confirmation",function(event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            commonMethod.prompt({
+                title:"禁用用户",
+                msgHTML:"确定要禁用吗？",
+                confirm:function(){
+                    window.location.href = href;
+                }
+            })
+        });
+    </script>
+{% endblock %}

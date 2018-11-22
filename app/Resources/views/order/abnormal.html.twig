@@ -1,0 +1,78 @@
+{% extends 'common/base_list.html.twig' %}
+{% block list_filter %}
+    <form class="form-horizontal table-form-filter clearfix" id="formFilterBar">
+        <div class="filter-input" data-form-name="vars[orderNo]" data-form-value="{{vars['orderNo']}}">
+            <div class='value-current search-icon-end'>评估单号</div>
+        </div>
+    </form>
+{% endblock %}
+{% block list_content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>评估单号</th>
+                <th>车架号</th>
+                <th>单据状态</th>
+                <th>品牌</th>
+                <th>车系</th>
+                <th>车型</th>
+                <th>提交时间</th>
+                <th>审核人</th>
+                <th>终审时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in pagination %}
+            <tr>
+                <td>{{ order.orderNo }}</td>
+                <td>{{ order.report ? order.report.vin : '' }}</td>
+                {% if order.report %}
+                    {% if order.report.status == 0 %}
+                        <td>已提交</td>
+                    {% elseif order.report.status == 1 %}
+                        <td>通过</td>
+                    {% elseif order.report.status == 2 %}
+                        <td>拒绝</td>
+                    {% else %}
+                        <td>状态异常</td>
+                    {% endif %}
+                {% else %}
+                    <td>已提交</td>
+                {% endif %}
+                <td>{{ order.report ? order.report.brand : ''}}</td>
+                <td>{{ order.report ? order.report.series : '' }}</td>
+                <td>{{ order.report ? order.report.model : '' }}</td>
+                <td>{{ order.submitedAt|date("Y-m-d H:i:s") }}</td>
+                <td>{{ order.report ? order.report.examer.name : '' }}</td>
+                <td>{{ order.report ? order.report.examedAt|date("Y-m-d H:i:s") : '' }}</td>
+                <td><a href="{{ path('order_abnormal_handle', { 'id': order.id }) }}" class="btn-td confirmation">处理</a></td>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+{% block javascripts %}
+{{parent()}}
+<script>
+    $('.table-new-box').on("click",".confirmation",function(event) {
+        event.preventDefault();
+        var href = $(this).attr('href');
+        // bootboxConfirm({
+        //     title:"处理后原始单据将删除，会自动生成新单据，确定要处理吗？",
+        //     callback:function(result){
+        //         if (result) {
+        //             window.location.href = href;
+        //         }
+        //     }
+        // });
+        commonMethod.prompt({
+            title:"异常处理",
+            msgHTML:"处理后原始单据将删除，会自动生成新单据，确定要处理吗？",
+            confirm:function(){
+                window.location.href = href;
+            }
+        })
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,58 @@
+<div class="check-header-fix" id="checkHeaderFix">
+    <ul class="info-area clearfix">
+        <li class="btn-back" title="返回">
+            <a href="javascript:history.go(-1);location.reload()" id="returnTaskList">
+            </a> 
+
+            
+        </li>
+        <li>
+            <p class="t1" title="">{{ order.company.company }}</p>
+            <p class="t2">所属总部</p>
+        </li>
+        <li>
+            <p class="t1" id="cUc" title="">{{ order.loadOfficer.city?order.loadOfficer.city:'暂无' }}</p>
+            <p class="t2">提交人所在地</p>
+        </li>
+        <li class="item-standard">
+            <p class="t1 c-red">查看详情</p>
+            <p class="t2">评审标准</p>
+            <div class="item-standard-detail popup">
+                <span class="arrow-top"></span>
+                {% set standardArr1 = examStandard|split('<br/>') %}
+                <ul class="item-standard-content popup-content">
+                    {% for standardItem in standardArr1 %}
+                        {% set standardArr2 = standardItem|split('$$$') %}
+                        <li>
+                            {% for standardSubItem in standardArr2 %}
+                                <p class="{{ loop.index==1 ?'':'sub' }}">{{ standardSubItem }}</p>
+                            {% endfor %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </li>
+         <li class="item-interval">
+            <p class="t1"></p>
+            <p class="t2"></p>
+        </li>
+             <li class="item-lastTime" style="display:none">
+            <p class="t3"></p>
+            <p class="t4"></p>
+        </li>
+    </ul>
+    <div class="notice-area">
+        <p class="icon-notice"></p>
+        <div class="same-vin-report popup">
+            <span class="arrow-top"></span>
+            <div class="popup-content"></div>
+        </div>
+    </div>
+    <ul class="btn-area">
+        {% if videoSrc != '' %}
+           <li class="btn-video" id="btnVideo">查看视频</li>
+        {% endif %}
+        <li class="btn-untread" id="btnUntread">订单退回</li>
+        <li class="btn-save" id="btnSave">保存订单</li>
+    </ul>
+</div>

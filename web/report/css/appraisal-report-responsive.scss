@@ -1,0 +1,504 @@
+@charset "UTF-8";
+
+/******手机端*******/
+@media (max-width: 750px) {
+  @media screen and (min-width: 320px) {
+    html {
+      font-size: 42.66667px;
+    }
+  }
+
+  @media screen and (min-width: 360px) {
+    html {
+      font-size: 48px;
+    }
+  }
+
+  @media screen and (min-width: 375px) {
+    html {
+      font-size: 50px;
+    }
+  }
+
+  @media screen and (min-width: 384px) {
+    html {
+      font-size: 51.2px;
+    }
+  }
+
+  @media screen and (min-width: 412px) {
+    html {
+      font-size: 54.93333px;
+    }
+  }
+
+  @media screen and (min-width: 414px) {
+    html {
+      font-size: 55.2px;
+    }
+  }
+
+  @media screen and (min-width: 600px) {
+    html {
+      font-size: 80px;
+    }
+  }
+
+  @media screen and (min-width: 640px) {
+    html {
+      font-size: 85.33333px;
+    }
+  }
+  @media screen and (min-width: 680px) {
+    html {
+      font-size: 90.66667px;
+    }
+  }
+  @media screen and (min-width: 750px) {
+    html {
+      font-size: 100px;
+    }
+  }
+  body {
+    font-size: 16px;
+  }
+  .appraisal-report-logo {
+
+    //background: url(/report/img/logo.png) no-repeat center/cover;
+    img {
+      width: 85%;
+      height: 0.9rem;
+      //display: none;
+    }
+  }
+  .appraisal-report-synopsis {
+    font-size: 0.16rem;
+  }
+  .appraisal-report-header {
+    height: 1.24rem;
+    .appraisal-report-content-wrap {
+      padding: 0.1rem 0;
+      width: 100%;
+    }
+  }
+  .appraisal-report-header-border{
+    height:0.1rem;
+  }
+  .appraisal-report-body h2 {
+    font-size: 0.14rem;
+    .t-chinese {
+      font-size: 0.3rem;
+      font-weight: 700;
+    }
+
+  }
+
+  /***********标头title-end*************/
+
+  .appraisal-report-module {
+    .module-title {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.16rem;
+    }
+    table {
+      font-size: 0.14rem;
+    }
+
+    .table-type-0 {
+      tbody {
+        display: flex;
+        flex-wrap: nowrap;
+        tr {
+          &:nth-child(1) {
+            flex: 1;
+            td {
+              border-left: 0;
+              border-right: 1px solid #ebebeb;
+              border-bottom: 1px solid #ebebeb;
+              &:nth-child(3) {
+                border-bottom: 0;
+              }
+            }
+          }
+          &:nth-child(2) {
+            border-top: 0;
+            flex: 3;
+            td {
+              border-left: 0;
+              border-bottom: 1px solid #ebebeb;
+              &:nth-child(3) {
+                border-bottom: 0;
+              }
+            }
+          }
+          &:nth-child(3) {
+            //display: none;
+          }
+          display: flex;
+          flex-direction: column;
+        }
+      }
+    }
+
+    .single-table {
+      .table-type-2 {
+        tbody {
+          display: flex;
+          flex-wrap: wrap;
+
+          tr {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: center;
+            box-sizing: border-box;
+
+            &.tr-one-for {
+              width: 100%;
+              border-bottom: 1px solid #ebebeb;
+              td {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 0.16rem;
+              }
+              &:nth-child(even) td {
+                border: 0;
+                &:nth-child(1) {
+                  flex: 1;
+                }
+                &:nth-child(2) {
+                  flex: 3;
+                  border-left: 1px solid #ebebeb;
+                  font-size: 0.12rem;
+                }
+
+              }
+            }
+
+            &.tr-one-ten {
+              width: 100%;
+              border-top: 1px solid #ebebeb;
+              border-bottom: 1px solid #ebebeb;
+              td {
+                font-size: 0.12rem;
+              }
+            }
+
+            &.tr-one-nine {
+              width: 100%;
+              border: 0;
+              &:nth-child(1) {
+                border-bottom: 1px solid #ebebeb;
+              }
+              td {
+                border: 0;
+                &:nth-child(1) {
+                  width: 50%;
+                }
+                &:nth-child(2) {
+                  width: 50%;
+                  border-left: 1px solid #ebebeb;
+
+                }
+              }
+            }
+
+            &:nth-child(even) {
+              //border-left: 1px solid #ebebeb;
+            }
+
+            &:nth-child(2) {
+              border-top: 0;
+            }
+
+            &.tr-two-nine {
+              border-bottom: 1px solid #ebebeb;
+              td {
+                flex: 1;
+                border-bottom: 0;
+                &.eval-loss {
+                  border-right: 1px solid #ebebeb;
+                  border-left: 1px solid #ebebeb;
+                }
+              }
+              &:last-child {
+                border-bottom: 0;
+              }
+            }
+            &.tr-three-nine {
+              td {
+                &:nth-child(1) {
+                  flex: 1;
+                }
+                &:nth-child(2) {
+                  flex: 3;
+                  text-indent: 2em;
+                  font-size: 0.12rem;
+                  text-align: left;
+                }
+              }
+            }
+            td {
+              flex: 1;
+              padding: 0.06rem;
+              &.no-border {
+                display: none;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .table-type-3 {
+      tbody {
+        tr {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          &:nth-child(1) td {
+            &:nth-child(3) {
+              display: none;
+            }
+          }
+          td {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            &:nth-child(1) {
+              flex: 1.5;
+            }
+            &:nth-child(2) {
+              flex: 5;
+            }
+          }
+        }
+      }
+    }
+
+    .table-type-4 {
+      tbody {
+        tr {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: nowrap;
+          &:nth-child(2) {
+            td {
+              &:nth-child(2) {
+                border-left: 1px solid #ebebeb;
+                p {
+
+                }
+              }
+            }
+          }
+          &:nth-child(4) {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-wrap: wrap;
+            .item {
+              width: 32%;
+              box-sizing: border-box;
+            }
+
+          }
+          th {
+            font-size: 0.16rem;
+            padding: 0.18rem;
+          }
+          td {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-wrap: wrap;
+            p {
+              text-align: initial;
+              padding: 0.05rem;
+              line-height: 150%;
+            }
+          }
+        }
+      }
+    }
+
+    .table-type-5 {
+      tbody {
+        display: flex;
+        flex-wrap: wrap;
+        tr {
+          width: 48%;
+          display: flex;
+          box-sizing: border-box;
+          -moz-box-sizing: border-box; /*Firefox*/
+          -webkit-box-sizing: border-box; /*Safari*/
+          &:nth-child(even) {
+            border-left: 1px solid #ebebeb;
+          }
+          td {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          .no-border {
+            display: none;
+          }
+        }
+      }
+    }
+
+    .appraisal-report-icon.icon2 {
+      background: url(/report/img/icon2.png) no-repeat 0 center;
+    }
+    .appraisal-report-icon.icon1 {
+      background: url(/report/img/icon1.png) no-repeat 0 center;
+    }
+    .module-subtitle {
+      font-size: .16rem;
+    }
+
+  }
+  /***********主体表格-end*************/
+
+  .appraisal-report-legal-statement {
+    text-indent: 2em;
+    font-size: 0.18rem;
+    line-height: 150%;
+  }
+  /***********法律声明-end*************/
+
+  .unit {
+    font-size: 0.16rem;
+  }
+  .chart {
+    font-size: 0.14rem;
+    #canvasChart {
+      width: 100%;
+    }
+  }
+  /***********canvas数据结构-end*************/
+
+  .appraisal-report-footer {
+    width: 100%;
+    .appraisal-report-content-wrap {
+      display: flex;
+      display: -webkit-flex;
+      justify-content: center;
+      -webkit-justify-content: center;
+      align-items: center;
+      -webkit-align-items: center;
+    }
+  }
+  /***********footer-end*************/
+  .pc-down {
+    display: none;
+  }
+
+  /***********新增授权*************/
+  .apply_web_body h2 {
+    font-size: 0.24rem;
+    .invitation {
+      font-size: 0.44rem;
+    }
+  }
+
+  .appraisal-report-module {
+    .title_message{
+      text-align: left;
+      letter-spacing: 0;
+      line-height: 30px;
+    }
+    .form-invitation {
+      margin-top: 0.2rem;
+    }
+
+    .form_user {
+      width: 100%;
+      display: flex;
+      padding: .4rem .3rem;
+      box-sizing: border-box;
+      font-size: .3rem;
+    }
+    .verify {
+      .form-right{
+        display: flex;
+        display:-webkit-flex;
+      }
+      input {
+        flex: 2;
+        -webkit-flex: 2;
+        margin-right: 0;
+        padding: .4rem 0 ;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+      }
+      .form-padding {
+        flex: 1;
+        -webkit-flex: 1;
+        display:-webkit-flex;
+        //display: -webkit-box;
+        -webkit-align-self: flex-end;
+        -webkit-justify-content: flex-end;
+        align-items: center;
+        width: 100%;
+        padding: 0.1rem 0;
+        display: flex;
+        box-sizing: border-box;
+
+        .form-verify {
+          padding:0.1rem 0;
+          justify-content: center;
+          display: flex;
+          align-items: center;
+          box-sizing: border-box;
+        }
+      }
+    }
+
+    .form-save {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .form-btn {
+        padding: .15rem 20%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        //width: 100%;
+        -webkit-appearance:none;
+        height: 3em;
+        margin-right: 0;
+      }
+    }
+    .user_text {
+      padding: 0.2rem;
+      margin-top: .2rem;
+      display: flex;
+      display: -webkit-box;
+      justify-content: flex-start;
+      align-items: center;
+      font-size: 0.3rem;
+    }
+    .form-text {
+      text-align: left;
+      margin-left: 10px;
+      font-size: 0.16rem;
+      color: #979daa;
+    }
+  }
+
+  .seal {
+    background: url("/images/seal.png") center/cover;
+    position: absolute;
+    width: 3rem;
+    height: 2.84rem;
+    right: 0;
+  }
+}

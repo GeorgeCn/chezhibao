@@ -1,0 +1,120 @@
+{% extends 'reportcheck/base-report.html.twig' %}
+
+{% block title %}
+    车辆维修记录_{{vin}}_{{id}}
+{% endblock %}
+
+{% import 'macro/maintain-record.html.macro' as macro %}
+
+{% block body %}
+
+    {% if not hadReport %}
+        <div>暂无维修记录</div>
+    {% else %}
+        {% include 'reportcheck/components/base-report-header.twig' %}
+        <div class="appraisal-report-body">
+            <div class="appraisal-report-content-wrap">
+                <h2><span class="t-chinese">车辆维修记录</span></h2>
+                <div class="appraisal-report-detail">
+                    <div class="appraisal-report-module">
+                        <div class="module-title color-red">基本信息</div>
+                        <div class="module-content single-table">
+                            <table class="module-table text-left">
+                                {%  set basicInfo = [
+                                {name:'车架号',value:basic.vin},
+                                {name:'品牌',value:basic.brandName},
+                                {name:'最后入店时间',value:basic.last_time_to_shop},
+                                {name:'最后入店公里数',value:basic.total_mileage},
+                                {name:'事故次数',value:basic.number_of_accidents}
+                                ]
+                                %}
+                                {% for basic in basicInfo %}
+                                    <tr class="tr-mixed-1">
+                                        <td>{{basic.name}}</td>
+                                        <td>{{basic.value}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    {% if resume %}
+                        <div class="appraisal-report-module">
+                            <div class="module-title color-red">报告简述</div>
+                            <div class="module-content">
+                                <ul class='text-left sketch'>
+                                    {% for itemSketch in resume %}
+                                        <li>
+                                            {% if itemSketch|slice(0,10) matches '/^\\d{4}-\\d{1,2}-\\d{1,2}.*$/' %}
+                                                <p>{{ itemSketch|slice(0,10) }}</p>                  
+                                                <p>{{ itemSketch|slice(10)|trim|replace(keyWords) }}</p>
+                                            {% else %}
+                                                <p>{{ itemSketch|trim|replace({"：是":"：<b style='color:red'>是</b>"}) }}</p>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endif %}
+                     {% if imgs | length>0 %}
+                        <div class="appraisal-report-module report-module-repair-maintain1" id="reportModuleRemarks">
+                            <div class="module-title color-red">维保图片查询结果</div>
+                            <div class="module-content bottom-right">
+                                <div class="item-content1">
+                                    {% if originType == 5 %}
+                                        {% if imgs | length>0 %}
+                                            <div class="pic-list1 border-bottom">
+                                                {% for img in imgs %}
+                                                    <img src="{{img}}" />
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <!--/end 维修保养记录-->
+                    {% endif %}
+                    {% if record %}
+                        <div class="appraisal-report-module report-module-repair-maintain" id="reportModuleRemarks">
+                            <div class="module-title color-red">维修保养记录</div>
+                            <div class="module-content bottom-right">
+                                {% if originType==3 %}
+                                    {% if record.constructAnalyzeRepairRecords %}
+                                        {{ macro.recordCBS(originType,record.constructAnalyzeRepairRecords,"结构件详细维修记录",keyWords) }}
+                                    {% endif %}
+                                    {% if record.componentAnalyzeRepairRecords %}
+                                        {{ macro.recordCBS(originType,record.componentAnalyzeRepairRecords,"重要组成部件详细维修记录",keyWords) }}
+                                    {% endif %}
+
+                                    {% if record.outsideAnalyzeRepairRecords %}
+                                        {{ macro.recordCBS(originType,record.outsideAnalyzeRepairRecords,"外观覆盖件详细维修记录",keyWords) }}
+                                    {% endif %}
+
+                                    {% if record.normalRepairRecords %}
+                                        {{ macro.recordCBS(originType,record.normalRepairRecords,"所有详细维修记录",keyWords) }}
+                                    {% endif %}
+                                {% else %}
+                                    {% for itemMaintain in record %}
+                                        {% if originType==1 %}
+                                            {{ macro.record(originType,itemMaintain.date,itemMaintain.kilometers,itemMaintain.type,itemMaintain.content,null,itemMaintain.images,keyWords) }}
+                                        {% elseif originType==2 %}
+                                            {{ macro.record(originType,itemMaintain.repairDate,itemMaintain.mileage,itemMaintain.type,itemMaintain.content,itemMaintain.material,null,keyWords) }}
+                                        {% elseif originType== 4 %}
+                                            {{ macro.record(originType,itemMaintain.date,itemMaintain.mileage,itemMaintain.remark,itemMaintain.content,itemMaintain.materal,null,keyWords) }}
+                                        {% elseif originType == 5 %}
+                                            {{ macro.record(originType, itemMaintain.date, itemMaintain.kilm, itemMaintain.remark, itemMaintain.detail, itemMaintain.cailiao, attribute(itemMaintain, 'img_url') is defined  ? itemMaintain.img_url: [] , keyWords) }}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!--/end 维修保养记录-->
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% include 'reportcheck/components/base-report-footer.twig' %}
+    {% endif %}
+
+{% endblock %}

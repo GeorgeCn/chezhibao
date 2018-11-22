@@ -1,0 +1,87 @@
+{% extends 'YYCFoundationBundle::layout.html.twig' %}
+{% block yyc_foundation_stylesheets %}
+    {{ parent() }}
+    <link href="//cdn.bootcss.com/bootstrap-table/1.10.1/bootstrap-table.css" rel="stylesheet">
+{% endblock %}
+
+{% block yyc_foundation_body %}
+    <div class="container">
+        <div class="row">
+            <form action="">
+                <label for="vin">vin码</label>
+                <input type="text" id="vin" name="vin">
+                <label for="brand">品牌</label>
+                <input type="text" id="brand" name="brand">
+                <label for="engine">发动机号</label>
+                <input type="text" id="engine" name="engine">
+                <button type="button" id="recently" class="btn btn-default">查询维修记录</button>
+                <button type="button" id="newest" class="btn btn-default">查询大圣来了最新记录</button>
+            </form>
+
+            <table id="result">
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block yyc_foundation_javascripts %}
+    {{ parent() }}
+    <script src="//cdn.bootcss.com/jquery/1.12.4/jquery.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap-table/1.10.1/bootstrap-table.js"></script>
+    <script>
+        $("#newest").click(function(event) {
+            if (!confirm('查询最新的记录会收费，确认查询吗？')) {
+                return false;
+            }
+
+            $.ajax({
+                url: '{{url('yyc_dsll_newest')}}',
+                type: 'POST',
+                dataType: 'json',
+                data: $("form").serialize(),
+            })
+            .done(function(data) {
+                // 如果后台有返回信息，弹窗显示
+                alert(data.msg);
+                // 刷新页面查看最新历史记录
+                getRecently();
+            })
+            .fail(function() {
+                console.log("error");
+            })
+            .always(function() {
+                console.log("complete");
+            });
+        });
+
+        $("#recently").click(function(event) {
+            // 刷新页面查看最新历史记录
+            getRecently();
+        });
+
+        function getRecently(){
+            //每次初始化bootstraptable前先销毁之前的，防止再调用时数据不更新
+            $("#result").bootstrapTable('destroy');
+
+            $.ajax({
+                url: '{{url('yyc_dsll_recently')}}',
+                type: 'POST',
+                dataType: 'json',
+                data: $("form").serialize(),
+            })
+            .done(function(data) {
+                console.log("success");
+                console.log(data);
+                // bootstrap table的字段信息
+                {% include 'YYCFoundationBundle::bootstrap_table_field.html.twig' %}
+            })
+            .fail(function() {
+                console.log("error");
+            })
+            .always(function() {
+                console.log("complete");
+            });
+        }
+    </script>
+{% endblock %}

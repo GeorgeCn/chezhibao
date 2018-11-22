@@ -1,0 +1,38 @@
+{% extends 'admin_layout.html.twig' %}
+
+{% form_theme edit_form _self %}
+{% block _config_companyNew_widget %}
+{% spaceless %}
+    <label for="{{ id }}" style="margin-left:-90px;margin-right:40px;display:inline">{{ label|trans({}, translation_domain) }}</label>
+    <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{% endspaceless %}
+{% endblock _config_companyNew_widget %}
+{% block _config_needRecheck_widget %}
+{% spaceless %}
+    <label for="{{ id }}" style="margin-left:-90px;margin-right:40px;display:inline">{{ label|trans({}, translation_domain) }}</label>
+    <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{% endspaceless %}
+{% endblock _config_needRecheck_widget %}
+{% block _config_needVideo_widget %}
+{% spaceless %}
+    <label for="{{ id }}" style="margin-left:-90px;margin-right:40px;display:inline">{{ label|trans({}, translation_domain) }}</label>
+    <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{% endspaceless %}
+{% endblock _config_needVideo_widget %}
+
+{% block content %}
+    {{ form_start(edit_form) }}
+        <div class="panel panel-default mgt-30">
+            <div class="panel-heading">
+                <h3 class="panel-title "><span class="text-muted">编辑公司配置</span></h3>
+            </div>
+            <div class="panel-body">
+                {{ form_widget(edit_form) }}
+            </div>
+            <div class="panel-footer text-center">
+                <input type="submit" value="保存" class="btn btn-primary" />
+                <a class="btn btn-primary" href="{{ path('config_index') }}">返回</a>
+            </div>
+        </div>
+    {{ form_end(edit_form) }}
+{% endblock %}

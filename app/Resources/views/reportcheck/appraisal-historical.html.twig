@@ -1,0 +1,85 @@
+{% extends 'common/base_list.html.twig' %}
+{% block list_filter %}
+    <div class="module-default module-search-history">
+        <ul>
+            <li>品牌：{{ vars.brand }}</li>
+            <li>车系：{{ vars.series }}</li>
+            <li>车型：{{ vars.model }}</li>
+            <li>年款：{{ vars.year }}</li>
+            {% if vars.type == 2 %}
+                <li>当前所在城市：{{ vars.city }}
+            {% else %}
+                <li>其它城市记录</li>
+            {% endif %}
+        </ul>
+        <div class="module-btn-bar">
+            {% if vars.type == 2 %}
+                <a class="btn btn-danger"
+                   href="{{ path('report_historical_appraisal',{'brand':vars.brand,'series':vars.series,'model':vars.model,'year':vars.year,'modelId':vars.modelId,'city':vars.city,'type':'3'}) }}">查询其它城市的记录</a>
+            {% else %}
+                <a class="btn btn-danger"
+                   href="{{ path('report_historical_appraisal',{'brand':vars.brand,'series':vars.series,'model':vars.model,'year':vars.year,'modelId':vars.modelId,'city':vars.city,'type':'2'}) }}">查询当前城市的记录</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block list_content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>年款/车型</th>
+                <th>公司</th>
+                <th>报单地</th>
+                <th>出厂日期</th>
+                <th>登记日期</th>
+                <th>评估结果</th>
+                <th>评估时间</th>
+                <th>估价（收购价）</th>
+                <th>估价（销售价）</th>
+                <th>同标价（收购价）</th>
+                <th>同标价（销售价）</th>
+                <th>车况价（-）</th>
+                <th>选配价（+）</th>
+                <th>第三方价</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in pagination %}
+            <tr>
+                <td>{{ item.report.year }}/{{ item.report.model }}</td>
+                <td>{{ item.company.company }}</td>
+                <td>{{ item.loadOfficer.city.name }}</td>
+                <td>{{ item.report.report.field_3040.value }}</td>
+                <td>{{ item.report.report.field_1060.value }}</td>
+                <td>{{ item.report.status == 1 ? "审核通过" : "审核拒绝" }}</td>
+                <td>{{ item.report.examedAt is null ? "" : item.report.examedAt|date('Y-m-d H:i:s') }}</td>
+                <td>{{ item.report.report.field_4010.value }}</td>
+                <td>{{ item.report.report.field_4012 is defined ? item.report.report.field_4012.value : "" }}</td>
+
+                <td>{{ item.report.report.field_5010 is defined ? item.report.report.field_5010.value : "" }}</td>
+                <td>{{ item.report.report.field_5011 is defined ? item.report.report.field_5011.value : "" }}</td>
+                <td>{{ item.report.report.field_5012 is defined ? item.report.report.field_5012.value : "" }}</td>
+                <td>{{ item.report.report.field_5013 is defined ? item.report.report.field_5013.value : "" }}</td>
+                <td>{{ item.report.report.field_5014 is defined ? item.report.report.field_5014.value : "" }}</td>
+
+                <td>
+                    <a class="btn-td" href="{{ path('order_show', { 'id': item.id, }) }}"
+                       target="_blank">详情</a>
+                    <a class="btn-td"
+                       href="{{ path('pdfreport', { 'orderid': item.id, '_format': 'html' }) }}"
+                       target="_blank">报告</a>
+                    {% if item.report.maintain != 0 %}
+                        <a class="btn-td"
+                           href="{{ url('yyc_common_show', { 'id': item.report.maintain , 'report': item.report.id }) }}"
+                           target="_blank">维保记录</a>
+                    {% else %}
+                        <span class="btn-not">暂无维保记录</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>                 
+{% endblock %}

@@ -1,0 +1,24 @@
+FOS\UserBundle\Model\User:
+    properties:
+        plainPassword:
+            - NotBlank:
+                message: '新密码不能为空'
+                groups: [CustomChangePassword, CustomNew]
+            - Regex:
+                pattern: '/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,100}$/'
+                message: '密码应该包含有字母数字且长度至少8位'
+                groups: [CustomChangePassword]
+        username:
+            - NotBlank:
+                message: fos_user.username.blank
+                groups: [Custom, CustomRegistration, Kefu]
+            - Length:
+                min: 2
+                minMessage: fos_user.username.short
+                max: 255
+                maxMessage: fos_user.username.long
+                groups: [Custom, CustomRegistration, Kefu]
+        roles:
+            - NotBlank:
+                message: "角色不能为空"
+                groups: [Custom]

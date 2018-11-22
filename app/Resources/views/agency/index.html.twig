@@ -1,0 +1,67 @@
+{% extends 'common/base_list.html.twig' %}
+{% block content_additional %}
+    <div class="page-additional">
+        <a class="add-new had-icon link" href="{{path('agency_new')}}"><i class="icon-font-xinzengpeizhi"></i>新增经销商</a>
+    </div>
+{% endblock %}
+{% block list_filter %}
+    <form class="form-horizontal table-form-filter clearfix" id="formFilterBar">
+        <div class="filter-input" data-form-name="vars[code]" data-form-value="{{vars['code']}}">
+            <div class='value-current search-icon-end'>经销商代码</div>
+        </div>
+        <div class="filter-select" data-form-name="vars[company]" data-form-value="{{vars['company']}}" data-child-search="had" data-child-url="{{path('config_get_all_companies')}}">
+            <div class="value-current">金融公司</div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block list_content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>金融公司</th>
+                <th>经销商</th>
+                <th>经销商代码</th>
+                <th>省</th>
+                <th>市</th>
+                <th>创建人</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agency in pagination %}
+            <tr>
+                <td>{{ agency.company.company }}</td>
+                <td>{{ agency.name }}</td>
+                <td>{{ agency.code }}</td>
+                <td>{{ agency.province ? agency.province : '' }}</td>
+
+                <td>{{ agency.city ? agency.city : '' }}</td>
+                <td>{{ agency.creater }}</td>
+                <td>
+                    <a href="{{ path('agency_edit', { 'id': agency.id }) }}" class="btn-td">编辑</a>
+                    <a href="{{ path('agency_delete' ,{ 'id': agency.id }) }}" class="btn-td confirmation">删除</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascripts %}
+    {{parent()}}
+    <script>
+        $('.table-new-box').on("click", ".confirmation",function(event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            var text = $(this).text();
+            commonMethod.prompt({
+                title:text,
+                msgHTML:"确定要"+ text + "吗？",
+                confirm:function(){
+                    window.location.href = href;
+                }
+            })
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,199 @@
+{% extends 'admin_layout.html.twig' %}
+{% import 'macro/order_pic.html.macro' as macro %}
+
+{% block stylesheets %}
+	{{parent()}}
+	{{ macro.require_viewer_css() }}
+{% endblock %}
+
+{% block content %}
+    <div class="content-box content-has-pic" id="gallery">
+        <h3 class="page-title">编辑单据</h3>
+        <form id="orderForm" method="post" action="{{ path('order_submit', {"id": order.id}) }}">
+
+        	{{ macro.order_pic_list(order,metadatas,groups,"large",true) }}
+
+	        {% if fieldDisplay.valuation %}
+	            <div class="module-default">
+		            <div class="module-title">预售价格</div>
+		            <div class="module-content">
+		            	<div class="item-group">
+		            		<input class="underline" id="rate_input" type="text" name="valuation" value="{{order.valuation}}" placeholder="请在这里输入(元)">
+		            		<span class="c-red f700" id="rate_red"></span>
+		            	</div>
+		            </div>
+		        </div>
+	        {% endif %}
+	        {% if fieldDisplay.businessNumber %}
+	            <div class="module-default">
+		            <div class="module-title">业务流水号</div>
+		            <div class="module-content">
+		            	<div class="item-group">
+		            		<input class="underline" id="businessNumber" type="text" name="businessNumber" value="{{order.businessNumber}}" placeholder="请在这里输入">
+		            		<span class="c-red"></span>
+		            	</div>
+		            </div>
+		        </div>
+	        {% endif %}
+	        <div class="module-default">
+	            <div class="module-title">备注</div>
+	            <div class="module-content">
+	            	<div class="item-group">
+	            		<textarea name="remark" id="remark_input" maxlength="255" placeholder="请在这里输入">{{order.remark}}</textarea>
+	            	</div>
+	            </div>
+	        </div>
+	        <div class="btn-group-specific smallest t-center">
+                <span class="btn btn-default" id="save">保存草稿</span>
+                <span class="btn btn-danger" id="submit">提交</span>
+            </div>
+	    </form>
+	    {% include 'components/copyright.html.twig' %}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{parent()}}
+    {{ macro.require_viewer_js() }}
+    {{ macro.require_qiqiu_js() }}
+    <script type="text/javascript">
+    	var $orderForm = $("#orderForm");
+    	var pathOrderUpdate = "{{ path('order_update', {"id": order.id}) }}";
+
+    	//证件照至少上传2张
+    	$("li.add[data-key='k1']").parents(".module-default").find(".module-title").append('<span>(至少上传2张)</span>')
+
+    	//创建上传
+    	$orderForm.find(".pic-list .add").each(function(index, el) {
+    		var qiniu = new QiniuJsSDK();
+    		var upload = new Upload();
+    		upload.init({
+    			qiniu : qiniu,
+    			$form : $("#orderForm"),
+    			$add : $(this),
+    			domain : "{{qiniu_domain}}",
+    			uptoken : "{{uptoken}}",
+    			flash_swf_url : "{{asset('qiniu/Moxie.swf')}}",
+    			defaultImg : "{{asset('images/img-default-large.png')}}",
+    			updateOrder:function(){
+    				var data = $orderForm.serialize();
+			        // 去掉非图片内容
+			        var removeNameArr = ['valuation','businessNumber','remark'];
+			        data = data.split("&");
+			        $.each(data,function(i,n){
+			        	for(var j=0;j<removeNameArr.length;j++){
+			        		if(this.indexOf(removeNameArr[j])==0){
+			        			data[i] = "";
+			        		}
+			        	}
+			        })
+			        data = data.join("&");
+			        $.post(pathOrderUpdate, data);
+    			}
+    		});
+    	});
+
+    	//备注字段自动保存
+		$("#remark_input").blur(function(event) {
+		    $.post(pathOrderUpdate, $orderForm.serialize());
+		});
+
+		//计算预售价格
+		$("#rate_input").on('input propertychange',function(e){
+			var $rateRed = $("#rate_red");
+		    if($(this).val()){
+		        // 用正则限制用户只能输入最多1位小数，防止算出来的结果精度不准
+		        if( ! /^\d*(?:\.\d{0,1})?$/.test($(this).val())){
+		        	commonMethod.showTopTips('小数点后只能保留1位,请重新输入！');
+		            $(this).val(0);
+		            $rateRed.html("");
+		            return false;
+		        }
+		        $rateRed.html("(" + $(this).val() /10000 + "万元)");
+		    }
+		    else{
+		        $rateRed.html("");
+		    }
+		}); 
+
+		//保存草稿箱
+		$("#save").on("click", function(){
+		    if (!validateValuation()||!validateBusinessNumber()) {
+		        return false;
+		    }
+
+		    $.post(pathOrderUpdate, $orderForm.serialize())
+		        .done(function(){
+		        	commonMethod.showTopTips('保存草稿成功！');
+		        });
+		});
+
+		//提交
+		$("#submit").on("click",function(){
+			if (!completePic()||!validateValuation()||!validateBusinessNumber()) {
+		        return false;
+		    }
+
+		    commonMethod.prompt({
+	            title:"提交订单",
+	            msgHTML:"确定提交吗",
+	            confirm:function(){
+	                $(window).off('beforeunload');
+	                $orderForm.submit();
+	            }
+	        })   
+		})
+
+		//首次提示
+		if ($("input.pic-input").length === 0) {
+			commonMethod.showTopTips('待照片上传完毕后，您的操作会自动保存到草稿箱');
+		}
+
+		$(window).on("beforeunload", function(e){
+		    return "您还有未提交的订单？是否真的要离开？";
+		});
+
+		//验证预售价格
+		function validateValuation(){
+			var value = parseInt($("#rate_input").val());
+			var result = true;
+			if($("#rate_input").length && isNaN(value)){
+				commonMethod.showTopTips('请输入预售价格！');
+				result = false;
+			}
+
+			if(parseFloat(value)>99999999){
+				commonMethod.showTopTips('预售价格不能大于9999.9999万！');
+				result = false;
+			}
+			return result;
+		}
+
+		//验证业务流水号
+		function validateBusinessNumber(){
+			var value = $.trim($("#businessNumber").val());
+			var result = true;
+			if($("#businessNumber").length && !value){
+				commonMethod.showTopTips('请输入业务流水号！');
+				result = false;
+			}
+			return result;
+		}
+
+		//判断图片是否上传完整
+		function completePic(){
+			var picInputLength = $orderForm.find("input.pic-input").length;
+			var least = 0;
+			$orderForm.find("li.add").each(function(){
+				var dataLeast = $(this).data("least");
+				if(dataLeast!=-1){
+					least += dataLeast;
+				}
+			})
+			if(picInputLength<least){
+				commonMethod.showTopTips('文件未上传完整！请检查是否有漏传的图片，或等文件都上传完毕。');
+				return false;
+			}
+			return true;
+		}
+    </script>
+{% endblock %}

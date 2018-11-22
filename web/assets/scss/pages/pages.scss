@@ -1,0 +1,99 @@
+$red:#ed5565;
+$red2:#f05463;
+$boxShadow:0 0 6px 0 rgba(0, 0, 0, .1),0 10px 12px 0 rgba(170, 182, 206, .36);
+
+/*查询历史估价*/
+.module-search-history{
+    li + li{
+        margin-top: 5px;
+    }
+    .module-btn-bar{
+        margin-top: 15px;
+    }
+}
+
+/*************************退回理由页面使用*************************/
+.back-reason-list{
+    margin-left: -15px;
+}
+.back-reason-list dl{
+    float: left;
+    width: 340px;
+    height: 360px;
+    overflow: hidden;
+    border: 1px solid #e8e8e8;
+    border-radius: 5px;
+    background-color: #fff;
+    margin-left: 15px;
+    margin-bottom: 15px;
+}
+
+.back-reason-list dt{
+    padding: 10px;
+    border-bottom: 1px solid #e8e8e8;
+    font-weight: 400;
+}
+.back-reason-list .thumbnail-box{
+    margin-top: 35px;
+    text-align: center;
+}
+.back-reason-list .thumbnail-box img{
+    width: 230px;
+    height: 160px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.back-reason-list .radioType{
+    margin-top: 30px;
+    color: #666;
+}
+.back-reason-list ul{
+    margin: 0;
+    padding: 0;
+}
+.back-reason-list li{
+    margin-left: 28px;
+    display: inline-block;
+    margin-top: 0;
+    padding: 0;
+}
+.back-reason-list li:first-child{
+    margin-left: 12px;
+}
+
+.back-reason-list .attached{
+    display: block;
+    margin: 3px 12px 0;
+}
+.back-reason-list .attached input{
+    height: 40px;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    background-color: #fff;
+}
+
+.back-reason-submit{
+    margin-top: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

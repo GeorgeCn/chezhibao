@@ -1,0 +1,258 @@
+
+/***************************表格相关配置***************************/
+
+
+.table-wrap{
+    overflow: auto;
+    padding: 15px 28px;
+    border-radius: 5px;
+    border:1px solid #e8e8e8;
+    position: relative;
+    background-color: #fff;
+}
+
+.table-list tr{ overflow: hidden; }
+
+.table-list td,
+.table-list th{
+    font-size: 12px;
+    vertical-align: middle!important;
+    word-break: keep-all;
+    white-space: nowrap;
+}
+.table-list .btn{overflow: hidden;}
+
+:root .table-list,
+:root .table-list td,
+:root .table-list th{
+    border: 0!important;
+}
+:root .table-list td,
+:root .table-list th{
+    border-left: 4px solid #fff!important;
+}
+
+
+:root .table-list td:first-child,
+:root .table-list th:first-child{
+    border-left: 0!important;
+}
+
+:root .table-list tr:nth-of-type(odd){
+    background-color: #f6f8fa;
+}
+
+:root .table-list.table-list-head tbody tr:nth-of-type(odd){
+    background-color: transparent;
+}
+
+:root .table-list.table-list-head tbody tr:nth-of-type(even){
+    background-color: #f6f8fa;
+}
+
+.table-list .btn-bar{
+    width: 300px;
+}
+
+.table-list .wrap-td{
+    word-break:break-all;
+    word-wrap:break-word;
+    white-space: normal;
+    min-width: 200px;
+    margin-bottom: 0;
+}
+
+.table-list .btn-group.wrap-td .btn{
+    float: none;
+}
+
+.table-list .btn{
+    font-size: 12px;
+    margin: 0 5px;
+}
+
+.table-list .btn-default{
+    color: #ed5565;
+}
+
+.table-list .fixed-width{
+    width: 100px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/*************************************新表格*************************************/
+.list-content{
+    position:relative;
+    .list-additional{
+        position:absolute;
+        right: 40px;
+        top: 18px;
+    }
+    .list-not-content{
+        border:1px solid #e7e7eb;
+        text-align: center;
+        padding:10px 0;
+        max-height: 300px;
+    }
+}
+
+.table-new-box-border{
+    border:1px solid #e7e7eb;
+}
+.table-new-box{
+    width: 100%;
+    background-color: #fff;
+    overflow: hidden;
+    position: relative;
+    display: none;
+}
+
+.table-new{ background-color: #fff; }
+
+.table-new table{
+    margin-bottom: 0;
+}
+
+.table-new table th:first-child,
+.table-new table td:last-child{
+    width: 150px;
+}
+
+.table-new table td:last-child{
+    max-width: none;
+}
+
+.table-new  table td{
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table-new  table td.long{
+    max-width: 400px;
+}
+
+.table-new tbody tr td,
+.table-new thead tr th{
+    vertical-align: middle;
+    border:0;
+    padding: 10px 20px;
+    white-space: nowrap;
+    text-align: left;
+}
+.table-new tbody tr td{
+    color: #666;
+}
+.table-new thead tr{
+    border-bottom: 1px solid #e7e7eb;
+    background-color: #f4f5f9;
+}
+.table-new tbody tr{
+    border-top: 1px solid #e7e7eb;
+}
+.table-new tbody tr:first-child{
+    border-top: 0;
+}
+
+.table-new tbody tr:nth-of-type(even){
+    background-color: #fbfcfd;
+}
+
+.table-new .btn-td{
+    color: #f05463;
+}
+.table-new .btn-td,
+.table-new .btn-not{
+    // margin-right: 25px;
+}
+
+.table-new .btn-not{
+    color: #ccc;
+}
+
+.table-new .btn-not-maintain{
+    color: #ccc;
+}
+
+.table-new .btn-td.disabled{
+    cursor: not-allowed;
+}
+
+.table-new .btn-td.disabled:hover{
+    text-decoration: none;
+}
+
+.table-wraper{
+    height: 100%;
+}
+
+.table-new .table-content{
+    width: 100%;
+    overflow: auto;
+}
+
+.table-new thead tr{
+    border: 0;
+}
+
+.table-head-fix-box{
+    overflow: hidden;
+    position: relative;
+}
+
+.table-head-fix{
+    position: relative;
+    background-color: #f4f5f9;
+    z-index: 2;
+    overflow: hidden;
+}
+
+
+.table-head-fix:after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height: 1px;
+    overflow: hidden;
+    background-color: #ddd;
+}
+
+.table-head-fix-box.hadCover:after{
+    content:"";
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    border-bottom: 1px solid #e7e7eb;
+    background-color: #f4f5f9;
+    z-index: 3;
+}
+
+.table-start-fix,
+.table-end-fix{
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    overflow: hidden;
+    height: 100%;
+}
+
+.table-start-fix{
+    border-right: 1px solid #e7e7eb;
+}
+
+.table-end-fix{
+    left: auto;
+    right: 0;
+    border-left: 1px solid #e7e7eb;
+}
+
+.table-start-fix .table-content,
+.table-end-fix .table-content{
+    overflow: hidden;
+}

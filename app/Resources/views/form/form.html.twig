@@ -1,0 +1,70 @@
+{% block form_row %}
+    {% spaceless %}
+        <div class="form-group">
+            {{ form_label(form, null, {'label_attr': {'class' : 'col-sm-3 control-label no-padding-right'}}) }}
+            <div class="col-sm-9">
+                {{ form_widget(form) }}
+
+                {# 重新定义了显示字段错误的格式 #}
+                {% spaceless %}
+                    {% if errors|length > 0 %}
+                        {% for error in errors %}
+                            <p class="text-warning bigger-110 orange">
+                                <i class="ace-icon fa fa-exclamation-triangle"></i>
+                                {{ error.message }}
+                            </p>
+                        {% endfor %}
+                    {% endif %}
+                {% endspaceless %}
+
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock form_row %}
+
+{% block button_row -%}
+    <div class="form-group"> {# add 'form-group' class to adjust the layout #}
+        {{- form_widget(form) -}}
+    </div>
+{%- endblock button_row %}
+
+{% block button_widget %}
+    {% spaceless %}
+        {% if label is empty %}
+            {% set label = name|humanize %}
+        {% endif %}
+        
+        <button class="btn btn-danger" type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ label|trans({}, translation_domain) }}</button>
+        
+    {% endspaceless %}
+{% endblock button_widget %}
+
+{% block form_errors %}
+    {% spaceless %}
+        {% if errors|length > 0 %}
+            <ul>
+                {% for error in errors %}
+                    <p class="alert alert-warning">{{ error.message }}</p>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_errors %}
+
+{% block date_widget -%}
+    <div style="display:inline-block">
+        <div class="input-group"  style="width: 140px;">
+            <input class="form-control date-picker" type="text" data-date-format="yyyy-mm-dd" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %} />
+                <span class="input-group-addon">
+                        <i class="fa fa-calendar bigger-110"></i>
+                </span>
+        </div>
+    </div>
+{%- endblock date_widget %}
+
+{% block time_widget -%}
+    {% set vars = widget == 'text' ? { 'attr': { 'size': 1 }} : {} %}
+    <div {{ block('widget_container_attributes') }}>
+        {{ form_widget(form.hour, vars) }} 时 {{ form_widget(form.minute, vars) }} 分
+    </div>
+{%- endblock time_widget %}

@@ -1,0 +1,393 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="format-detection" content="telphone=no, email=no" />
+    <meta http-equiv="Expires" CONTENT="0">
+    <meta http-equiv="Cache-Control" CONTENT="no-cache">
+    <meta http-equiv="Pragma" CONTENT="no-cache">
+   
+    <title>客服</title>
+</head>
+<body>
+
+
+	<div id="menuBox">
+		
+	</div>
+	
+    
+    <script type="text/javascript">
+    // var DataTrans = {
+    //     getBaseUrl : function(){
+    //         return "http://"+"freemason.hpl.youyiche.com";
+    //     },
+    //     setBack:function(){
+
+    //     },
+    //     logout:function(){
+
+    //     },
+    //     getToken:function(){
+            
+    //     }
+    // }
+    var newDataTrans,joinBaseUrl,environmentConfig;
+    if(typeof DataTrans != "undefined"){
+        newDataTrans = DataTrans;
+        joinBaseUrl = newDataTrans ? newDataTrans.getBaseUrl() : "http://"+"freemason.hpl.youyiche.com"
+        // 环境配置
+        environmentConfig = {
+            baseUrl:joinBaseUrl
+        }
+    }
+
+    var youyiche = {
+
+        //合并对象(以覆盖的形式合并对象，非深度合并)
+        extend: function(target, source) {
+            for (var p in source) {
+                if (source.hasOwnProperty(p)) {
+                    target[p] = source[p];
+                }
+            }
+            return target;
+        },
+
+        //ajax
+        getJson: function(url, method, params, header,withCredentials) {
+            var method = method ? method.toLocaleUpperCase() : 'GET';
+            try {
+                var isPromise = new Promise(function() {})
+                return this.promiseAjax(method, url, params, header,withCredentials);
+            } catch (e) {
+                this.createPromise();
+                return this.promiseAjax(method, url, params, header,withCredentials);
+            }
+        },
+
+        //promiseAjax
+        promiseAjax: function(method, url, params, header,withCredentials) {
+            var paramsStr = '',
+                urlReg = /^http[s]?:\/\//;
+            var completeUrl = urlReg.test(url) ? url : (environmentConfig.baseUrl + url);
+            var configHeader = {
+                "content-type": "application/x-www-form-urlencoded;charset=utf-8"
+            }
+
+            header && this.extend(configHeader, header);
+
+            if (configHeader['content-type'] && configHeader['content-type'].indexOf("application/json") > -1) {
+                paramsStr = JSON.stringify(params);
+            } else {
+                for (var x in params) {
+                    
+                    paramsStr += "&" + x + "=" + params[x]
+                    
+                }
+                paramsStr = paramsStr.substring(1);
+            }
+
+            if (method == 'GET' && paramsStr) {
+                completeUrl += "?" + paramsStr;
+            }
+
+            var promise = new Promise(function(resolve, reject) {
+                var xmlhttp = new XMLHttpRequest();
+
+                xmlhttp.onreadystatechange = function handler() {
+                    if (this.readyState !== 4) {
+                        return;
+                    }
+                    if (this.status === 200) {
+                        var data = JSON.parse(this.responseText);
+
+                        //与微信相关的token_invalid处理
+                        var reload_wx_wauth = sessionStorage.getItem("reload_wx_wauth");
+                        if (data.token_invalid === false) {
+                            if (!reload_wx_wauth) {
+                                localStorage.removeItem("sid");
+                                localStorage.removeItem('authType');
+                                sessionStorage.setItem("reload_wx_wauth", "1");
+                                location.reload();
+                            } else {
+                                alert("微信授权失败，请退出后重新打开页面");
+                            }
+                        } else {
+                            resolve(data);
+                        }
+
+                    } else {
+                        reject(this.status);
+                    }
+                };
+
+                xmlhttp.open(method, completeUrl, true);
+                for (var h in configHeader) {
+                    if(!(method=="GET" && h=="content-type")){
+                        xmlhttp.setRequestHeader(h, configHeader[h]);
+                    }
+                }
+                if(withCredentials){
+                     xmlhttp.withCredentials = true;
+                }
+                 
+                if (method == 'POST' && paramsStr) {
+                    xmlhttp.send(paramsStr);
+                } else {
+                    xmlhttp.send();
+                }
+            });
+
+            return promise;
+        },
+
+        //构造Promise
+        createPromise: function() {
+            (function(window, undefined) {
+                var PENDING = undefined,
+                    FULFILLED = 1,
+                    REJECTED = 2;
+
+                var isFunction = function(obj) {
+                    return 'function' === typeof obj;
+                }
+                var isArray = function(obj) {
+                    return Object.prototype.toString.call(obj) === "[object Array]";
+                }
+                var isThenable = function(obj) {
+                    return obj && typeof obj['then'] == 'function';
+                }
+
+                var transition = function(status, value) {
+                    var promise = this;
+                    if (promise._status !== PENDING) return;
+                    // 所以的执行都是异步调用，保证then是先执行的
+                    setTimeout(function() {
+                        promise._status = status;
+                        publish.call(promise, value);
+                    });
+                }
+                var publish = function(val) {
+                    var promise = this,
+                        fn,
+                        st = promise._status === FULFILLED,
+                        queue = promise[st ? '_resolves' : '_rejects'];
+
+                    while (fn = queue.shift()) {
+                        val = fn.call(promise, val) || val;
+                    }
+                    promise[st ? '_value' : '_reason'] = val;
+                    promise['_resolves'] = promise['_rejects'] = undefined;
+                }
+
+                var Promise = function(resolver) {
+                    if (!isFunction(resolver))
+                        throw new TypeError('You must pass a resolver function as the first argument to the promise constructor');
+                    if (!(this instanceof Promise)) return new Promise(resolver);
+
+                    var promise = this;
+                    promise._value;
+                    promise._reason;
+                    promise._status = PENDING;
+                    promise._resolves = [];
+                    promise._rejects = [];
+
+                    var resolve = function(value) {
+                        transition.apply(promise, [FULFILLED].concat([value]));
+                    }
+                    var reject = function(reason) {
+                        transition.apply(promise, [REJECTED].concat([reason]));
+                    }
+
+                    resolver(resolve, reject);
+                }
+
+                Promise.prototype.then = function(onFulfilled, onRejected) {
+                    var promise = this;
+                    // 每次返回一个promise，保证是可thenable的
+                    return Promise(function(resolve, reject) {
+                        function callback(value) {
+                            var ret = isFunction(onFulfilled) && onFulfilled(value) || value;
+                            if (isThenable(ret)) {
+                                ret.then(function(value) {
+                                    resolve(value);
+                                }, function(reason) {
+                                    reject(reason);
+                                });
+                            } else {
+                                resolve(ret);
+                            }
+                        }
+
+                        function errback(reason) {
+                            reason = isFunction(onRejected) && onRejected(reason) || reason;
+                            reject(reason);
+                        }
+                        if (promise._status === PENDING) {
+                            promise._resolves.push(callback);
+                            promise._rejects.push(errback);
+                        } else if (promise._status === FULFILLED) { // 状态改变后的then操作，立刻执行
+                            callback(promise._value);
+                        } else if (promise._status === REJECTED) {
+                            errback(promise._reason);
+                        }
+                    });
+                }
+
+                Promise.prototype.catch = function(onRejected) {
+                    return this.then(undefined, onRejected)
+                }
+
+                Promise.prototype.delay = function(ms) {
+                    return this.then(function(val) {
+                        return Promise.delay(ms, val);
+                    })
+                }
+
+                Promise.delay = function(ms, val) {
+                    return Promise(function(resolve, reject) {
+                        setTimeout(function() {
+                            resolve(val);
+                        }, ms);
+                    })
+                }
+
+                Promise.resolve = function(arg) {
+                    return Promise(function(resolve, reject) {
+                        resolve(arg)
+                    })
+                }
+
+                Promise.reject = function(arg) {
+                    return Promise(function(resolve, reject) {
+                        reject(arg)
+                    })
+                }
+
+                Promise.all = function(promises) {
+                    if (!isArray(promises)) {
+                        throw new TypeError('You must pass an array to all.');
+                    }
+                    return Promise(function(resolve, reject) {
+                        var i = 0,
+                            result = [],
+                            len = promises.length;
+
+                        function resolver(index) {
+                            return function(value) {
+                                resolveAll(index, value);
+                            };
+                        }
+
+                        function rejecter(reason) {
+                            reject(reason);
+                        }
+
+                        function resolveAll(index, value) {
+                            result[index] = value;
+                            if (index == len - 1) {
+                                resolve(result);
+                            }
+                        }
+
+                        for (; i < len; i++) {
+                            promises[i].then(resolver(i), rejecter);
+                        }
+                    });
+                }
+
+                Promise.race = function(promises) {
+                    if (!isArray(promises)) {
+                        throw new TypeError('You must pass an array to race.');
+                    }
+                    return Promise(function(resolve, reject) {
+                        var i = 0,
+                            len = promises.length;
+
+                        function resolver(value) {
+                            resolve(value);
+                        }
+
+                        function rejecter(reason) {
+                            reject(reason);
+                        }
+
+                        for (; i < len; i++) {
+                            promises[i].then(resolver, rejecter);
+                        }
+                    });
+                }
+
+                window.Promise = Promise;
+            })(window)
+        }
+
+    }
+
+
+
+    </script>
+
+    <script src="http://assets.kf5.com/supportbox/main.js" id="kf5-provide-supportBox" kf5-domain="youyiche.kf5.com"></script>
+    <script type="text/javascript">
+    if(typeof DataTrans != "undefined"){
+        window.KF5SupportBoxAPI.ready(function()
+        {
+                // 移除默认按钮
+                window.KF5SupportBoxAPI.removeButton();
+        });
+        var token = newDataTrans.getToken();
+        var header = {"X-ACCESS-TOKEN":token};
+       // var header = {"X-ACCESS-TOKEN":"bc42611c1ae3dd058b3eecda7078d697146649393814665011381"};
+        youyiche.getJson('/openapi/v1/self','get',null,header).then(function(data){
+            if(data.code == 0){
+                
+                 window.KF5SupportBoxAPI.ready(function()
+                    {
+                       
+                        window.KF5SupportBoxAPI.identify({
+                            "name" : data.data.name,
+                            "email" : data.data.email,
+                            "phone" : data.data.mobile,
+                            //自定义用户信息
+                            "metadata" : [
+                                    { name :"用户ID",value:data.data.id} ,
+                                     { name :"用户名",value:data.data.username} 
+                            ]
+                        });
+                         window.KF5SupportBoxAPI.open(function(){
+                            document.getElementById("kf5-close-btn").style.display = "none";                
+                            var timer = setInterval(function(){
+                                var display = document.getElementById("kf5-support-block").style.display;
+                                if(display=="none"){
+                                    
+                                    if(typeof newDataTrans != "undefined"){
+                                        newDataTrans.setBack();
+                                    }
+                                    clearInterval(timer);
+                                }
+                            },500)
+                            
+                        });
+
+                    });
+                
+            }
+        },function(status){
+           if(status == "401" || status == "403"){
+                var talkReloadNum = window.sessionStorage.getItem("talkReloadNum");
+                if(talkReloadNum == null){
+                    window.sessionStorage.setItem("talkReloadNum","1");
+                    location.reload();
+                }else{ 
+                    DataTrans.logout();
+                }
+            }
+        });
+    }
+    </script>
+</body>
+</html>

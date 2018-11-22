@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <title>远程检测</title>
+    <style type="text/css">
+        *{margin:0;padding: 0;-webkit-box-sizing: border-box; box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);}
+        html,body{height: 100%; font-family:"Helvetica Neue", "San Fransico", "苹方", Helvetica, STHeiTi, Arial, sans-serif;}
+        html{-webkit-text-size-adjust: 100%; font-size: 16px;}
+        body{text-align: center; position: relative; color: #fff; line-height: 1.4; background:  url(/images/mobile/download/bg.jpg) no-repeat; background-size: cover; font-size: 1rem;}
+        img{max-width: 100%;}
+        .wrap{position: absolute; left: 0; top: 20%; width: 100%;}
+        .logo{width: 21.33%;margin:0 auto;}
+        .text{font-weight: 700; margin-top:10px; font-size: 1rem;}
+        .button{display: block; width: 70%; height: 60px; margin: 50px auto 0; overflow: hidden; background-color: #ed5565; border-radius: 5px; color: #fff;}
+        .clearfix:after{visibility: hidden;display: block;font-size: 0;content: " ";clear: both;height: 0;}
+        .icon{float:left; width: 22.4%; height: 100%; border-right:1px solid #b81e2e; background-repeat: no-repeat; background-position: center center; background-size:40%;}
+        .icon.ios{background-image: url("/images/mobile/download/icon-ios.png");}
+        .icon.android{background-image: url("/images/mobile/download/icon-android.png");}
+        .des{float: left; width: 77.6%; text-align: left; padding: 7px 0 0 10px; height: 100%; border-left:1px solid #d03747;}
+        .p1{font-weight: 700; font-size: 1rem; display: block;color: #fff;}
+        .p2{font-size: 0.875rem; margin-top: 2px; display: block;color: #fff;}
+        .pop{position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0, 0, 0, .85) url("/images/mobile/download/popbg.png") no-repeat center top; background-size: 100%; display: none;}
+        @media screen and (min-width: 360px) {
+            .button {width: 65%;}
+        }
+        @media screen and (min-height: 480px) {
+            .wrap{top: 25%;}
+        }
+    </style>
+</head>
+<body>
+<div class="wrap"></div>
+<script>
+    //判断是否微信浏览器
+    function isWeixn(){  
+        var ua = navigator.userAgent.toLowerCase();  
+        if(ua.match(/MicroMessenger/i)=="micromessenger") {  
+            return true;  
+        } else {  
+            return false;  
+        }  
+    }
+
+    //获取操作系统名称
+    function getOS() {
+        //定义结果变量
+        var name = 'Other';
+        var version = '';
+        //获取userAgent
+        var ua = navigator.userAgent;
+        //移动平台iOS探测
+        var reg = /like Mac OS X|Android|Windows Phone|Symbian/ig;
+        var regResult = reg.exec(ua);
+        if(!regResult){
+            reg = /Mac OS X|Windows NT|Linux/ig;
+            regResult = reg.exec(ua);
+        }
+        if(!regResult){
+            //返回UNKNOWN
+            return name;
+        }else{
+            //操作系统检测
+            switch(regResult[0]){
+                case 'like Mac OS X':
+                    name = 'ios';
+                    reg = /(iPhone|iPod|iPad).*?OS\s*(\d*[\_|\.\d]*)/ig;
+                    break;
+                case 'Android':
+                    name = 'Android';
+                    reg = /(Android)\s*(\d*[\.\d]*)/ig;
+                    break;
+                case 'Windows Phone':
+                    name = 'Windows Phone';
+                    reg = /(Windows Phone)\s*[OS]*\s*(\d*[\.\d]*)/ig;
+                    break;
+                case 'Symbian':
+                    name = 'Symbian';
+                    reg = /(Symbian)\s*[OS]*\/*\s*(\d[\.\d]*)/ig;
+                    break;
+                case 'Mac OS X':
+                    name = 'OS X';
+                    reg = /(Mac OS X)\s*(\d*[\_|\.\d]*)/ig;
+                    break;
+                case 'Windows NT':
+                    name = 'Windows NT';
+                    reg = /(Windows NT)\s*(\d*[\_|\.\d]*)/ig;
+                    break;
+                case 'Linux':
+                    name = 'Linux';
+                    reg = /(Linux)\s*(i*\d*)/ig;
+                    break
+            }
+            //获取版本号
+            regResult = reg.exec(ua);
+            if(regResult && regResult.length >= 3){
+                version = regResult[2].replace(/\_+/ig, '.');
+                reg = /^\d+\.*\d*/ig;
+                regResult = reg.exec(version);
+                if(regResult){
+                    version = regResult[0];
+                }
+            }
+        };
+
+        //返回操作系统名称+版本号
+        //return [name, version].join(' ');
+        return name.toLocaleLowerCase();
+    };
+
+    //创建dom
+    function createDom(os,href,isWX){
+        var p1 = os=='ios'?'App Store':'Android';
+        var p2 = os=='ios'?'适用iPhone/iPod下载':'适用Android版本下载';
+        var pop = isWX?'<div class="pop"></div>':'';
+
+        var dom  =  '<div class="logo"><img src="/images/mobile/download/logo.png" /></div>'
+                 +  '<p class="text">智能的二手车信息<br />采集评估工具</p>'
+                 +  '<a href='+href+' class="button clearfix">'
+                 +      '<span class="icon '+os+'"></span>'
+                 +      '<span class="des">'
+                 +          '<span class="p1">'+p1+'</span>'
+                 +          '<span class="p2">'+p2+'</span>'
+                 +      '</span>'
+                 +  '</a>'
+                 +  pop;
+
+        document.querySelector("body").style.backgroundImage="";
+        document.querySelector(".wrap").innerHTML = dom;
+        if(isWX){
+            document.querySelector(".button").addEventListener("touchend",function(event){
+                document.querySelector(".pop").style.display = "block";
+                event.preventDefault();
+            },false)
+        }
+    }
+
+    //初始化
+    function initialize(){
+        var isWX = isWeixn();
+        var os = getOS();
+        var url = {
+            ios : 'https://itunes.apple.com/us/app/%E4%BA%91%E6%A3%80%E6%B5%8B-%E4%BA%8C%E6%89%8B%E8%BD%A6%E4%BF%A1%E6%81%AF%E9%87%87%E9%9B%86/id1295554347?mt=8',
+            android :'/openapi/getrnapp'
+        }
+        var href = os=="ios"?url.ios:url.android;
+        createDom(os,href,isWX);
+    }
+
+    initialize();
+</script>
+</body>
+</html>

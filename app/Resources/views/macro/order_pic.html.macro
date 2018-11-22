@@ -1,0 +1,208 @@
+
+{% macro require_viewer_css() %}
+    <link rel="stylesheet" href="{{ asset('photoswipe/viewer.min.css') }}">
+{% endmacro %}
+
+{% macro require_viewer_js() %}
+    <script src="{{ asset('photoswipe/viewer-jquery.min.js') }}"></script>
+    <script type="text/javascript">
+		workMethod.setInitViewer($("#gallery"),"data-original");
+	</script>
+{% endmacro %}
+
+{% macro require_qiqiu_js() %}
+    <script src="{{ asset('qiniu/js/moxie.js')}}"></script>
+    <script src="{{ asset('qiniu/js/plupload.dev.js')}}"></script>
+    <script src="{{ asset('qiniu/js/qiniu.js')}}"></script>
+    <script src="{{ asset('js/upload.js')}}"></script>
+{% endmacro %}
+
+{# 
+ #order Object 订单对象
+ #metadatas (Array or Object) matadata列表或者append_metadata对象
+ #groups Array matadata分组,无需分组展示传入空数组
+ #size String 图片的大小，目前只有两种尺寸，"large","small"
+ #isUpload Boolean 是否可以编辑上传
+ #isAppend Boolean 是否是append_metadata
+ #append_key String 需要append_metadata时才有
+##}
+{% macro order_pic_list(order,metadatas,groups,size,isUpload,isAppend,append_key) %}
+	{% set pictures = order.pictures %}
+	{% if size=="large" %}
+		{% set className = "pic-large" %}
+		{% set defaultImg = asset('images/img-default-large.png') %}
+		{% set width = 228 %}
+		{% set height = 158 %}
+	{% else %}
+		{% set className = "pic-small" %}
+		{% set defaultImg = asset('images/img-default-small.png') %}
+		{% set width = 98 %}
+		{% set height = 68 %}
+	{% endif %}
+	
+	{% if not isAppend  %}
+		{% for key,group in groups|default(["原始数据"]) %}
+			<div class="module-default">
+		        <div class="module-title">{{group}}</div>
+		        <div class="module-content" id="{{'picModuleContent_'~key}}">
+		        	<ul class="pic-list clearfix {{className}}">
+						{% for metadata in metadatas %}
+							{% if group=="原始数据" or metadata.options.groups == group %}
+								{{ _self.order_pic_item(pictures[metadata.key]|default([]),metadata.display,metadata.key,width,height,defaultImg,metadata.options.least|default(-1),metadata.options.most|default(-1),isUpload) }}
+							{% endif %}
+						{% endfor %}
+					</ul>
+				</div>
+	        </div>
+		{% endfor %}
+	{% else %}
+		{% if isUpload %}
+			<div class="module-default">
+		        <div class="module-title">{{metadatas.display}}</div>
+		        <div class="module-content" id="{{'picModuleContent_'~append_key}}">
+		        	<ul class="pic-list clearfix {{className}}">
+						{{ _self.order_pic_item(pictures[append_key]|default([]),metadatas.display,metadatas.key,width,height,defaultImg,metadatas.options.least|default(1),metadatas.options.most|default(-1),isUpload) }}
+					</ul>
+				</div>
+	        </div>
+		{% else %}
+			{% for key, image_keys in pictures if key starts with metadatas.key %}
+				{% if key != append_key %}
+					<div class="module-default">
+				        <div class="module-title">{{metadatas.display}}</div>
+				        <div class="module-content" id="{{'picModuleContent_'~key}}">
+				        	<ul class="pic-list clearfix {{className}}">
+								{{ _self.order_pic_item(image_keys|default([]),metadatas.display,key,width,height,defaultImg,metadatas.options.least|default(1),metadatas.options.most|default(-1),isUpload) }}
+							</ul>
+						</div>
+			        </div>
+		        {% endif %}
+	    	{% endfor %}
+		{% endif %}
+	{% endif %}
+{% endmacro %}
+
+
+{# 
+ #data Array 图片列表
+ #title String 标题
+ #key String
+ #width Number 图片宽度
+ #height Number 图片高度
+ #defaultImg String 默认图片
+ #least Number 最少上传图片(值为-1不作限制)
+ #most Number 最多上传图片(值为-1不作限制)
+ #isUpload Boolean 是否可以编辑上传
+##}
+{% macro order_pic_item(data,title,key,width,height,defaultImg,least,most,isUpload) %}
+	{% for value in data if value is not empty %}
+		<li class="finish" data-key="{{key}}" data-qiniu-key="{{value}}">
+			<div class="pic-box"><img class='pic' alt="{{title}}" src="{{defaultImg}}" data-cut='{{qiniu_domain}}/{{value}}?imageView2/1/w/{{width}}/h/{{height}}' data-original='{{qiniu_domain}}/{{value}}?imageMogr2/auto-orient/quality/80!'></div>
+			<div class="title" title="{{title}}">{{title}}</div>
+			{% if isUpload %}
+				<span class="delete"><i class="icon-font-shanchu"></i></span>
+				<input class="pic-input" hidden="" name="{{key}}[]" value="{{value}}">
+			{% endif %}
+		</li>
+	{% endfor %}
+	{% if isUpload %}
+		<li class="add {{most!=-1 and data|length>=most?'hide':'' }}" data-key="{{key}}" data-most="{{most}}" data-least="{{least}}" id="{{'pic_container_'~key}}" data-img-width="{{width}}" data-img-height="{{height}}">
+			<div class="icon-add"></div>
+			<div class="title">{{title}}</div>
+		</li>
+	{% endif %}
+{% endmacro %}
+
+{# 
+ #reason_metadatas Array 退回理由
+ #main_reason String 结论
+ #size String 图片的大小，目前只有两种尺寸，"large","small"
+##}
+{% macro order_reason(reason_metadatas,main_reason,size) %}
+	{% if size=="large" %}
+		{% set className = "pic-large" %}
+		{% set defaultImg = asset('images/img-default-large.png') %}
+		{% set width = 228 %}
+		{% set height = 158 %}
+		{% set title = "审核意见" %}
+	{% else %}
+		{% set className = "pic-small" %}
+		{% set defaultImg = asset('images/img-default-small.png') %}
+		{% set width = 98 %}
+		{% set height = 68 %}
+		{% set title = "退回照片" %}	
+	{% endif %}
+	<div class="module-default module-audit-opinion">
+        <div class="module-title">{{title}}</div>
+        <div class="module-content">
+            {% if reason_metadatas %}
+                <ul class="pic-list reason-list clearfix {{className}}" data-need-append="{{reason_metadatas|length}}">
+					{% for metadata in reason_metadatas %}
+				        <li class="finish">
+				            <div class="pic-box"><img class='pic' alt="{{"(样图)"~metadata.display}}" src="{{defaultImg}}" data-cut="{{qiniu_domain}}/{{metadata.options["sample"]}}?imageView2/1/w/{{width}}/h/{{height}}" data-original='{{qiniu_domain}}/{{metadata.options["sample"]}}?imageMogr2/auto-orient/quality/80!'></div>
+							{% set value = metadata.display~'：'~metadata.value.value %}
+				            {% if size=="large" %}
+					        	<div class="tip-default">{{value|slice(0,34)}}{% if value|length>35 %}...{% endif %}</div>
+					        	<span class="corner"></span>
+					        {% else %}
+					        	<div class="title" title="{{metadata.display}}">{{metadata.display}}</div>
+					        	<span class="view-more">退回理由</span>
+					        {% endif %}
+
+					        {% if size=="large" and value|length>35 %}
+					        	<span class="view-more">查看更多</span>
+					        {% endif %}
+
+				            {% if size=="small" or (size=="large" and value|length>35) %}
+					            <div class="tip-position">
+					            	<dt>退回理由</dt>
+					            	<dd>{{value}}</dd>
+					            </div>
+					        {% endif %}
+				        </li>
+			        {% endfor %}    
+			    </ul>
+            {% endif %}
+            {% if main_reason %}
+	            <div class="reason"><span class="stress">结论</span> {{main_reason}}</div>
+	        {% endif %}
+        </div>
+    </div>
+	
+{% endmacro %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

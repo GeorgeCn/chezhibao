@@ -1,0 +1,100 @@
+{% extends 'admin_layout.html.twig' %}
+{% import 'macro/order_pic.html.macro' as macro %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bootstraptable/bootstrap-table.css') }}" rel="stylesheet">
+    <link href="{{ asset('vehicle-model-filter/css/vehicle-model-filter.css') }}" rel="stylesheet">
+    <link href="{{ asset('video/css/video.css')}}" rel="stylesheet">
+    {{ macro.require_viewer_css() }}
+{% endblock %}
+
+{% block wrapperClass %}page-check{% endblock %}
+
+{% block navigation %}
+    {% include 'check/check-include/check-top.html.twig' with {'origin': 'admin'} %}
+{% endblock %}
+
+{% block content %}
+    <div class="page-check-left content-has-pic">
+        <div class="check-left-content" id="gallery">
+            <div class="module-default only-two-col">
+                <div class="module-title">单据信息</div>
+                <div class="module-content">
+                    <table>
+                        <tr>
+                            <td class="w1">报单地址</td>
+                            {% if order_address %}
+                                <td class="w2">{{ order_address }}</td>
+                            {% else %}
+                                <td class="w2">暂无</td>
+                            {% endif %}
+                        </tr>
+                        {% if report.hplReason %}
+                            <tr>
+                                <td class="w1">hpl高价复核退回原因</td>
+                                <td class="w2">{{ report.hplReason }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if remark is defined %}
+                            <tr>
+                                <td class="w1">备注</td>
+                                <td class="w2">
+                                    {% for question in questions %}
+                                        {% if question.type == "radio" %}
+                                            <div><span>{{ question.key }}:</span>{{ question.title }}<br/>
+                                                <span>选择：</span>{{ remark[question.key-1].status }}
+                                                {% if remark[question.key-1].reason != "" %}
+                                                    <span>,原因：</span>{{ remark[question.key-1].reason }}
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td class="w1">备注（信贷员填写）</td>
+                                <td class="w2">{{ order.remark }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if order.valuation and fieldDisplay.valuation %}
+                            <tr>
+                                <td class="w1">预估价格</td>
+                                <td class="w2">{{ order.valuation }}元</td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+            {% if reason_metadatas is defined %}
+                {{ macro.order_reason(reason_metadatas,main_reason,"small") }}
+            {% endif %}
+
+            {{ macro.order_pic_list(order,metadatas,groups,"small",false) }}
+            {{ macro.order_pic_list(order,append_metadata,null,"small",false,true) }}
+        </div>
+    </div>
+    {% include 'check/check-include/check-right.html.twig' with {'origin': 'admin'} %}
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title text-center" id="myModalLabel">获取到的各地区价格信息</h4>
+                </div>
+                <div class="modal-body">
+                    <table id="table">
+                    </table> 
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include 'check/check-include/check-footer.block.twig' with {'origin': 'admin'} %}
+{% endblock %}

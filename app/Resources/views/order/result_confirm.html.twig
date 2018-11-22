@@ -1,0 +1,87 @@
+{% extends 'common/base_list.html.twig' %}
+
+{% block list_filter %}
+    <form class="form-horizontal table-form-filter clearfix" id="formFilterBar">
+        <div class="filter-select" data-form-name="vars[dateType]|vars[startDate]|vars[endDate]" data-form-value="{{vars['dateType']~"|"~vars['startDate']~'|'~vars['endDate']}}">
+            <div class="value-current">提交日期</div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block list_content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>评估单号</th>
+                <th>初审检测师</th>
+                <th>复审审核师</th>
+                <th>提交时间</th>
+                <th>初审完成时间</th>
+                <th>复审完成时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in pagination %}
+                <tr>
+                    <td>
+                        {{ order.orderNo }}
+                        {% if order.businessNumber %}
+                            <br>({{order.businessNumber}})
+                        {% endif %}
+                    </td>
+                    <td>{{ order.report.examer }}</td>
+                    <td>{{ order.report.rechecker}}</td>
+                    <td>{{ order.submitedAt|date("Y-m-d H:i:s") }}</td>
+                    <td>{{ order.report.examedAt|date("Y-m-d H:i:s") }}</td>
+                    <td>{{ order.report.endAt|date("Y-m-d H:i:s") }}</td>
+                    <td>
+                        <a href="{{ path('pdfreport_pri', { 'orderid': order.id, '_format': 'html' }) }}" class="btn-td" target="_blank">初审报告</a>
+                        <a href="{{ path('pdfreport', { 'orderid': order.id, '_format': 'html' }) }}" class="btn-td" target="_blank">复审报告</a>
+                        <a href="{{ path('pdfreport_diff', { 'orderid': order.id }) }}" class="btn-td diffReport">查看差异</a>
+                        {% if order.businessNumber %}
+                        <br><span style="visibility:hidden;">dummy</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascripts %}
+    {{parent()}}
+    <script>
+        $('.table-new-box').on("click", ".diffReport", function(event) {
+            event.preventDefault();
+            var url = $(this).attr('href');
+            var text = $(this).text();
+            $.ajax({ 
+                type: "post",
+                url: url,
+                data: $("#authForm").find("input[name='mobile']").serialize(),
+                dataType: "json",
+                success:function(data){
+                    if ( data.table.length == 0 ) {
+                        commonMethod.createTablePop({
+                            title:'',
+                            msgHTML:"差异图表",
+                            tableHTML: "暂无差异",
+                        })
+                    } else {
+                        commonMethod.createTablePop({
+                            title:'',
+                            msgHTML:"差异图表",
+                            extraData:['复审前','复审后'],
+                            tableData: data.table,
+                            domain: "{{qiniu_domain}}",
+                        })       
+                    }
+                },
+                error: function () {
+                    alert("数据获取失败，请稍后再试！");
+                }
+            })
+        });
+    </script>
+{% endblock %}

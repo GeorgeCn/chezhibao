@@ -1,0 +1,138 @@
+
+.userManage{
+    border:0 none;
+    .panel-body{
+        padding:20px 0;
+    }
+    .form-group{
+        padding-left: 196px;
+    }
+    .form-group:nth-child(10){
+
+        .col-sm-2{
+            display: none;
+        }
+    }
+    .form-group:nth-child(11){
+   
+        .col-sm-2{
+            display: none;
+        }
+    }
+    .form-group:nth-child(12){
+       
+        .col-sm-2{
+            display: none;
+        }
+    }
+    .form-group:nth-child(13){
+       
+        .col-sm-2{
+            display: none;
+        }
+    }
+    .form-group:nth-child(14){
+        .col-sm-2{
+            display: none;
+        }
+    }
+    .form-group:nth-child(15){
+        padding-left: 0;
+        .control-label{
+            width:196px;
+            text-align: center;
+            color: #232323;
+            font-weight: bold;
+        }
+        .col-sm-10{
+           
+        }
+    }
+    .form-group:nth-child(16){
+        padding-left: 0;
+        .control-label{
+            width:196px;
+            text-align: center;
+            color: #232323;
+            font-weight: bold;
+        }
+        .col-sm-10{
+           
+        }
+    }
+    .panel-heading{
+        background-color: #e8ebee;
+        padding:20px 0;
+        .panel-title{
+            font-size: 22px;
+            color: #222;
+            .text-muted{
+                color: #222;
+            }
+        }
+        
+    }
+    .control-label{
+        width: 100%;
+        text-align: left;
+        color: #666;
+        font-size: 14px;
+        padding-bottom: 7px;
+        font-weight: normal;
+    }
+    .col-sm-10{
+        .form-control{
+            border:0 none;
+            border-bottom: 1px solid #ed5565;
+            box-shadow:none;
+            border-radius: 0;
+            width: 240px;
+            padding:0;
+            height: auto;
+        }
+    }
+    .panel-footer{
+        padding:40px 0;
+        background: #e8ebee;
+        .btn-primary{
+            width: 110px;
+            font-size: 14px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            background-color: #ed5564;
+            border-color: #ed5564;
+            margin-right: 20px;
+        }
+        .btn-default{
+            background-color: #fff;
+            border-color: #ccc;
+            color: #ed5564;
+        }
+         .btn-default:hover {
+            background-color: #e6e6e6;
+            border-color: #adadad;
+            color: #333;
+        }
+    }
+    .radioCss{
+        margin-right:0px;display:inline;
+    }
+}
+@media (min-width: 768px){
+    .col-sm-10 {
+        width: auto;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

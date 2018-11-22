@@ -1,0 +1,62 @@
+services:
+
+    OrderLogic:
+        class: AppBundle\Business\OrderLogic
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    GetOrderLogic:
+        class: AppBundle\Business\GetOrderLogic
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    ReportLogic:
+        class: AppBundle\Business\ReportLogic
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    ShowPdfHtmlLogic:
+        class: AppBundle\Business\ShowPdfHtmlLogic
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    CsvLogic:
+        class: AppBundle\Business\CsvLogic
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    BusinessReportLogic:
+        class: AppBundle\Business\BusinessReportLogic
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    MessageLogic:
+        class: AppBundle\Business\MessageLogic
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    OrderCustomerLogic:
+        class: AppBundle\Business\OrderCustomerLogic
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    MetadataLogic:
+        class: AppBundle\Business\MetadataLogic
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    MaintainLogic:
+        class: AppBundle\Business\MaintainLogic
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    InsuranceLogic:
+        class: AppBundle\Business\InsuranceLogic
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    ApplyLogic:
+        class: AppBundle\Business\ApplyLogic
+        calls:
+            - [ setContainer, [ @service_container ] ]
+

@@ -1,0 +1,33 @@
+{% extends 'kefu/kefu_layout.html.twig' %}
+
+{% block content %}
+    {% for flash_message in app.session.flashBag.get('notice') %}
+        <div class="alert alert-success alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          {{ flash_message }}
+        </div>
+    {% endfor %}
+
+    {{ form_start(form) }}
+        <div class="panel panel-default mgt-30">
+            <div class="panel-heading">
+                <h3 class="panel-title "><span class="text-muted">新增用户</span></h3>
+            </div>
+            <div class="panel-body">
+                {{ form_widget(form) }}
+            </div>
+            <div class="panel-footer text-center">
+                <input type="submit" value="保存" class="btn btn-primary" />
+            </div>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{parent()}}
+    <script>
+        setTimeout(function(){
+            $(".alert-success").fadeOut("slow"); 
+          }, 3000 );
+    </script>
+{% endblock %}

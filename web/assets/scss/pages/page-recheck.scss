@@ -1,0 +1,138 @@
+$red:#ed5565;
+
+/*************************复审(审核详情)*************************/
+
+.recheck-box{
+    .recheck-left{
+        position: absolute;
+        left: 20px;
+        right: 565px;
+        top: 20px;
+        bottom: 20px;
+        overflow: hidden;
+        .nav-tabs {
+            height: 40px;
+            border-bottom: 1px solid #ddd;
+            background-color: #fff;
+            &>li>a{
+                padding:0 30px;
+                line-height: 39px;
+                border-radius: 0;
+                color: #999;
+                font-weight: bold;
+                margin-left: 0;
+                margin-right: 0;
+                border: 0;
+            }
+            &>li.active>a{
+                border: 1px solid #ddd;
+                border-top: 1px solid $red;
+                border-bottom: 0;
+                color: #ed5565;
+                background-color: #fff;
+            }
+        }
+        .tab-content {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 40px;
+            bottom:0;
+            overflow: hidden;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-top:0;
+            .tab-pane{
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom:0;
+                padding-top: 20px;
+                overflow: auto;
+                .report-canvas{
+                    margin: 0 auto;
+                    width: 880px;
+                    padding: 0 15px;
+                }
+                .module-default{
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+    .recheck-right{
+        position: absolute;
+        width: 525px;
+        right: 20px;
+        top: 20px;
+        bottom: 20px;
+        overflow: hidden;
+        .panel{
+            border:0;
+            border-radius: 0;
+        }
+        .panel-heading{
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 40px;
+            padding:0 0 0 15px;
+            border:1px solid #ddd;
+            line-height: 39px;
+            overflow: hidden;
+        }
+        .panel-body{
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 40px;
+            bottom:0;
+            border:1px solid #ddd;
+            border-top:0;
+            overflow: auto;
+            background-color:#fff;
+            .dl-horizontal{
+                dt {
+                    text-align: left!important;
+                    width: 145px!important;
+                    line-height: 30px;
+                }
+                dd {
+                    margin-bottom: 15px!important;
+                    margin-left: 145px!important;
+                }
+                input {
+                    height: 30px;
+                    line-height: 28px;
+                    border-radius: 3px;
+                    width: 95%;
+                    border: 1px solid #ccc;
+                    padding-left: 10px;
+                }
+            }
+            .text-left {
+                margin-left: 145px;
+                padding-bottom: 15px;
+                input + input{
+                    margin-left: 5px;
+                }
+            }
+        }
+        .panel-default{
+            box-shadow: none;
+            .panel-heading {
+                background-color: #fff;
+                border-radius: 0;
+                font-weight: 700;
+                .result{
+                    margin-left: 30px;
+                }
+            }
+        }
+    }
+}
+
+
+

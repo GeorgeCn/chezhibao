@@ -1,0 +1,16 @@
+<div class="appraisal-report-header">
+    <div class="appraisal-report-header-border"></div>
+    <div class="appraisal-report-content-wrap">
+        <table class="synopsis-table">
+            <tr>
+                <td class="appraisal-report-logo"><img src="{{ app.request.getSchemeAndHttpHost() }}{{ asset('images/logo.png') }}" /></td>
+                <td class="appraisal-report-synopsis">
+                    <!--此处编号后跟中文全角空格勿删-->
+                    <p class="text"><span class="id-number">编号：{{showordernum}}</span>{# <span class="serial-number">　　流水号：todo</span> #}</p>
+                    {# {% if showExamer %}<p class="text">估价师：{{examer}}</p>{% endif %} #}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+

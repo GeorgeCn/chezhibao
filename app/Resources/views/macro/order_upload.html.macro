@@ -1,0 +1,57 @@
+{#上传多个#}
+{% macro upload_pic_more(key,metadata,data,type) %}
+    {% if type == "large" %}
+        {% set width = 230 %}
+        {% set height = 160 %}
+    {% endif %}
+    {% for k, key2 in data[metadata.key]|default([]) %}
+        <div class="pick-cont-item state-finish">
+            <img class='pic' alt="{{metadata.display}}" src="{{asset('images/img-default-large.png')}}" data-default='{{qiniu_domain}}/{{key2}}?imageView2/1/w/{{width}}/h/{{height}}' data-original='{{qiniu_domain}}/{{key2}}'>
+            <i class="fa fa-trash-o fa-lg"></i>
+            <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+            <div class="pic-des">{{metadata.display}}0{{k+1}}</div>
+        </div>
+    {% endfor %}
+    <div class="pick-cont-item pick-nick state-add" id="pick_{{key}}">
+        <i class="fa fa-plus"></i>
+        <p class="txt">继续添加</p>
+    </div>
+{% endmacro %}
+
+{#上传一个#}
+{% macro upload_pic_one(key,metadata,data,type) %}
+     {% if type == "large" %}
+        {% set width = 230 %}
+        {% set height = 160 %}
+    {% endif %}
+    <div class="pick-mark pick-more" id="pic_container_{{key}}">
+        <div class="hide hideTit" _key="{{metadata.key}}" _display="{{metadata.display}}" _most="{{metadata.options.most|default(-1)}}" _least="{{metadata.options.least|default(-1)}}"></div>
+        {% if data[metadata.key] is not defined or data[metadata.key]|length==0 %}
+            <div class="pick-cont-item pick-nick state-add" id="pick_{{key}}">
+                <i class="fa fa-plus"></i>
+                <p class="txt">{{metadata.display}}</p>
+            </div>
+        {% else %}
+            {% for imgTxt in data[metadata.key]|default([]) %}
+                <div class="pick-cont-item state-finish">
+                    <img class='pic' alt="{{metadata.display}}" src="{{asset('images/img-default-large.png')}}" data-default='{{qiniu_domain}}/{{imgTxt}}?imageView2/1/w/{{width}}/h/{{height}}' data-original='{{qiniu_domain}}/{{imgTxt}}'>
+                    <i class="fa fa-trash-o fa-lg"></i>
+                    
+                    <div class="pic-des">{{metadata.display}}</div>
+                </div>
+                <div class="pick-cont-item pick-nick state-add noshow" id="pick_{{key}}">
+                    <i class="fa fa-plus"></i>
+                    <p class="txt">{{metadata.display}}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% for key2 in data[metadata.key]|default([]) %}
+        <input class="pic_input" name="{{metadata.key}}[]" value="{{key2}}"></input>
+        {% endfor %}
+    </div>
+    
+    
+{% endmacro %}
+
+{% macro pswp_element() %}
+{% endmacro %}

@@ -1,0 +1,42 @@
+.table-bordered,
+.table-bordered > thead > tr > th, 
+.table-bordered > tbody > tr > th, 
+.table-bordered > tfoot > tr > th, 
+.table-bordered > thead > tr > td, 
+.table-bordered > tbody > tr > td, 
+.table-bordered > tfoot > tr > td
+{
+    max-width: none;
+}
+
+.sidebar
+{
+    height: calc(100% - 60px);
+    overflow: scroll;
+}
+
+.main-sidebar
+{
+    height: 100%;
+}
+
+.sidebar ul,
+.sidebar li,
+.sidebar a
+{
+    display: table;
+    width: 100%;
+}
+
+.main-sidebar,
+.left-side
+{
+    width: 330px;
+}
+
+.content-wrapper,
+.right-side,
+.main-footer
+{
+    margin-left: 330px;
+}

@@ -1,0 +1,125 @@
+
+$boxShadow:0 0 6px 0 rgba(0,0,0,.1), 0 10px 12px 0 rgba(170,182,206,.36);
+$top:27px;
+$red:#ed5565;
+$spacing1:10px;
+$spacing2:25px;
+
+/**********************************表格form筛选**********************************/
+
+.table-form-filter{
+	color: #666666;
+	padding-bottom: 15px;
+	.filter-select,
+	.filter-input{
+		float: left;
+		margin-right: $spacing2;
+		position: relative;
+	}
+	.value-list,
+	.search-box{
+		display: none;
+		position: absolute;
+		top:$top;
+		box-shadow: $boxShadow;
+		background-color: #ffffff;
+		z-index: 100;
+	}
+	.value-current{
+		border-bottom: 1px solid $red;
+		padding-bottom: 2px;
+		cursor: pointer;
+		max-width: 160px;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+	/*选择条件*/
+	.filter-select{
+		/*当前value*/
+		.value-current{
+			border-bottom: 1px solid $red;
+			padding-right: 16px;
+			padding-bottom: 2px;
+			position: relative;
+			cursor: pointer;
+			max-width: 160px;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			&:after{
+				position: absolute;
+				right: 0;
+				top: 50%;
+				margin-top: -10px;
+				content:'';
+				background: url(/images/arrow.png) no-repeat;
+				width: 16px;
+				height: 20px;
+				background-position: -40px 0px;
+			}
+		}
+		
+		/*搜索条件的下拉列表*/
+		.value-list{
+			width: 160px;
+			height: 200px;
+			overflow: auto;
+			ul{
+				padding: $spacing1 0;
+				li{
+					height: 30px;
+					line-height: 30px;
+					padding: 0 15px;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+					overflow: hidden;
+					cursor: pointer;
+					&:hover{
+						background-color:#f1f3f4;
+					}
+				}
+			}
+			&.child-search{
+				overflow: hidden;
+				.search-box-child{
+					margin: 0 15px;
+					padding-top: $spacing1;
+					height: 33px;
+					overflow: hidden;
+				}
+				ul{
+					height: 167px;
+					padding: $spacing1 0 0;
+					overflow: auto;
+					li:last-child{
+						margin-bottom:$spacing1;
+					}
+				}
+			}
+		}
+
+	}
+	/*手动输入条件*/
+	.filter-input{
+		.value-current{
+			min-height:23px;
+			&.no-underline{
+				border-bottom: 0;
+			}
+		}
+		.search-box{
+			padding: 10px 15px 15px;
+			width: 360px;
+		}
+		i{
+			position: absolute;
+			top: 10px;
+			right: 15px;
+			width: 20px;
+			height: 23px;
+			cursor: pointer;
+		}
+	}
+
+}

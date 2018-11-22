@@ -1,0 +1,26 @@
+<script>
+    var $province = $('#agency_province');
+    // When province gets selected ...
+    $province.change(function() {
+      // ... retrieve the corresponding form.
+      var $form = $(this).closest('form');
+      // Simulate form data, but only include the selected province value.
+      var data = {};
+
+      data[$province.attr('name')] = $province.val();
+      // Submit data via AJAX to the form's action path.
+      $.ajax({
+        url : $form.attr('action'),
+        type: $form.attr('method'),
+        data : data,
+        success: function(html) {
+          // Replace current province field ...
+          $('#agency_city').replaceWith(
+            // ... with the returned one from the AJAX response.
+            $(html).find('#agency_city')
+          );
+          // Position field now displays the appropriate positions.
+        }
+      });
+    });
+</script>

@@ -1,0 +1,110 @@
+{% extends 'common/base_list.html.twig' %}
+
+{% block list_filter %}
+    <form class="form-horizontal table-form-filter clearfix" id="formFilterBar">
+        <div class="filter-input" data-form-name="vars[mixed]" data-form-value="">
+            <div class='value-current search-icon-end'></div>
+        </div>
+        <div class="filter-select" data-form-name="vars[dateType]|vars[startDate]|vars[endDate]" data-form-value="{{vars['dateType']~"|"~vars['startDate']~'|'~vars['endDate']}}">
+            <div class="value-current">提交日期</div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block list_additional %}
+    <div class="list-additional">
+        <div class="download-report had-icon link" data-download-url="{{path('backhistory_csv')}}"><i class="icon-font-xiazai"></i>下载报表</div>
+    </div>
+{% endblock %}
+
+{% block list_content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>评估单号</th>
+                <th>退回原因</th>
+                <th>车架号</th>
+                <th>单据状态</th>
+                <th>品牌</th>
+                <th>车系</th>
+                <th>年款</th>
+                <th>车型</th>
+                <th>提交人</th>
+                <th>金融公司</th>
+                <th>经销商</th>
+                <th>提交时间</th>
+                <th>退回时间</th>
+                <th>审核人</th>
+                <th>终审时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for orderBack in pagination %}
+                {% set order = orderBack.examOrder %}
+                <tr>
+                    <td>
+                        {{ order.orderNo }}
+                        {% if order.businessNumber %}
+                            <br>({{order.businessNumber}})
+                        {% endif %}
+                    </td>
+                    <td data-custom-tips>
+                        {% set reasonMetadatas = orderLogic.matchBackReasonMetas(orderBack.getReason) %}
+                        {% if orderBack.getMainReason %} {{ orderBack.getMainReason }}&nbsp;&nbsp;{% endif %}
+                        {% set break = 1 %}
+                        {% for metadata in reasonMetadatas if break == 1 %}
+                            {% if reasonMetadatas|length > 1 %}
+                                {{metadata.display}} ：{{metadata.value.value}}等多条&nbsp;&nbsp;
+                                {% set break = 0 %}
+                            {% else %}
+                                {{metadata.display}} ：{{metadata.value.value}}&nbsp;&nbsp;
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ order.report ? order.report.vin : '' }}</td>
+                    {% if order.report %}
+                        {% if order.report.status == 0 %}
+                            <td>已提交</td>
+                        {% elseif order.report.status == 1 %}
+                            <td>通过</td>
+                        {% elseif order.report.status == 2 %}
+                            {% if order.company.company == '平安租赁' and order.report.hplExaming and order.report.hplReason %}
+                                <td>复审拒绝</td>
+                            {% else %}
+                                <td>拒绝</td>
+                            {% endif %}
+                        {% else %}
+                            <td>状态异常</td>
+                        {% endif %}
+                    {% else %}
+                        <td>已提交</td>
+                    {% endif %}
+                    <td>{{ order.report ? order.report.brand : '' }}</td>
+                    <td>{{ order.report ? order.report.series : '' }}</td>
+
+                    {% if order.report %}
+                        <td>{{ order.report.report ? order.report.report.field_2040['value'] : '' }}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+
+                    <td>{{ order.report ? order.report.model : '' }}</td>
+                    <td>{{ order.loadOfficer ? order.loadOfficer.name : '' }}</td>
+                    <td>{{ order.company ? order.company.company : ''}}</td>
+                    <td>{{ order.agencyName }}</td>
+                    <td>{{ orderBack.orgSubmittedAt|date("Y-m-d H:i:s") }}</td>
+                    <td>{{ orderBack.createdAt|date("Y-m-d H:i:s") }}</td>
+                    <td>{{ order.report ? order.report.examer.name : '' }}</td>
+                    <td>{{ order.report ? order.report.examedAt|date("Y-m-d H:i:s") : '' }}</td>
+                    <td>
+                        <a href="{{ path('back_show', { 'id': orderBack.id }) }}" class="btn-td">退回详情</a>
+                        {% if order.businessNumber %}
+                        <br><span style="visibility:hidden;">dummy</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

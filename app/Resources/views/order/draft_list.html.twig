@@ -1,0 +1,41 @@
+{% extends 'common/base_list.html.twig' %}
+{% block list_content %}
+    <table class="table">
+    	<thead>
+			<tr>
+				<th>序号</th>
+				<th>创建时间</th>
+				<th>操作</th>		
+			</tr>
+		</thead>
+		<tbody>
+		{% for order in pagination %}
+			<tr>
+			    <td>{{ order.id }}</td>
+			    <td>{{ order.createdAt|date("Y-m-d H:i:s") }}</td>
+			    <td>
+			    	<a class="btn-td confirmation" href="{{ path('order_draft_disable',{'id': order.id}) }}">删除</a>
+			    	<a class="btn-td" href="{{ path('order_edit', { 'id': order.id }) }}">编辑</a>
+			    </td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}
+
+{% block javascripts %}
+    {{parent()}}
+    <script>
+        $('.table-new-box').on("click",".confirmation",function(event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            commonMethod.prompt({
+                title:"删除数据",
+                msgHTML:"确定要删除吗？",
+                confirm:function(){
+                    window.location.href = href;
+                }
+            })
+        });
+    </script>
+{% endblock %}

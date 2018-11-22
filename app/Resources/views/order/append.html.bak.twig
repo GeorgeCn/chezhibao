@@ -1,0 +1,238 @@
+{% extends 'admin_layout.html.twig' %}
+{% import 'macro/order_pic.html.macro' as macro %}
+
+{% set width = 230 %}
+{% set height = 160 %}
+
+{% block stylesheets %}
+{{parent()}}
+{{ macro.require_photoswipe_css(width, height) }}
+{% endblock %}
+
+{% block content %}
+{{ macro.pswp_element() }}
+<div class="bill-content" id="gallery">
+    <h3 class="mgb-30"><i class="fa fa-circle-o mgr-6 fs-8 ft-red1" aria-hidden="true"></i>编辑单据</h3>
+    <div class="bill-module m-examine">
+        <div class="bill-m-content">
+            <div class="des">审核意见</div>
+            <p class="tip">{{main_reason}}</p>
+            {% if reason_metadatas %}
+            <p class="tip"><i>i</i>共{{reason_metadatas|length}}处照片需重新上传</p>
+            <div class="pic-box">
+                <ul class="clearfix">
+                    {% for metadata in reason_metadatas %}
+                    <li>
+                        <img class='pic' alt="{{metadata.display}}" src="{{asset('images/img-default-large.png')}}" data-default="{{qiniu_domain}}/{{metadata.options["sample"]}}?imageView2/1/w/{{width}}/h/{{height}}" data-original='{{qiniu_domain}}/{{metadata.options["sample"]}}'>
+                        <p class="txt">{{metadata.display}}：{{metadata.value.value}}。</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <form class="bill-module form-inline" method="post" action="{{ path('order_submit', {"id": order.id}) }}">
+        {% set data = order.pictures %}
+        <div class="bill-m-content upload_container" id="pic_container">
+            <div class="des pick-title" _key="append" _display="{{append_metadata.display}}" _most="{{append_metadata.options.most|default(-1)}}" _least="{{append_metadata.options.least|default(-1)}}">{{append_metadata.display}}</div>
+            <div class="pic-box pic-box-add">
+                <ul class="clearfix">
+                    {% for key in data[append_key]|default([]) %}
+                    <li class="state-finish">
+                        <img class='pic' alt="{{append_metadata.display}}" src="{{asset('images/img-default-large.png')}}" data-default='{{qiniu_domain}}/{{key}}?imageView2/1/w/{{width}}/h/{{height}}' data-original='{{qiniu_domain}}/{{key}}'>
+                        <i class="fa fa-trash-o fa-lg"></i>
+                        <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+                    </li>
+                    {% endfor %}
+                    <li class="add" id="pick">
+                        <i class="fa fa-plus"></i>
+                        <p class="txt">继续添加</p>
+                    </li>
+                </ul>
+            </div>
+            {% for key in data[append_key]|default([]) %}
+            <input class="pic_input" name="append[]" value="{{key}}"></input>
+            {% endfor %}
+        </div>
+
+        {# 额外字段的meta渲染 #}
+        {% set extraData = order.extraData %}
+        {% if extraMatadatas %}
+            <div class="panel panel-default extraMeta mgt-10">
+                <div class="panel-body">
+                        {% for key, metadata in extraMatadatas %}
+                            {% set i = loop.index %}
+                                {# 如果之前已有数据，直接渲染原数据 #}
+                                {% if extraData[metadata.key] is defined %}
+                                    {% set value_i = extraData[metadata.key]['value'] %}
+                                    <div class="form-group">
+                                        <label for="{{ metadata.key }}">{{ metadata.display }}：</label>
+                                        <input type="text" class="form-control" name="{{ metadata.key }}" id="{{ metadata.key }}" value="{{ value_i }}">
+                                    </div>
+                                {% else %}
+                                    <div class="form-group">
+                                        <label for="{{ metadata.key }}">{{ metadata.display }}：</label>
+                                        <input type="text" class="form-control" name="{{ metadata.key }}" id="{{ metadata.key }}" value="">
+                                    </div>
+                                {% endif %}
+                        {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="submit">
+             <input class="s-btn submit_input" type="submit" value ="提交"/>
+        </div>
+    </form>
+
+    <h3 class="mgb-30"><i class="fa fa-circle-o mgr-6 fs-8 ft-red1" aria-hidden="true"></i>原始单据</h3>
+
+    {% for group in groups %}
+        {{ group }}
+        {% for key, metadata in metadatas %}
+            {% if metadata.options.groups == group %}
+                <div class="bill-module">
+                    <div class="bill-m-content">
+                        <div class="des">{{metadata.display}}</div>
+                        <div class="pic-box">
+                            <ul class="clearfix">
+                                {% for key in data[metadata.key]|default([]) if key is not empty %}
+                                <li>
+                                    <img class='pic' alt="{{metadata.display}}" src="{{asset('images/img-default-large.png')}}" data-default="{{qiniu_domain}}/{{key}}?imageView2/1/w/{{width}}/h/{{height}}" data-original='{{qiniu_domain}}/{{key}}'>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    {% for key, image_keys in data if key starts with append_metadata.key and key != append_key %}
+    <div class="bill-module">
+        <div class="bill-m-content">
+            <div class="des">{{append_metadata.display}}</div>
+            <div class="pic-box">
+                <ul class="clearfix">
+                    {% for key2 in image_keys|default([]) if key2 is not empty %}
+                    <li>
+                        <img class='pic' alt="{{append_metadata.display}}" src="{{asset('images/img-default-large.png')}}" data-default="{{qiniu_domain}}/{{key2}}?imageView2/1/w/{{width}}/h/{{height}}" data-original='{{qiniu_domain}}/{{key2}}'>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{parent()}}
+<script src="{{ asset('qiniu/js/moxie.js')}}"></script>
+<script src="{{ asset('qiniu/js/plupload.dev.js')}}"></script>
+<script src="{{ asset('qiniu/js/qiniu.js')}}"></script>
+<script src="{{ asset('js/upload.js')}}"></script>
+{{ macro.require_photoswipe_js() }}
+
+<script>
+
+$('#gallery').viewer({
+    url: "data-original",
+});
+
+var tipFn = function(msg){
+    var tips = '<p class="alert-tip" id="alertTip"><i class="fa fa-exclamation-circle"></i><span></span><i class="fa fa-times"></i></p>';
+    tips = $(tips).appendTo($("body"));
+    $(tips).find("span").html(msg);
+    $(tips).fadeIn();
+    $(tips).find(".fa-times").on("click", function(){
+        $(this).fadeOut();
+    });
+    setTimeout(function(){
+        $(tips).fadeOut();
+    }, 3000);
+};
+
+$(window).bind("beforeunload", function(e){
+    return "您还有未提交的订单？是否真的要离开？";
+});
+var o = {
+    "browse_button" : "",
+    "uptoken" : "{{ uptoken }}",
+    "domain" : "{{ qiniu_domain }}",
+    "container" : "",
+    "flash_swf_url" : "{{asset('qiniu/Moxie.swf')}}",
+    "drop_element " : "",
+    "image_width" : "{{width}}",
+    "image_height" : "{{height}}",
+    "default_img" :  "{{asset('images/img-default-large.png')}}"
+};
+var uploaders = [];
+$(".upload_container").each(function(index){
+    var title = $(this).parent().find(".pick-title");
+    o.container = this.id;
+    o.drop_element = this.id;
+    o.browse_button = $(this).find("ul li:last").attr("id");
+    o.title = title.attr("_display");
+    o.most = Number(title.attr("_most"));
+    o.least = Number(title.attr("_least"));
+    o.input_name = title.attr("_key")+"[]";
+    o.updateOrder = function(){
+        $('#gallery').viewer("destroy");
+        $('#gallery').viewer({
+            url: "data-original",
+        });
+        $.post("{{ path('order_update', {"id": order.id}) }}", $("form").serialize())
+            .done(function(){
+                //alert("ok");
+                console.log("order update");
+            });
+    };
+    o.showTip = function(tip){
+        tipFn(tip);
+    };
+    uploaders.push(Upload.init(o));
+});
+
+// 验证额外meta字段的函数
+function validateExtraMeta(){
+    var valid = true;
+    $(".extraMeta input").each(function() {
+        if(!$(this).val()){
+            var name = $(this).prev().text();
+            tipFn(name + '不能为空！');
+
+            return valid = false;
+        } else {
+            return true;
+        }
+    });
+
+    return valid;
+}
+
+$("form").bind("submit", function(){
+    for (var i = 0; i < uploaders.length; i++) {
+        if(uploaders[i].validate() === false){
+            bootboxAlert("文件未上传完整！请检查是否有漏传的图片，或等文件都上传完毕。");
+            return false;
+        }
+    }
+
+    // 验证额外meta
+    var result = validateExtraMeta();
+
+    if (false === result) {
+        return false;
+    }
+
+    $(window).unbind('beforeunload');
+});
+
+</script>
+
+{% endblock %}

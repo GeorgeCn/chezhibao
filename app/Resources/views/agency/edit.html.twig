@@ -1,0 +1,24 @@
+{% extends 'admin_layout.html.twig' %}
+
+{% block content %}
+    {{ form_start(edit_form) }}
+        <div class="panel panel-default mgt-30 userManage">
+            <div class="panel-heading">
+                <h3 class="panel-title "><span class="text-muted">编辑经销商</span></h3>
+            </div>
+            <div class="panel-body">
+                {{ form_widget(edit_form) }}
+            </div>
+            <div class="panel-footer text-center">
+                <input type="submit" value="保存" class="btn btn-primary" />
+                <a class="btn btn-primary  btn-default" href="{{ path('agency_index') }}">返回</a>
+            </div>
+        </div>
+    {{ form_end(edit_form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include 'agency/common.html.twig' %}
+{% endblock %}
+

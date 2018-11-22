@@ -1,0 +1,60 @@
+{% extends 'common/base_list.html.twig' %}
+
+{% block content_additional %}
+    <div class="page-additional">
+        <a class="add-new had-icon link" href="{{path('config_new')}}"><i class="icon-font-xinzengpeizhi"></i>新增公司配置</a>
+    </div>
+{% endblock %}
+
+{% block list_content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>总部名称</th>
+                <th>是否启用通知</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for config in pagination %}
+            <tr>
+                <td>{{ config.company }}</td>
+                <td>
+                    {% if config.parameter.enabled is defined %}
+                        {% if config.parameter.enabled %}
+                            启用
+                        {% else %}
+                            不启用
+                        {% endif %}
+                    {% else %}
+                        不启用
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('config_edit', { 'id': config.id }) }}" class="btn-td">编辑</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascripts %}
+    {{parent()}}
+    <script>
+        $('.table-new-box').on("click",".confirmation",function(event) {
+            // return confirm('确定要删除吗');
+            event.preventDefault();
+            var href = $(this).attr('href');
+            commonMethod.prompt({
+                title:"删除公司配置",
+                msgHTML:"确定要删除吗？",
+                confirm:function(){
+                    window.location.href = href;
+                }
+            })
+        });
+    </script>
+
+
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends 'admin_layout.html.twig' %}
+{% import 'macro/order_pic.html.macro' as macro %}
+
+{% block stylesheets %}
+    {{parent()}}
+    {{ macro.require_viewer_css() }}
+{% endblock %}
+
+{% block content %}
+    <div class="content-box content-has-pic" id="gallery">
+        <h3 class="page-title">编辑单据</h3>
+        {{ macro.order_reason(reason_metadatas,main_reason,"large") }}
+        <form id="orderForm" method="post" action="{{ path('order_submit', {"id": order.id}) }}">   
+            {{ macro.order_pic_list(order,append_metadata,null,"large",true,true,append_key) }}
+            <div class="btn-group-specific smallest t-center merge">
+                <span class="btn btn-danger" id="submit">提交</span>
+            </div>
+        </form>
+        {{ macro.order_pic_list(order,metadatas,null,"large",false) }}
+        {{ macro.order_pic_list(order,append_metadata,null,"large",false,true,append_key) }}
+        {% include 'components/copyright.html.twig' %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{parent()}}
+    {{ macro.require_viewer_js() }}
+    {{ macro.require_qiqiu_js() }}
+    <script type="text/javascript">
+        var $orderForm = $("#orderForm");
+        var pathOrderUpdate = "{{ path('order_update', {"id": order.id}) }}";
+
+        changeLeast();
+
+        //创建上传
+        $orderForm.find(".pic-list .add").each(function(index, el) {
+            var qiniu = new QiniuJsSDK();
+            var upload = new Upload();
+            upload.init({
+                qiniu : qiniu,
+                $form : $("#orderForm"),
+                $add : $(this),
+                domain : "{{qiniu_domain}}",
+                uptoken : "{{uptoken}}",
+                flash_swf_url : "{{asset('qiniu/Moxie.swf')}}",
+                defaultImg : "{{asset('images/img-default-large.png')}}",
+                updateOrder:function(){
+                    $.post(pathOrderUpdate, $orderForm.serialize());
+                }
+            });
+        });
+
+        //提交
+        $("#submit").on("click",function(){
+            if (!completePic()) {
+                return false;
+            }
+
+            commonMethod.prompt({
+                title:"提交订单",
+                msgHTML:"确定提交吗",
+                confirm:function(){
+                    $(window).off('beforeunload');
+                    $orderForm.submit();
+                }
+            })   
+        })
+
+        $(window).on("beforeunload", function(e){
+            return "您还有未提交的订单？是否真的要离开？";
+        });
+
+        //判断图片是否上传完整
+        function completePic(){
+            var picInputLength = $orderForm.find("input.pic-input").length;
+            var least = 0;
+            $orderForm.find("li.add").each(function(){
+                var dataLeast = $(this).data("least");
+                if(dataLeast!=-1){
+                    least += dataLeast;
+                }
+            })
+            if(picInputLength<least){
+                commonMethod.showTopTips('文件未上传完整！请检查是否有漏传的图片，或等文件都上传完毕。');
+                return false;
+            }
+            return true;
+        }
+
+        //修改最少上传图片数量
+        function changeLeast(){
+            var $moduleAuditOpinionPicList = $(".module-audit-opinion .pic-list");
+            var least = $moduleAuditOpinionPicList.data("needAppend");
+            if($moduleAuditOpinionPicList.length&&least){
+                $orderForm.find("li.add").attr("data-least",least);
+            }
+        }
+    </script>
+{% endblock %}

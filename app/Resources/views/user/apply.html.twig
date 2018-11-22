@@ -1,0 +1,141 @@
+{% extends 'common/base_list.html.twig' %}
+
+{% block content_additional %}
+    {% if is_granted('ROLE_ADMIN_HPL') or is_granted('ROLE_LOADOFFICER_MANAGER') %}
+            <div class="page-additional">
+                <a class="add-new had-icon link" href="{{ path('user_apply_new') }}"><i class="icon-font-yonghuguanli"></i>新增授权</a>
+            </div>
+    {% endif %}
+{% endblock %}
+
+{% block list_filter %}
+    <form class="form-horizontal table-form-filter clearfix" id="formFilterBar">
+        <div class="filter-select" data-form-name="vars[company]" data-form-value="{{vars['company']}}" data-child-search="had" data-child-url="{{path('config_get_all_companies')}}">
+            <div class="value-current">金融公司</div>
+        </div>
+        <div class="filter-select" data-form-name="vars[agency]" data-form-value="{{vars['agency']}}" data-child-search="had" data-child-url="{{path('get_agencies', {'company': vars['company']})}}">
+            <div class="value-current">经销商</div>
+        </div>
+        <div class="filter-input" data-form-name="vars[mobile]" data-form-value="{{vars['mobile']}}">
+            <div class='value-current search-icon-end'>手机号码</div>
+        </div>
+        <div class="filter-select" data-form-name="vars[applyStatus]" data-form-value="{{vars['applyStatus']}}">
+            <div class='value-current'>状态</div>
+        </div>
+        <div class="filter-select" data-form-name="vars[dateType]|vars[startDate]|vars[endDate]" data-form-value="{{vars['dateType']~"|"~vars['startDate']~'|'~vars['endDate']}}">
+            <div class="value-current">授权日期</div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block list_content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>金融公司名字</th>
+                <th>经销商名字</th>
+                <th>省份</th>
+                <th>城市</th>
+                <th>手机号码</th>
+                <th>类型</th>
+                <th>状态</th>
+                <th>授权时间</th>
+                <th>创建人</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for apply in pagination %}
+                <tr>
+                    <td>
+                        <span>{{ apply.company.company }}</span>
+                    </td>
+                    <td>{{ apply.agency.name }}</td>
+                    {% if apply.province.name is defined %}
+                    <td>{{ apply.province.name}}</td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+                    {% if apply.city.name is defined %}
+                    <td>{{ apply.city.name}}</td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+                    <td>{{ apply.mobile }}</td>
+                    {% if apply.grade == 1 %}
+                        <td>高</td>
+                    {% elseif apply.grade == 2 %}
+                        <td>中</td>
+                    {% elseif apply.grade == 3 %}
+                        <td>低</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    {% if apply.status == 0 %}
+                        <td>授权中</td>
+                    {% elseif apply.status == 1 %}
+                        <td>授权完成</td>
+                    {% elseif apply.status == 2 %}
+                        <td>授权取消</td>
+                    {% endif %}
+                    <td>{{ apply.createdAt|date("Y-m-d H:i:s") }}</td>
+                    <td>{{ apply.creater }}</td>
+                    <td>
+                        {% if apply.status == 0 %}
+                            <a href="{{ path('user_apply_edit' ,{ 'id': apply.id }) }}" class="btn-td">编辑</a>
+                            <a href="{{ path('user_apply_invalid' ,{ 'id': apply.id }) }}" class="btn-td confirmation">取消</a>
+                            {% if apply.grade == 1 %}
+                            <a class="btn-td copy" data-clipboard-text="{{ app.request.getSchemeAndHttpHost()~path('user_apply_web' ,{ 'rand': apply.rand }) }}  「云检测--{{ apply.company.company }}高级账号授权申请激活」">授权地址</a>
+                            {% elseif apply.grade == 2 %}
+                            <a class="btn-td copy" data-clipboard-text="{{ app.request.getSchemeAndHttpHost()~path('user_apply_web' ,{ 'rand': apply.rand }) }}  「云检测--{{ apply.company.company }}-{{ apply.agency.name }}中级账号授权申请激活」">授权地址</a>
+                            {% else %}
+                           <a class="btn-td copy" data-clipboard-text="{{ app.request.getSchemeAndHttpHost()~path('user_apply_web' ,{ 'rand': apply.rand }) }}  「云检测--{{ apply.company.company }}-{{ apply.agency.name }}低级账号授权申请激活」">授权地址</a>
+                            {% endif %}
+                        {% else %}
+                            <a href="javascript:;"></a>
+                            <a href="javascript:;"></a>
+                            {% if apply.grade == 1 %}
+                            <a class="btn-td copy" style="float:left" data-clipboard-text="{{ app.request.getSchemeAndHttpHost()~path('user_apply_web' ,{ 'rand': apply.rand }) }}  「云检测--{{ apply.company.company }}高级账号授权申请激活」">授权地址</a>
+                            {% elseif apply.grade == 2 %}
+                            <a class="btn-td copy" style="float:left" data-clipboard-text="{{ app.request.getSchemeAndHttpHost()~path('user_apply_web' ,{ 'rand': apply.rand }) }}  「云检测--{{ apply.company.company }}-{{ apply.agency.name }}中级账号授权申请激活」">授权地址</a>
+                            {% else %}
+                           <a class="btn-td copy" style="float:left" data-clipboard-text="{{ app.request.getSchemeAndHttpHost()~path('user_apply_web' ,{ 'rand': apply.rand }) }}  「云检测--{{ apply.company.company }}-{{ apply.agency.name }}低级账号授权申请激活」">授权地址</a>
+                            {% endif %}
+                        
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+{% block javascripts %}
+    {{parent()}}
+    <script src="{{ asset('js/clipboard.min.js') }}"></script>
+    <script>
+        $('.table-new-box').on("click",".confirmation",function(event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            commonMethod.prompt({
+                title:"授权失效",
+                msgHTML:"确定要取消吗？",
+                confirm:function(){
+                    window.location.href = href;
+                }
+            })
+        });
+        $(document).ready(function(){
+            var clipboard = new Clipboard('.copy');
+
+            clipboard.on('success', function(e) {
+                console.log(e);
+                alert('授权链接已复制剪贴板，请发送给账号使用者进行授权认证');
+            });
+
+            clipboard.on('error', function(e) {
+                console.log(e);
+            });
+        });
+
+    </script>
+{% endblock %}

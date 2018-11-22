@@ -1,0 +1,320 @@
+{% extends 'admin_layout.html.twig' %}
+{% import 'macro/order_pic.html.macro' as macro %}
+
+{% set width = 230 %}
+{% set height = 160 %}
+
+{% block stylesheets %}
+{{parent()}}
+{{ macro.require_photoswipe_css(width, height) }}
+{% endblock %}
+
+{% block content %}
+{{ macro.pswp_element() }}
+<div class="bill-content" id="gallery">
+    <h3 class="mgb-30"><i class="fa fa-circle-o mgr-6 fs-8 ft-red1" aria-hidden="true"></i>编辑单据</h3>
+    <form class="bill-module form-inline" method="post" action="{{ path('order_submit', {"id": order.id}) }}">
+        {% set data = order.pictures %}
+        {% for group in groups %}
+            {{ group }}
+            {% for key, metadata in metadatas %}
+                {% if metadata.options.groups == group %}
+                    <div class="bill-module">
+                        <div class="bill-m-content upload_container" id="pic_container_{{key}}">
+                            <div class="des pick-title" _key="{{metadata.key}}" _display="{{metadata.display}}" _most="{{metadata.options.most|default(-1)}}" _least="{{metadata.options.least|default(-1)}}">{{metadata.display}}</div>
+                            <div class="pic-box pic-box-add">
+                                <ul class="clearfix">
+                                    {% for key2 in data[metadata.key]|default([]) %}
+                                    <li class="state-finish">
+                                        <img class='pic' alt="{{metadata.display}}" src="{{asset('images/img-default-large.png')}}" data-default='{{qiniu_domain}}/{{key2}}?imageView2/1/w/{{width}}/h/{{height}}' data-original='{{qiniu_domain}}/{{key2}}'>
+                                        <i class="fa fa-trash-o fa-lg"></i>
+                                        <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+                                    </li>
+                                    {% endfor %}
+                                    <li class="add" id="pick_{{key}}">
+                                        <i class="fa fa-plus"></i>
+                                        <p class="txt">继续添加</p>
+                                    </li>
+                                </ul>
+                            </div>
+                            {% for key2 in data[metadata.key]|default([]) %}
+                            <input class="pic_input" name="{{metadata.key}}[]" value="{{key2}}"></input>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+
+        {% if fieldDisplay.valuation %}
+            <div class="bill-module m-rate">
+                <span class="shelter"></span>
+                <span class="ace-icon fa fa-jpy fa-lg"></span>
+                <div class="rate_input">
+                    <span>预售价格<span class="required"></span></span> 
+                    <input id="rate_input" type="number" min="0" max="99999999" name="valuation" value="{{order.valuation}}"><span class="rate_span">元</span><span class="rate_red"></span>
+                </div>
+            </div>
+        {% endif %}
+        {% if fieldDisplay.businessNumber %}
+            <div class="panel panel-default extraMeta mgt-10">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="businessNumber">业务流水号：</label>
+                        <input type="text" class="form-control" name="businessNumber" id="businessNumber" value="{{ order.businessNumber }}">
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {# 额外字段的meta渲染 #}
+        {% set extraData = order.extraData %}
+        {% if extraMatadatas %}
+            <div class="panel panel-default extraMeta mgt-10">
+                <div class="panel-body">
+                        {% for key, metadata in extraMatadatas %}
+                            {% set i = loop.index %}
+                                {# 如果之前已有数据，直接渲染原数据 #}
+                                {% if extraData[metadata.key] is defined %}
+                                    {% set value_i = extraData[metadata.key]['value'] %}
+                                    <div class="form-group">
+                                        <label for="{{ metadata.key }}">{{ metadata.display }}：</label>
+                                        <input type="text" class="form-control" name="{{ metadata.key }}" id="{{ metadata.key }}" value="{{ value_i }}">
+                                    </div>
+                                {% else %}
+                                    <div class="form-group">
+                                        <label for="{{ metadata.key }}">{{ metadata.display }}：</label>
+                                        <input type="text" class="form-control" name="{{ metadata.key }}" id="{{ metadata.key }}" value="">
+                                    </div>
+                                {% endif %}
+                        {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="bill-module m-remark">
+            <div class="bill-m-content">
+                <div class="des">备注</div>
+                <textarea id="remark_input" name="remark" maxlength="255">{{order.remark}}</textarea>
+            </div>  
+        </div>
+        <div class="submit">
+            <span class="s-btn submit_draft" id="save" />保存草稿</span>
+            <input class="s-btn submit_input" type="submit" value ="提交"/>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{parent()}}
+<script src="{{ asset('qiniu/js/moxie.js')}}"></script>
+<script src="{{ asset('qiniu/js/plupload.dev.js')}}"></script>
+<script src="{{ asset('qiniu/js/qiniu.js')}}"></script>
+<script src="{{ asset('js/upload.js')}}"></script>
+{{ macro.require_photoswipe_js() }}
+
+<script>
+
+$('#gallery').viewer({
+    url: "data-original",
+});
+
+var tipFn = function(msg){
+    var tips = '<p class="alert-tip" id="alertTip"><i class="fa fa-exclamation-circle"></i><span></span><i class="fa fa-times"></i></p>';
+    tips = $(tips).appendTo($("body"));
+    $(tips).find("span").html(msg);
+    $(tips).fadeIn();
+    $(tips).find(".fa-times").on("click", function(){
+        $(tips).fadeOut();
+    });
+
+    setTimeout(function(){
+        $(tips).fadeOut();
+    }, 3000);
+};
+
+if ($(".pic_input").length === 0) {
+    tipFn('待照片上传完毕后，您的操作会自动保存到草稿箱');
+}
+
+$(window).bind("beforeunload", function(e){
+    return "您还有未提交的订单？是否真的要离开？";
+});
+var o = {
+    "browse_button" : "",
+    "uptoken" : "{{ uptoken }}",
+    "domain" : "{{ qiniu_domain }}",
+    "container" : "",
+    "flash_swf_url" : "{{asset('qiniu/Moxie.swf')}}",
+    "drop_element " : "",
+    "image_width" : "{{width}}",
+    "image_height" : "{{height}}",
+    "default_img" : "{{asset('images/img-default-large.png')}}"
+};
+var uploaders = [];
+$(".upload_container").each(function(index){
+    var title = $(this).find(".pick-title");
+    o.container = this.id;
+    o.drop_element = this.id;
+    o.browse_button = $(this).find("ul li:last").attr("id");
+    o.title = title.attr("_display");
+    o.most = Number(title.attr("_most"));
+    o.least = Number(title.attr("_least"));
+    o.input_name = title.attr("_key")+"[]";
+    o.updateOrder = function(){
+        $('#gallery').viewer("destroy");
+        $('#gallery').viewer({
+            url: "data-original",
+        });
+        var data = $("form").serialize();
+        // 去掉valuation内容
+        data = data.split("&");
+        data.splice(-2, 1);
+        data = data.join("&");
+        $.post("{{ path('order_update', {"id": order.id}) }}", data)
+            .done(function(){
+                console.log("order update");
+            });
+    };
+    o.showTip = function(tip){
+        tipFn(tip);
+    };
+    uploaders.push(Upload.init(o));
+});
+
+var checkNumber = function(value){
+    {% if fieldDisplay.valuation is same as(false) %}
+        return true;
+    {% endif %}
+    value = parseInt(value);
+    if (isNaN(value)) {
+        return false;
+    }
+    return value;
+}
+
+var checkBusinessNumber = function(value){
+    {% if fieldDisplay.businessNumber is same as(false) %}
+        return true;
+    {% endif %}
+
+    if (!value) {
+        return false;
+    }
+
+    return value;
+}
+
+// 验证额外meta字段的函数
+function validateExtraMeta(){
+    var valid = true;
+    $(".extraMeta input").each(function() {
+        if(!$(this).val()){
+            var name = $(this).prev().text();
+            tipFn(name + '不能为空！');
+
+            return valid = false;
+        } else {
+            return true;
+        }
+    });
+
+    return valid;
+}
+
+//备注字段自动保存
+$("#remark_input").blur(function(event) {
+    $.post("{{ path('order_update', {"id": order.id}) }}", $("form").serialize())
+    .done(function(){
+        console.log("order update");
+    });
+});
+
+$("#save").bind("click", function(){
+    var valuation = checkNumber($("#rate_input").val());
+    if (valuation === false) {
+        tipFn('请输入预售价格！');
+        return false;
+    }
+
+    var businessNumber = checkBusinessNumber($("#businessNumber").val());
+    if (businessNumber === false) {
+        tipFn('请输入业务流水号！');
+        return false;
+    }
+
+    // 验证额外meta
+    var result = validateExtraMeta();
+
+    if (false === result) {
+        return false;
+    }
+
+    $.post("{{ path('order_update', {"id": order.id}) }}", $("form").serialize())
+        .done(function(){
+            console.log("order update");
+            tipFn('保存草稿成功！');
+        });
+});
+
+$("form").bind("submit", function(event){
+    for (var i = 0; i < uploaders.length; i++) {
+        if(uploaders[i].validate() === false){
+            tipFn('文件未上传完整！请检查是否有漏传的图片，或等文件都上传完毕。');
+            return false;
+        }
+    }
+    var valuation = checkNumber($("#rate_input").val());
+    if (valuation === false) {
+        tipFn('请输入预售价格！');
+        return false;
+    }
+
+    var businessNumber = checkBusinessNumber($("#businessNumber").val());
+    if (businessNumber === false) {
+        tipFn('请输入业务流水号！');
+        return false;
+    }
+
+    // 验证额外meta
+    var result = validateExtraMeta();
+
+    if (false === result) {
+        return false;
+    }
+
+    event.preventDefault();
+
+    bootboxConfirm({
+        title:"您确定要提交吗？",
+        callback:function(result){
+            if (result) {
+                $(window).unbind('beforeunload');
+                $("form").unbind("submit");
+                $("form").submit();
+            }
+        }
+    });
+});
+
+$("#rate_input").on('input propertychange',function(e){
+    if($("#rate_input").val()){
+        // 用正则限制用户只能输入最多1位小数，防止算出来的结果精度不准
+        if( ! /^\d*(?:\.\d{0,1})?$/.test($("#rate_input").val())){
+            bootboxAlert('小数点后只能保留1位,请重新输入！');
+            $("#rate_input").val(0) ;
+            $(".rate_red").html("");
+
+            return false;
+        }
+        $(".rate_red").html("(" + $("#rate_input").val() /10000 + "万元)");
+    }
+    else{
+         $(".rate_red").html("");
+    }
+}); 
+
+</script>
+
+{% endblock %}

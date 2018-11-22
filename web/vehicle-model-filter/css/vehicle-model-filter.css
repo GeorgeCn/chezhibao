@@ -1,0 +1,229 @@
+
+.vehicle-model-filter-wrap{
+    margin-bottom: -20px;
+}
+
+.vehicle-model-filter-module{
+    color: #333;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+
+.vehicle-model-filter-module ul,
+.vehicle-model-filter-module p,
+.vehicle-model-filter-module dl{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.vehicle-model-filter-module a{
+    color: #333;
+    text-decoration: none;
+}
+
+.vehicle-model-filter-module a:hover,
+.vehicle-model-filter-module .vehicle-stress{
+    color: #ed5565;
+}
+
+.vehicle-btn-group-specific .btn{
+    width: 130px;
+    padding: 0;
+    line-height: 44px;
+}
+
+.vehicle-model-filter-result{
+    font-size: 16px;
+}
+
+.vehicle-model-filter-result .result-number{
+    padding: 0 5px;
+}
+
+.vehicle-model-filter-result dt,
+.vehicle-model-filter-result ul{
+    background-color: #f6f8fa;
+}
+
+.vehicle-model-filter-result dt{ 
+    padding: 15px 15px 6px;
+}
+
+.vehicle-model-filter-result ul{
+    padding: 0 15px 15px;
+    overflow: hidden;
+}
+
+.vehicle-model-filter-result li{
+    margin-top: 5px;
+}
+
+.vehicle-model-filter-result .vehicle-m1-more,
+.vehicle-model-filter-result .vehicle-m1-manual{
+    padding: 15px 15px;
+}
+
+.vehicle-model-filter-result li.remainder-item,
+.vehicle-model-filter-result .vehicle-m1-manual,
+.vehicle-model-filter-result.show-remainder .vehicle-m1-more{
+    display: none;
+}
+
+.vehicle-model-filter-result.show-remainder li.remainder-item,
+.vehicle-model-filter-result.show-remainder .vehicle-m1-manual{
+    display: block;
+} 
+
+.vehicle-model-filter-result li .title{
+	width: 70%;
+	white-space:nowrap;
+	text-overflow:ellipsis; 
+	overflow: hidden; 
+}
+
+.vehicle-model-filter-condition{
+    border-top: 1px solid #e3e4e8;
+    padding-top: 5px;
+}
+
+.vehicle-model-filter-list li{
+    margin-top: 15px;
+}
+
+.vehicle-model-filter-list .filter-item-title,
+.vehicle-model-filter-list .btn-condition{
+    height: 36px;
+    line-height: 36px;
+    overflow: hidden;
+}
+
+.vehicle-model-filter-list .filter-item-title{
+    float: left;
+    width: 25%;
+    font-size: 16px;
+    text-align: right;
+}
+
+.vehicle-model-filter-list .filter-item-title.small{
+    font-size: 14px;
+}
+
+.vehicle-model-filter-list .filter-item-title.small.linewrap{
+    line-height: 18px;
+}
+
+.vehicle-model-filter-list .filter-item-content{
+    float: right;
+    width: 75%;
+    padding-left: 10px;
+}
+
+.vehicle-model-filter-list .condition-list{
+	margin-bottom: -10px;
+}
+
+.vehicle-model-filter-list .btn-condition{
+    width: 78px;
+    padding: 0 6px;
+    text-align: center;
+    border:1px solid #e8e8e8;
+	margin-left:10px;
+	margin-bottom:10px;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #666;
+}
+
+.vehicle-model-filter-list .btn-condition.small{
+    font-size: 12px;
+}
+
+.vehicle-model-filter-list .btn-condition.small.linewrap{
+    line-height: 14px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.vehicle-model-filter-list .btn-condition.yet{
+    border-color: #ed5565;
+    color: #ed5565;
+}
+
+.vehicle-model-filter-footer{
+    text-align: center;
+    margin-top: 30px;
+    display: none;
+}
+
+.vehicle-model-filter-footer .vehicle-jump{
+    margin-top: 15px;
+}
+
+
+.vehicle-model-filter-module .btn + .btn{
+	margin-left: 10px;
+}
+
+.vehicle-model-filter-module .niankuan .checkbox-inline{
+    margin-right: 10px;
+}
+.vehicle-model-filter-module .niankuan .checkbox-inline + .checkbox-inline{
+    margin-left: 0;
+}
+
+.vehicle-model-filter-module .vehicle-model-filter-series .filter-series-item{
+    float:left;
+    width:50%;
+}
+
+.vehicle-model-filter-module .filter-series-item-title{
+    float: left;
+    width: 30%;
+    text-align: center;
+}
+.vehicle-model-filter-module .filter-series-item-content{
+    float: left;
+    width:70%;
+    position: relative;
+    z-index: 10;
+}
+
+.vehicle-model-filter-module .filter-series-item-content ul{
+    position: absolute;
+    left: 0;
+    top: 34px;
+    width:100%;
+    max-height: 120px;
+    overflow: auto;
+    border:1px solid #ccc;
+    background-color: #fff;
+    display: none;
+}
+
+.vehicle-model-filter-module .filter-series-item-content li{
+    padding: 0 10px;
+    height: 30px;
+    line-height: 30px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.vehicle-model-filter-module .filter-series-item-content li:hover{
+    background-color: #ddd;
+}
+
+.vehicle-model-filter-preloader {
+	display: none;
+    width: 32px;
+    height: 32px;
+    margin:30px auto 0;
+    z-index: 10;
+    background:url("data:image/gif;base64,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") no-repeat;
+}
+

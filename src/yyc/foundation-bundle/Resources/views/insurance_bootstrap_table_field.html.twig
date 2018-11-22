@@ -1,0 +1,76 @@
+            $('#lsj-result').bootstrapTable({
+                columns: [{
+                    field: 'operator',
+                    title: '查询人'
+                },
+                {
+                    field: 'createdAt',
+                    title: '查询时间'
+                },
+{#                 {
+                    field: 'remark',
+                    title: '备注'
+                }, #}
+                {
+                    field: 'status',
+                    title: '状态',
+                    formatter: statusFormatter
+                },
+                {
+                    field: 'supplierType',
+                    title: '数据来源',
+                    formatter: supplierTypeFormatter
+                },
+                {
+                    field: 'operate',
+                    title: '操作',
+                    align: 'center',
+                    formatter: operateFormatter
+                }],
+
+                data: data,
+                formatNoMatches: noMatchFormatter
+            });
+
+            //自定义的当查不出来时显示的内容
+            function noMatchFormatter(){
+                //返回查不到的提示信息
+                return data.msg;
+            }
+
+            //自定义(状态)字段函数
+            function statusFormatter(value, row, index) {
+                if (0 === value) {
+                    return '查询中';
+                } else if (1 === value) {
+                    return '查询成功';
+                } else if (2 === value) {
+                    return '查询失败';
+                }
+            }
+
+            //自定义的数据来源字段函数
+            function supplierTypeFormatter(value, row, index) {
+                if (1 === value) {
+                    return '老司机';
+                } else {
+                    return '';
+                }
+            }
+
+            //自定义(按钮)字段函数
+            function operateFormatter(value, row, index) {
+                if (1 === row.supplierType) {
+                    var url = "{{ url('yyc_foundation_lsj_show', { 'id': "insuranceId" }) }}";
+                } else {
+                    var url = "{{ url('yyc_foundation_lsj_show', { 'id': "insuranceId" }) }}";
+                }
+                //不能将js变量直接传给twig变量，需要做个替换
+                url = url.replace("insuranceId", row.id);
+
+                if (1 === row.status) {
+                    return '<a class="btn btn-default" href="'+ url + '"target="_blank">查看详情</a>';
+                } else {
+                    return '<a class="btn btn-default" disabled="disabled" target="_blank">查看详情</a>';
+                }
+            }

@@ -1,0 +1,45 @@
+{% extends 'reportcheck/base-report.html.twig' %}
+
+{# 计算车龄 #}
+{% set datePost = field_3040.value|date('Y/m/d') %}
+{% set today = examedAt|date('Y/m/d') %}
+{% set difference = date(today).diff(date(datePost)) %}
+
+{% block stylesheets %}
+    {{parent()}}
+    {# <link href="{{ asset('report/css/appraisal-report.css',null,true) }}" rel="stylesheet"> #}
+    <style type="text/css">
+        html,body{
+            overflow: auto;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}
+    评估报告_{{orderid}}
+{% endblock %}
+
+{% block body %}
+    <div class="report-canvas" id="canvas">
+        {% include 'reportcheck/appraisal-report.twig' %}
+        <script type="text/javascript">
+            var chart_vehicleAge = {{difference|json_encode}};//车龄
+            var chart_today = new Date();
+            var chart_examedat = "{{examedat}}"||(chart_today.getFullYear()+"年")+(chart_today.getMonth()+1+"月");//评估日期
+            var chart_field_4010 = "{{field_4010.value/10000}}";
+            var chart_field_4012 = "{{field_4012.value/10000}}";
+            var chart_canvas;
+        </script>
+    </div>
+    {% if recheck is not defined and displayType != 'pcPdf' and not (app.request.attributes.get('_route_params')['_format'] is defined  and app.request.attributes.get('_route_params')['_format'] == 'image' ) %}
+        <div class="pc-down" style="position: fixed;right: 0;top: 87%;width:60px;height:50px;margin-right: 15px;
+        background: #fff;border-radius: 5px;overflow:hidden;">
+            <a class="btn btn-default" href="{{ path('pdfreport', {'orderid': app.request.attributes.get('_route_params')['orderid'], '_format': 'image'}) }}" download="">下载</a>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.bootcss.com/html2canvas/0.5.0-beta4/html2canvas.js"></script>
+    <script src="{{asset('report/js/report-chart.js',null,true)}}"></script>
+{% endblock %}

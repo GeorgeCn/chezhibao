@@ -1,0 +1,33 @@
+services:
+#    yyc_foundation.example:
+#        class: YYC\FoundationBundle\Example
+#        arguments: ["@service_id", "plain_value", %parameter%]
+    yyc_foundation.third.dsll:
+        class: YYC\FoundationBundle\Third\Dsll
+        arguments:
+            - @service_container
+
+    yyc_foundation.third.cjd:
+        class: YYC\FoundationBundle\Third\Cjd
+        arguments:
+            - @service_container
+
+    yyc_foundation.third.cbs:
+        class: YYC\FoundationBundle\Third\Cbs
+        arguments:
+            - @service_container
+
+    yyc_foundation.third.lsj:
+        class: YYC\FoundationBundle\Third\Lsj
+        arguments:
+            - @service_container
+
+    yyc_foundation.third.juhe:
+        class: YYC\FoundationBundle\Third\Juhe
+        arguments:
+            - @service_container
+
+    yyc_foundation.third.antqueen:
+        class: YYC\FoundationBundle\Third\AntQueen
+        arguments:
+            - @service_container

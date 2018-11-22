@@ -1,0 +1,115 @@
+{% extends 'admin_layout.html.twig' %}
+{% import 'macro/order_pic.html.macro' as macro %}
+
+{% block stylesheets %}
+    {{parent()}}
+    <link href="{{ asset('report/css/appraisal-report.css') }}" rel="stylesheet">
+    {{ macro.require_viewer_css() }}
+{% endblock %}
+
+{% block content %}
+<div class="recheck-box clearfix">
+    <div class="recheck-left">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#report" data-toggle="tab" aria-expanded="true">评估报告</a>
+            </li>
+            <li class=""><a href="#gallery" data-toggle="tab" aria-expanded="false">车辆照片</a>
+            </li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="report">
+                {{ render(controller("AppBundle:Reportpdf:report", { 'orderid': order.id, '_format':'html', 'recheck':1 })) }}
+            </div>
+            <div class="tab-pane" id="gallery">
+                {{ macro.order_pic_list(order,metadatas,groups,"large",false) }}
+                {{ macro.order_pic_list(order,append_metadata,null,"large",false,true) }}
+            </div>
+        </div>
+    </div>
+    <div class="recheck-right">
+        <div class="panel panel-default">
+            <div class="panel-heading">又一车评估结果：<span class="result">通过</span></div>
+            <div class="panel-body">
+                <form method="post" action={{ path('report_recheck_submit', { 'id': id}) }}>
+                    {% for dom in doms %}
+                        <dl class="dl-horizontal ">
+                        {{ dom }}
+                        </dl>
+                    {% endfor %}
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title text-center" id="myModalLabel">退回原因</h4>
+                          </div>
+                          <div class="modal-body">
+                            <div class="form-group">
+                                <textarea name="form[reason]" class="form-control" rows="5" id="reason" placeholder="请在这里填写退回原因" maxlength="255"></textarea>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="button" id="modal-ok" class="btn btn-danger">退回</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </form>
+                <div class="text-left">
+                    <input type="submit"  class="btn btn-default ft-red1" data-toggle="modal" data-target="#myModal" value="退回给又一车">
+                    <input type="submit" id="submit" class="btn btn-danger" value="提交">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{parent()}}
+    <script src="{{ asset('report/js/report-chart.js')}}"></script>
+    {{ macro.require_viewer_js() }}
+    <script>
+        $(document).ready(function($) {
+            $('#modal-ok').click(function(event) {
+                if ($('#reason').val() == "") {
+                    commonMethod.alert({
+                        msgHTML:"请填写退回原因"
+                    })
+                    return false;
+                } else if($('#reason').val().length > 255 ) {
+                    commonMethod.alert({
+                        msgHTML:"原因不能超过255个字符"
+                    })
+                    return false;
+                }
+
+                $('#myModal').modal('hide');
+                $("form").submit();
+            });
+            $('#submit').click(function(event) {
+                $("form").submit();
+            });
+
+            //隐藏收购价meta的input和label
+            var purchasePrice = $(".dl-horizontal input[name='form[field_4010]']");
+
+            purchasePrice.parent().prev().hide();
+            purchasePrice.hide();
+
+            //隐藏未来价格meta的input和label
+            var futurePrice = $(".dl-horizontal input[name='form[field_4014]']");
+
+            futurePrice.parent().prev().hide();
+            futurePrice.hide();
+
+            //隐藏同标价(收购价),同标价(销售价),车况价,选配价,第三方价
+            $(".blur").parent().prev().remove();
+            $(".blur").remove();
+        });
+    </script>
+{% endblock %}

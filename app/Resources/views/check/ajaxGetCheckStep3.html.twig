@@ -1,0 +1,17 @@
+<dl class="dl-horizontal">
+    {% for dom in doms3 %}
+        {% if dom matches '/field_3090/' %}
+            <h4>车辆配置</h4>
+        {% endif %}
+        {{ dom }}
+    {% endfor %}
+</dl>
+<script>
+    $(".input-group.date").datepicker({
+        language: 'zh-CN',
+        format: 'yyyy/mm',
+        orientation: "bottom left",
+        autoclose: true,
+        todayHighlight: true,
+    });
+</script>

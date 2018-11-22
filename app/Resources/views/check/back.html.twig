@@ -1,0 +1,166 @@
+{% extends 'admin_layout.html.twig' %}
+
+{% block stylesheets %}
+    {{parent()}}
+    <link rel="stylesheet" href="{{ asset('photoswipe/viewer.min.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="p-back-reason">
+        <ul id="backTab" class="nav nav-tabs">
+            <li class="active">
+                <a href="#gallery" data-toggle="tab">车辆照片</a>
+            </li>
+            <li><a href="#backVideo" data-toggle="tab">车辆视频</a></li>
+        </ul>
+        <h3 class="mgb-30"><i class="fa fa-circle-o mgr-6 fs-8 ft-red1" aria-hidden="true"></i>退回理由</h3>
+        <form>
+            <div class="tab-content">
+                <div class="back-reason-list clearfix tab-pane fade in active" id="gallery">
+                    {% for dom in domArray %}
+                        <dl>
+                            {{ dom }}
+                        </dl>
+                    {% endfor %}
+                </div>
+                <div class="back-reason-list clearfix tab-pane fade" id="backVideo">
+                    {% for dom in domVideoArray %}
+                        <dl>
+                            {{ dom }}
+                        </dl>
+                    {% endfor %}
+                </div>
+            </div>
+            <div id="needSetWidth">
+                <div class="common-module">
+                    <div class="common-m-content">
+                        <div class="title">备注</div>
+                        <textarea class="full" name="form[mainReason]" cols="80" rows="3" placeholder="请将其它退回理由填写在这里"></textarea>
+                    </div>  
+                </div>
+                <div class="back-reason-submit submit">
+                    <button type="button" class="s-btn submit_input">退回</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{parent()}}
+    <script src="{{ asset('photoswipe/viewer-jquery.min.js') }}"></script>
+    <script>
+    var redirectUrl = {{ path('order_task')|json_encode() }};
+    var isExamerManager = {{ isExamerManager|json_encode() }};
+    var status = {{ order.status }}
+    if ( status == 3) {
+        redirectUrl = {{ path('order_confirm')|json_encode() }}
+    }
+        //设置其它模块宽度以与退回理由列表对齐
+        function setModuleWidth(){
+            var itemWidth = $(".back-reason-list dl").outerWidth(true);
+            var margin = itemWidth-$(".back-reason-list dl").outerWidth();
+            var set = function(){
+                var listWidth = $(".back-reason-list").outerWidth();
+                var number = Math.floor(listWidth/itemWidth);
+                $("#needSetWidth").width(itemWidth*number-margin);
+            }
+
+            set();
+
+            $(window).resize(function(){
+                set();
+            })
+        }
+        $(document).ready(function() {
+            setModuleWidth();//设置宽度
+
+            $(".input-group.date").datepicker();
+
+            $("form dl dd").each(function(){
+                $(this).find("li").each(function(index){
+                    if (index == 0) {
+                        $(this).find("input:radio").prop("checked", "checked");
+                    }
+                });
+                $(this).find("input:text").attr("disabled", "disabled");
+            });
+
+            $("input:radio").on("click", function(){
+                if ($(this).val() == '其它') {
+                    $(this).parent().parent().parent().find("input:text").removeAttr("disabled");
+                } else {
+                    $(this).parent().parent().parent().find("input:text").attr("disabled", "disabled");
+                }
+            });
+
+
+            $("button", "form").on("click", function(event){
+                event.preventDefault();
+
+                commonMethod.prompt({
+                    title:"退回报告",
+                    msgHTML:"确定退回该检测报告吗？",
+                    confirm:function(){
+                        if (validateData()) {
+                            var url = "{{ path('do_back', {id: id}) }}";
+                            $.post(url, $("form").serialize(), 'json')
+                            .done(function(){
+                                window.location.href = redirectUrl;
+                            });
+                        }
+                    }
+                })
+            });
+        });
+
+        //当用户提交表单时，用来判断该用户是否选择了其中的一个不正常原因或者是否在textarea里面输入有内容
+        function validateData(){
+            // 有多少个列表
+            var ddCount = $("form dl dd").length/2;
+            // 有多少个raido为正常的值
+            var normalCount = $("form dl input[value='正常']:checked").length;
+
+            // 有多少个radio为其它的值
+            var otherCount = $("form dl input[value='其它']:checked").length;
+            // 当radio选择为其它时，统计非空enabled的input有多少个
+            var otherInputCount = $("form dl input[type='text']:enabled").filter(function(index) {
+                return $(this).val().length > 0;
+            }).length;
+
+            // textarea处的值
+            var mainReason = $("form textarea").val();
+
+            if (ddCount === normalCount && '' === mainReason ) {
+                commonMethod.showTopTips('请补充退回原因！');
+                return false;
+            } else if (otherCount !== otherInputCount) {
+                commonMethod.showTopTips('当你选择其它后需要填写后面的内容！');
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        $(function() {
+            $(".back-reason-list img").each(function(){
+                var imgSrc = $(this).attr("data-original");
+                var newImgSrc = "{{qiniu_domain}}"+'/'+imgSrc;
+                var param = "?imageView2/1/w/230/h/160";
+                $(this).attr("src", newImgSrc+param);
+                $(this).attr("data-original",newImgSrc);
+            });
+            $(".back-reason-list video").each(function(){
+                var videoSrc = $(this).attr("data-original");
+                var newVideoSrc = "{{qiniu_domain}}"+'/'+videoSrc;
+                $(this).attr("src", newVideoSrc);
+                $(this).attr("width", 230);
+                $(this).attr("height", 160);
+            });
+
+            $('#gallery').viewer({
+                url: "data-original",
+            });
+        });
+    </script>
+{% endblock %}

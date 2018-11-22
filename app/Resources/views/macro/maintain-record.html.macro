@@ -1,0 +1,54 @@
+
+{% macro record(originType,date,kilometers,type,content,materal,images,keyWords) %}
+    <div class="item">  
+    <div class="item-title clearfix">
+            <div class="date float-left"><span class="dot">●</span>{{date}}</div>
+            {% if kilometers %}
+                <div class="mileage float-right">公里数：{{kilometers}}公里</div>
+            {% endif %}
+        </div>
+        <div class="item-content1">
+            <table class="module-table text-left table-type-3">
+                <tr class="tr-mixed-0 first-tr">
+                    <td class="color-gray first-td">保养类型</td>
+                    <td>{{type}}</td>
+                </tr>
+                <tr class="tr-mixed-0">
+                    <td class="color-gray first-td">保养记录</td>
+                    <td>
+                        {% if originType==1 %}
+                            {{content|nl2br|replace(keyWords)}}
+                        {% else %}
+                            {% if content %}
+                                <p class="item-content-p">项目：{{ content|replace(keyWords) }}</p>
+                            {% endif %}
+                            {% if materal %}
+                                <p class="item-content-p">材料：{{ materal|replace(keyWords) }}</p>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+            {% if images | length > 0 %}
+                <div class="pic-list1">
+                    {% for img in images %}
+                        <img src="{{img}}" />
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro recordCBS(originType,data,title,keyWords) %}
+    <div class="module-subtitle-record"><h4>{{title}}</h4></div>
+    {% for itemMaintain in data %}
+        {{ _self.record(originType,itemMaintain.date,itemMaintain.mileage,itemMaintain.type,itemMaintain.content,itemMaintain.materal,'',keyWords) }}
+    {% endfor %}
+{% endmacro %}
+
+
+
+
+
+

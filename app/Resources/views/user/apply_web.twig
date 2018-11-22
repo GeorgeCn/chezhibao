@@ -1,0 +1,94 @@
+{% include 'user/components/apply_base_header.twig' %}
+<div class="appraisal-report-body">
+    <div class="appraisal-report-content-wrap apply_web_body">
+        <h2><span class="invitation">授权申请</span><br/>Authorization Invitation</h2>
+        <div class="appraisal-report-detail">
+            <div class="appraisal-report-module">
+                <div class="module-title color-red title_message" style="font-size:14px !important;">   <p>{{ message }}{{ message_extra }}</p></div>
+                <div class="module-title color-red message_extra"
+                     style="font-size:14px !important;"></div>
+                <!--start 用户表单-->
+                {% if status == 0 %}
+                    <form method="post" id="authForm">
+                        <div class="module-content single-table">
+                            <table class="module-table table-type-0">
+                                <input type="hidden" name="isRegister" value="{{ isRegister }}">
+                                <input type="hidden" name="rand" value="{{ showordernum }}">
+                                <input type="hidden" name="company" value="{{ company }}">
+                                <input type="hidden" name="agency" value="{{ agency }}">
+                                <input type="hidden" name="role" value="{{ role }}">
+                                <input type="hidden" name="name" value="{{ name }}">
+                                <input type="hidden" name="grade" value="{{ grade }}">
+                                    <div class="form-invitation">
+                                        <div class="user_province user_text">省 份:</div>
+                                        <div class="form-right">
+                                            <div class="form-text">如果此省市有误，请联系管理重新设置。</div>
+                                            <input type="text" name="province" class="form-control form_user"
+                                                   readonly="readonly" value="{{ province }}"><input type="hidden"
+                                                                                                     name="provinceId"
+                                                                                                     readonly="readonly"
+                                                                                                     value="{{ provinceId }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-invitation">
+                                        <div class="user_city user_text">城 市:</div>
+                                        <div class="form-right">
+                                            <div class="form-text">如果此省市有误，请联系管理重新设置。</div>
+                                            <input type="text" name="city" class="form-control form_user"
+                                                   readonly="readonly" value="{{ city }}"><input type="hidden"
+                                                                                                 name="cityId"
+                                                                                                 readonly="readonly"
+                                                                                                 value="{{ cityId }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-invitation">
+                                        <div class="user_title user_text">手机号码:</div>
+                                        <div class="form-right">
+                                        <input type="text" name="mobile" class="form-control form_user"
+                                               value="{{ mobile }}"
+                                               readonly="readonly">
+                                        </div>
+
+                                    </div>
+                                    {% if isRegister == 0 %}
+                                        <div class="form-invitation">
+                                            <div class="user_title user_text">姓名:</div>
+                                            <div class="form-right">
+                                            <input type="text" name="trueName" class="form-control form_user" maxlength="10">
+                                            </div>
+                                        </div>
+                                  
+                                        <div class="form-invitation">
+                                            <div class="user_password user_text">密 码:</div>
+                                              <div class="form-right">
+                                            <input type="text" name="password" class="form-control form_user">
+                                        </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="form-invitation verify">
+                                        <div class="user_city user_text">验证码:</div>
+                                        <div class="form-right">
+                                            <input type="text" name="msCode"
+                                                                                   class="form-control form-control-width">
+                                            <div class="form-padding"><div class="form-verify">获  取</div></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-div form-save"><input type="submit" value="保存" class="form-btn"/>
+                                    </div>
+                            </table>
+                        </div>
+                    </form>
+                {% endif %}
+                <!--/end  用户表单-->
+            </div>
+        </div>
+    </div>
+</div>
+<!--/end body-->
+{% include 'user/components/apply_base_footer.twig' %}
+
+
+
+
+

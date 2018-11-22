@@ -1,0 +1,67 @@
+{% extends 'admin_layout.html.twig' %}
+{% import 'macro/order_pic.html.macro' as macro %}
+
+{% block stylesheets %}
+	{{parent()}}
+	{{ macro.require_viewer_css() }}
+{% endblock %}
+
+{% block content %}
+	<div class="content-box content-has-pic" id="gallery">
+		<div class="page-show-back">
+			<span class="btn-back">
+                <a href="#" onclick="location.href = document.referrer;" class="btn btn-default">返回</a>
+			</span>
+			
+		</div>
+ 		{{ macro.order_reason(reason_metadatas,main_reason,"large") }}
+
+		{% if order.report %}
+		    {% if order.report.status == 2 %}
+		        {% if order.report.hplReason %}
+		        	<div class="module-default no-title">
+						<div class="module-content f700">拒绝原因：{{ order.report.hplReason }}</div>
+					</div>
+		        {% endif %}
+		    {% endif %}
+		{% endif %}
+
+		{% if order.valuation and fieldDisplay.valuation %}
+			<div class="module-default no-title">
+				<div class="module-content f700">预售价格：{{ order.valuation }}</div>
+			</div>
+		{% endif %}
+
+		{% if order.businessNumber and fieldDisplay.businessNumber %}
+		    <div class="module-default no-title">
+				<div class="module-content f700">业务流水号：{{ order.businessNumber }}</div>
+			</div>
+		{% endif %}
+		{{ macro.order_pic_list(order,metadatas,groups,"large",false) }}
+		{{ macro.order_pic_list(order,append_metadata,null,"large",false,true) }}
+
+		{% include 'components/copyright.html.twig' %}
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{parent()}}
+	{{ macro.require_viewer_js() }}
+	<script src="{{ asset('download/zip.js') }}"></script>
+	<script src="{{ asset('download/dataview.js') }}"></script>
+	<script src="{{ asset('download/popup.js') }}"></script>
+	<script type="text/javascript">
+		$('.confirmation').click(function(event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            var text = $(this).text();
+            commonMethod.prompt({
+                title:text,
+                msgHTML:"确定要"+ text + "吗？",
+                confirm:function(){
+                    window.location.href = href;
+                }
+            })
+        });
+	</script>
+{% endblock %}

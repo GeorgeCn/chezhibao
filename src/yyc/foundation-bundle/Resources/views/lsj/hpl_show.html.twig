@@ -1,0 +1,50 @@
+{% extends 'YYCFoundationBundle::layout.html.twig' %}
+{% block yyc_foundation_body %}
+    <div class="container">
+        <div class="row">
+            {% if insurance.orderNo is defined %}
+                <h3>编号：{{ insurance.orderNo }}</h3>
+            {% endif %}
+
+            <table class="table table-bordered">
+                <tr>
+                    <th class="bg-success">投保时间</th>
+                </tr>
+                {% set dates = insurance.results.Insurance|json_decode %}
+                {% for date in dates %}
+                    <tr>
+                        <td>{{ date.StartDate }}到{{ date.EndDate }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <table class="table table-bordered">
+                <tr>
+                    <th class="bg-success">事故</th>
+                </tr>
+                {% set accidents = insurance.results.Claims|json_decode %}
+                {% for accident in accidents %}
+                    <tr>
+                        <td>
+                            事故时间：{{ accident.ClaimDate }} <br>
+                            车主：{{ accident.Owner }}<br>
+                            车牌号：{{ accident.Plate }}<br>
+                            事故描述：{{ accident.Description|replace(keyWords) }}<br>
+                            核损金额: {{ accident.TotalFee }}元<br>
+                            人工费：{{ accident.LaborFee }}元<br>
+                            材料费：{{ accident.MaterialFee }}元<br>
+                            修复详情：{{ accident.RepairDetail|replace(keyWords) }}<br>
+                            {% if accident.Material %}
+                                修复所用零部件及其它材料：
+                                {% for key, value in accident.Material|cast_to_array %}
+                                    {{key}}(数量：{{value}}){{loop.last ? '' : '，' }}
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
+

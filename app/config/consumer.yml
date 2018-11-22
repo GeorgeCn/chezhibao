@@ -1,0 +1,20 @@
+services:
+    company_sender:
+        class: AppBundle\Consumer\CompanySenderConsumer
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    pingan_img_upload_sender:
+        class: AppBundle\Consumer\PinganImgUploadSenderConsumer
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    sm_sender:
+        class: AppBundle\Consumer\SMSenderConsumer
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    jpush_sender:
+        class: AppBundle\Consumer\JpushSenderConsumer
+        calls:
+            - [ setContainer, [ @service_container ] ]

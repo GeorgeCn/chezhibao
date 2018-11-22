@@ -1,0 +1,79 @@
+<div class="panel-body">
+    <ul class="chat" id="difful">
+        <script>var diffArray = new Array(), brandArray = new Array();</script>
+        {% set matchVin = reportLogic.matchVin(vin) %}
+        {% for key,init in matchVin.vehicleinits %}
+            <li sign="{{ key }}">
+                {{ init.brand }} {{ init.models }} {{ init.saleName }}
+                {% set items = reportLogic.showDiffItem(init.collocate, matchVin.diff) %}
+                <script>diffArray[{{ key }}] = {{ items|json_encode|raw }};</script>
+                <span id="chooseThis" levelID="{{ init.levelId }}" class="btn btn-outline btn-success btn-xs pull-right">是这款</span>
+                <script>
+                    brandArray[{{ key }}] = {};
+                    brandArray[{{ key }}].brand = "{{ init.brand }}";
+                    brandArray[{{ key }}].series = "{{ init.models }}";
+                    brandArray[{{ key }}].model = "{{ init.saleName }}";
+                    brandArray[{{ key }}].year = "{{ init.marketYear }}";
+                </script>
+            </li>
+        {% endfor %}
+    </ul>
+    <div id="diffstep2">
+        <a class="btn btn-default btn-block">补充填写以下信息，可进一步缩小候选范围</a>
+        <dl class="dl-horizontal">
+            {% for key,value in matchVin.diff %}
+                <dt>{{ key }}</dt>
+                <dd>
+                    {% for item in value %}
+                        <input type="radio" name="{{ key }}" value="{{ item }}">{{ item }}
+                    {% endfor %}
+                </dd>
+            {% endfor %}
+        </dl>
+    </div>
+</div>
+<script>
+    // 是这款
+    $("span#chooseThis").on("click", function(){
+        $("input[name='form[field_2010]']").val(brandArray[$(this).parent().attr("sign")].brand);
+        $("input[name='form[field_2020]']").val(brandArray[$(this).parent().attr("sign")].series);
+        $("input[name='form[field_2030]']").val(brandArray[$(this).parent().attr("sign")].model);
+        $("input[name='form[field_2040]']").val(brandArray[$(this).parent().attr("sign")].year);
+
+        // ajax get check step3
+        $.get('{{ path('ajax_get_check_step3') }}', {'levelID': $(this).attr("levelID")}, function(ret){
+            var mc = $("#getCheckStep3");
+            mc.empty();
+            $(ret).appendTo(mc);
+        }, 'html');
+    });
+
+    // 缩小候选范围
+    var hold = new Array();
+    $("#diffstep2 dl dd input:radio").on("click", function(){
+        if (hold.length == 0) {
+            var checkArray = diffArray;
+        } else {
+            var checkArray = new Array();
+            for (k in hold) {
+                checkArray[hold[k]] = diffArray[hold[k]];
+            }
+        }
+        for (i in checkArray) {
+            if (checkArray[i][$(this).attr("name")] == $(this).val()) {
+                if ($.inArray(i, hold) == -1) {
+                    hold.push(i);
+                }
+            } else {
+                if ($.inArray(i, hold) != -1) {
+                    hold.splice($.inArray(i, hold), 1);
+                }
+            }
+        }
+        $("#difful li").each(function(){
+            if ($.inArray($(this).attr("sign"), hold) == -1) {
+                $(this).hide();
+            }
+        });
+    });
+</script>

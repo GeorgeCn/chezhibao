@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>{% block pagetitle %}又一车-二手车检测评估系统{% endblock %}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    {% block stylesheets %}
+        <!-- Bootstrap Core CSS -->
+        <link href="{{ asset('bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+        {# <link href="{{ asset('css/app.css')}}" rel="stylesheet"> #}
+		<link rel="stylesheet" href="{{ asset('datepicker/css/bootstrap-datepicker.min.css')}}" />
+        <link rel="stylesheet" href="{{ asset('select2/css/select2.min.css')}}" />
+        <link rel="stylesheet" href="{{ asset('css/app.css')}}" />
+        <!-- Custom CSS -->
+        {% stylesheets filter="scssphp" output='export/css/main.css'
+            'assets/scss/components/*'
+            'assets/scss/pages/*' 
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+    {% endblock %}
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="{{ asset('sbadmin/dist/js/html5shiv.js') }}"></script>
+        <script src="{{ asset('sbadmin/dist/js/respond.min.js') }}"></script>
+    <![endif]-->
+
+    {% block pagestyle %}
+        <style>
+            {# 不同页面可以自己定义css #}
+
+        </style>
+    {% endblock %}
+</head>
+<body>
+    {% block wrapper %}
+        <div id="wrapper" class="wrapper {% block wrapperClass %}{% endblock %}">
+            {% block navigation %}
+                <!-- Navigation -->
+                <nav class="navbar navbar-default navbar-static-top custom-navbar" role="navigation">
+                    <div class="custom-navbar-top">
+                        <div class="navbar-header pull-left">
+                            <div class="logo-bar">
+                                <span class="logo"></span>
+                                <span style="padding-left:10px;color:red;">revison: {{revision}}</span>
+                            </div>
+                        </div>
+                        <div class="navbar-header pull-right">
+                            <div class='job'>
+                                <span id="isJob" class="job-status">
+                                    {% if app.user.isJob == 0 %} 下班中
+                                    {% elseif app.user.isJob == 1 %} 上班中 
+                                    {% endif%}
+                                </span>
+                            </div>
+                            <div class='user'>
+                                <span class="user-info">{{ app.user.name }}</span>
+                                <ul class="user-ctrl">
+                                    <li><a href="{{path('fos_user_change_password')}}">修改密码</a></li>
+                                    <li><a href="{{path('fos_user_security_logout')}}" id="logout">退出账户</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="navbar-default sidebar scrollbar" role="navigation" id="sidebar">
+                        <div class="sidebar-nav navbar-collapse">
+                            <div class="ico-arrow-row" title=""><span></span></div>
+                            {% if is_granted('ROLE_USER') %}
+                                {{ knp_menu_render('AppBundle:Builder:mainMenu',{'template': 'menu/knp_menu.html.twig','currentClass': 'active'}) }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </nav>
+            {% endblock %}
+            <!-- Page Content -->
+            <div class="content-wrapper" id="contentWrapper">
+                <div class="container-fluid">
+                    <div class="row">
+                    	{% block content %}{% endblock %}
+                        {% block task_content %}{% endblock %}
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- /Page Content -->
+        </div>
+        <!-- /wrapper -->
+    {% endblock %}
+    {% block javascripts %}
+        <script src="{{ asset('bootstrap/js/jquery.min.js')}}"></script>
+        <script src="{{ asset('bootstrap/js/bootstrap.min.js')}}"></script>
+        <script src="{{ asset('datepicker/js/bootstrap-datepicker.min.js')}}"></script>
+        <script src="{{ asset('select2/js/select2.min.js')}}"></script>
+        <script src="{{ asset('datepicker/locales/bootstrap-datepicker.zh-CN.min.js')}}"></script>
+		
+        {% javascripts output='export/js/main.js'
+            'assets/js/common.js'
+            'assets/js/components/*' 
+            'assets/js/work.js'
+            'assets/js/default.js'
+        %}
+            <script src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    {% endblock %}
+    <script type="text/javascript">
+        var $isJob=$('.job');
+        $isJob.on('click',function() {
+            var _url = "{{ path('switch_job_status') }}";
+            var self=this
+            $.ajax({ 
+                type:"post",
+                url: _url,
+                success:function(data){
+                    if(data.status == 200) {
+                        if(data.jobStatus == false) {
+                            $(self).text("下班中");
+                        } else if (data.jobStatus == true) {
+                            $(self).text("上班中");
+                        }
+                    }
+                },
+                error: function () {
+                    alert("数据获取失败，请稍后再试！");
+                }
+            })
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+$red:#ed5565;
+$backgroundColor:#e8ebee;
+$aDefaultColor:#666666;
+$aHoverBGColor:#f3f5f6;
+$topbarHeight:50px;
+$sidebarRetractWidth:50px;
+$sidebarSpreadWidth:180px;
+$sidebarTransition:width 0.3s ease 0s;
+$boxShadow:0 0 6px 0 rgba(0,0,0,.1), 0 10px 12px 0 rgba(170,182,206,.36);
+
+
+
+/***************************菜单(header部分)***************************/
+
+@keyframes twinkle{
+    from {width:12px;height:12px;}
+    to {width:22px;height:22px;}
+}
+
+@-moz-keyframes twinkle {
+    from {width:12px;height:12px;}
+    to {width:22px;height:22px;}
+}
+
+@-webkit-keyframes twinkle {
+    from {width:12px;height:12px;}
+    to {width:22px;height:22px;}
+}
+
+:root .function-dot:after{
+    content: "";
+    position:absolute;
+    width: 22px;
+    height: 22px;
+    left:50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    border-radius:100%;
+    background-color:rgba(237,85,101,0.4);
+    animation: twinkle 0.8s infinite;
+    z-index: -1;
+}
+
+.custom-navbar{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    margin-bottom: 0;
+    z-index: 3000;
+    border:0;
+    .custom-navbar-top{
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: $topbarHeight;
+        background-color: #2a2f33;
+    }
+    .navbar-header{
+        height: 100%;
+        vertical-align: middle;
+        position:relative;
+    }
+    .logo-bar,
+    .off-icon{
+        height: $topbarHeight;
+        display:table-cell;
+        vertical-align: middle;
+    }
+    .off-icon{
+        padding: 0 28px 0 0;
+        font-size: 18px;
+        color: #000;
+    }
+    .logo{
+        display: inline-block;
+        text-align: center;
+        width: 96px;
+        height: 32px; 
+        margin-left: 10px;
+        vertical-align: middle;
+        background: url("/images/logo-new.png") no-repeat;
+    }
+    .job{
+        color:#fff;
+        font-size: 12px;
+        float: left;
+        padding: 16px 10px;
+        margin: 1px 0px;
+            &:hover{
+                cursor:pointer;
+                background-color: #424a4d;
+            }
+    }
+    .user{
+        display: table-cell;
+        vertical-align: middle;
+        height: $topbarHeight;
+        min-width: 128px;
+        padding: 0 25px;
+        cursor: pointer;
+        position: relative;
+        z-index: 2;
+        .user-info{
+            vertical-align: middle;
+            color: #fff; 
+            padding:10px 0 10px 38px;
+            font-size: 12px;
+            background: url('/images/head-new.png') no-repeat 0 center;
+        }
+        .user-ctrl{
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50px;
+            display: none;
+            background-color: #fff;
+            box-shadow: $boxShadow;
+            li{
+                line-height: 40px;
+                a{
+                    display: block;
+                    padding-left: 37px;
+                    color: #333;
+                    &:hover{
+                        background-color: #f1f3f4;
+                        text-decoration: none;
+                    }
+                }
+            }
+        }
+        &:hover{
+            background-color: #424a4d;
+            .user-ctrl{
+                display: block;
+            }
+        }
+    }
+    .function-dot{
+        position:absolute;
+        right: 45px;
+        top: 44px;
+        width: 12px;
+        height: 12px;
+        border:4px solid $red;
+        border-radius:100%;
+        background-color:#fff;
+    }
+    .function-tip{
+        position:absolute;
+        right: 25px;
+        top: 70px;
+        width: 260px;
+        padding:15px 15px 25px;
+        background-color:#fff;
+        box-shadow:$boxShadow;
+        .function-header{
+            font-weight: 700;
+        }
+        .function-content{
+            margin-top: 8px;
+            color: #999;
+        }
+        .function-footer{
+            margin-top: 8px;
+            text-align: right;
+            .btn-know{
+                color: $red;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+.wrapper-shrink{
+    .custom-navbar{
+        .logo-bar{
+            width: $sidebarRetractWidth;
+            transition: $sidebarTransition;
+            .logo{
+                width: 30px;
+                transition: $sidebarTransition;
+            }
+        }
+    }
+}
+
+/***************************菜单(导航部分)***************************/
+
+.navbar {
+    &>.sidebar{
+        width: $sidebarSpreadWidth;
+        position: fixed;
+        margin-top:0;
+        top:$topbarHeight;
+        bottom:0;
+        overflow-y:auto; 
+        background-color: $backgroundColor;
+        white-space: nowrap;
+        border-right: 1px solid #eef0f2;
+        box-shadow: 1px 0px 1px #dcdfe2;
+    }
+}
+
+.sidebar{
+    .ico-arrow-row{
+        padding: 6px 0;
+        background-color: $backgroundColor;
+        cursor:pointer;
+        text-align: center;
+        position: relative;
+        span{
+            color:#a3abb0;
+            vertical-align: middle;
+        }
+    }
+    .sidebar-nav{
+        background-color: $backgroundColor;
+        ul{
+            li{
+                a{
+                    color: $aDefaultColor;
+                    font-size:14px;
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                    padding-left: 16px;
+                    overflow: hidden;
+                    &:hover{
+                        background-color: $aHoverBGColor;
+                    }
+                 
+                    i,
+                    span{
+                        display: inline-block;
+                        vertical-align: middle;
+                    }
+                    .icons-menu{
+                        margin-right: 15px;
+                        font-size: 18px;
+                        color:#a3abb0;
+                        top: 0;
+                    }
+                }
+                &.current>a{
+                    background-color:$aHoverBGColor;
+                }
+            }
+        }
+        .nav-second-level{
+            li{
+                a{
+                    padding-left:49px;
+                       &.active,
+                    &.active:hover{
+                        background-color: #fff;
+                        color: $red;
+                    }
+                    &:after{
+                        position: absolute;
+                        line-height: 16px;
+                        right: 10px;
+                        top: 50%;
+                        margin-top: -8px;
+                        color:#fff;
+                        background-color: #ff474c;
+                        content: attr(data-value);
+                        padding: 0 6px;
+                        min-width: 26px;
+                        border-radius: 12px;
+                        text-align: center;
+                        font-size: 12px;
+                    }
+                    i{
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+/***************************侧边导航收起时使用***************************/
+.wrapper-shrink{
+    .sidebar{ 
+        width: $sidebarRetractWidth;
+        transition: width 0.3s;
+        overflow-y:visible;
+        ul{
+            .nav-first-level{
+                &>a{
+                    text-align: center;
+                    &>.text{
+                        display: none;
+                    }
+                    &>i{
+                        margin-right: 0;
+                    }
+                }
+                &.current>a{
+                    background-color: #fff;
+                }
+                ul{
+                    position: absolute;
+                    left: 48px;
+                    top: 0;
+                    display: none;
+                    padding-left: 11px;
+                    &:after{
+                        position: absolute;
+                        content: "";
+                        display: block;
+                        left: 11px; 
+                        right: 0;
+                        top: 0;
+                        bottom: 0;
+                        z-index: -1;
+                        box-shadow: $boxShadow;
+                    }
+                }
+                &:hover >ul{
+                    display: block;
+                }
+            }
+            .nav-second-level{
+                li{
+                    background-color: #fff;
+                    a{
+                        min-width: 120px;
+                        padding-left: 30px;
+                        &.active{
+                            color: $aDefaultColor;
+                        }
+                        &.active:hover{
+                            background-color: $aHoverBGColor;
+                        }
+                        &:after{
+                            display: none;
+                        };
+                    }
+                    &:first-child:before{
+                        content: '';
+                        position: absolute;
+                        left: -8px;
+                        top: 18px;
+                        margin-top: -5px;
+                        width: 0;
+                        height: 0;
+                        border-top: 9px solid transparent;
+                        border-right: 10px solid #ffffff;
+                        border-bottom: 9px solid transparent;
+                        z-index: 10;
+                    }
+                    &:first-child:hover:before{
+                        border-right-color: #f1f3f4;
+                    }
+                }
+            }
+        }
+        
+    }
+    .content-wrapper{
+        margin-left: $sidebarRetractWidth;
+    }
+}

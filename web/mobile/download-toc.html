@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <title>又一车-二手车估价 检测平台</title>
+    <style type="text/css">   
+        body {
+            height: 100%; 
+            word-wrap:break-word;
+            word-break:break-all;
+            font-size: 0.875rem;
+            width: 100%;
+            height: 100%;
+            background:-webkit-linear-gradient(top,#62b4ff,#2d9afe);
+            background:-moz-linear-gradient(top,#62b4ff,#2d9afe);
+            background:-ms-linear-gradient(top,#62b4ff,#2d9afe);
+            background:-o-linear-gradient(top,#62b4ff,#2d9afe);
+            color: #fff;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color:rgba(0,0,0,0);
+        }
+
+        html { 
+            font-family:"Helvetica Neue", "San Fransico", "苹方", Helvetica, STHeiTi, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            height: 100%;
+        }
+
+        a, a:active { 
+            text-decoration: none;
+            color:inherit; 
+        }
+
+        a:active, a:focus, img:focus {
+            outline: 0; 
+        }
+        p{ 
+            margin: 0; 
+            padding:0;
+        }
+        #downloadGuide{
+            height: 100%;
+        }
+        .download{
+            position: relative;
+            padding-top: 5.935rem;
+            height: 100%;
+        }
+
+        .circle{
+            position: fixed;
+            border-radius: 50%;
+            background: #4e90cc;
+        }
+        .circle1{
+            top:-13%;
+            left: -15%;
+            width: 11.125rem;
+            height: 11.125rem;
+        }
+        .circle2{
+            top:87%;
+            left: -28%;
+            width: 13.375rem;
+            height: 13.375rem;
+        }
+        .circle3{
+            top: 50%;
+            right: -45%;
+            width: 14rem;
+            height: 14rem;
+        }
+        .content{
+          text-align: center;  
+        }
+        .content .icon{
+            width: 5.935rem;
+            margin-bottom: 0.875rem;
+        }
+        .content .title{
+            margin-bottom: 3rem;
+        }
+        .content .download_button{
+            position: relative;
+            display: inline-block;
+            width: 64%;
+            margin:0.75rem auto 0;
+            background:#222222;
+            border-radius: 5px;
+        }
+        /*安卓下载按钮*/
+        .content .download_button_android{
+            background:#5db710;
+        }
+        .content .system_icon{
+            position: absolute;
+            left: 12.5%;
+            top: 50%;
+            width: 1.625rem;
+            height: 1.75rem;
+            margin: -0.875rem -0.815rem;
+        }
+        .content .des{
+            padding:0.6rem;
+            margin-left: 25%;
+            height: 100%;
+            text-align: left;
+          
+        }
+        .content .des .p1{
+            font-size: 1rem;
+        }
+        .content .des .p2{
+            font-size: 0.75rem;
+        }
+        .content .border_ios,.border_android{
+            position: absolute;
+            left: 24%;
+            top: 0;
+            height: 100%;
+            border-right:1px solid #393939;
+            border-left:1px solid #000000;
+        }
+        .content  .border_android{
+            border-right:1px solid #7dc540;
+            border-left:1px solid #54a40e;
+        }
+
+        .pop{
+            position:fixed;
+            left:0; 
+            top:0; 
+            right:0; 
+            bottom:0; 
+            background:rgba(0, 0, 0, .85) 
+            url("/images/mobile/download/popbg.png") no-repeat center top; 
+            background-size: 100%; 
+            display: none;
+        }
+
+        @media screen and (min-width: 320px) {
+            html{
+                font-size: 14px;
+            }
+        }
+
+        @media screen and (min-width: 360px) {
+            html{
+                font-size: 16px;
+            }
+        }
+
+        @media screen and (min-width: 400px) {
+            html{
+                font-size: 18px;
+            }
+            
+        }
+    </style>
+</head>
+<body>
+	<div id="downloadGuide">
+        <div class='download'>
+            <div class='content'>
+                <img class='icon' src="/images/mobile/download/icon.png"/>
+                <p class='title'>二手车检测评估&nbsp;买卖交易平台</p>
+                <a class='download_button download_button_ios' href='https://itunes.apple.com/us/app/you-yi-che/id1179671527?l=zh&ls=1&mt=8'>
+                    <img  class='system_icon' src="/images/mobile/download/ios.png" />
+                    <span class='border_ios'></span>
+                    <div class='des'>
+                        <p class='p1'>App Store</p>
+                        <p class='p2'>适用iPhone/iPod下载</p>
+                    </div>
+                </a>
+                <a class='download_button download_button_android' href='http://jiance.youyiche.com/openapi/getjianceapp'>
+                    <img  class='system_icon' src="/images/mobile/download/android.png" />
+                    <span class='border_android'></span>
+                    <div class='des des_android'>
+                        <p class='p1'>Android</p>
+                        <p class='p2'>适用Android版本下载</p>
+                    </div>
+                </a>
+            </div>
+            <span class='circle circle1'></span>
+            <span class='circle circle2'></span>
+            <span class='circle circle3'></span>
+        </div>  
+    </div>
+    <div class='wrap'></div>
+</body>
+<script>
+    //判断是否微信浏览器
+    function isWeixn(){  
+        var ua = navigator.userAgent.toLowerCase();  
+        if(ua.match(/MicroMessenger/i)=="micromessenger") {  
+            return true;  
+        } else {  
+            return false;  
+        }  
+    }
+
+    //获取操作系统名称
+    function getOS() {
+        //定义结果变量
+        var name = 'Other';
+        var version = '';
+        //获取userAgent
+        var ua = navigator.userAgent;
+        //移动平台iOS探测
+        var reg = /like Mac OS X|Android|Windows Phone|Symbian/ig;
+        var regResult = reg.exec(ua);
+        if(!regResult){
+            reg = /Mac OS X|Windows NT|Linux/ig;
+            regResult = reg.exec(ua);
+        }
+        if(!regResult){
+            //返回UNKNOWN
+            return name;
+        }else{
+            //操作系统检测
+            switch(regResult[0]){
+                case 'like Mac OS X':
+                    name = 'ios';
+                    reg = /(iPhone|iPod|iPad).*?OS\s*(\d*[\_|\.\d]*)/ig;
+                    break;
+                case 'Android':
+                    name = 'Android';
+                    reg = /(Android)\s*(\d*[\.\d]*)/ig;
+                    break;
+                case 'Windows Phone':
+                    name = 'Windows Phone';
+                    reg = /(Windows Phone)\s*[OS]*\s*(\d*[\.\d]*)/ig;
+                    break;
+                case 'Symbian':
+                    name = 'Symbian';
+                    reg = /(Symbian)\s*[OS]*\/*\s*(\d[\.\d]*)/ig;
+                    break;
+                case 'Mac OS X':
+                    name = 'OS X';
+                    reg = /(Mac OS X)\s*(\d*[\_|\.\d]*)/ig;
+                    break;
+                case 'Windows NT':
+                    name = 'Windows NT';
+                    reg = /(Windows NT)\s*(\d*[\_|\.\d]*)/ig;
+                    break;
+                case 'Linux':
+                    name = 'Linux';
+                    reg = /(Linux)\s*(i*\d*)/ig;
+                    break
+            }
+            //获取版本号
+            regResult = reg.exec(ua);
+            if(regResult && regResult.length >= 3){
+                version = regResult[2].replace(/\_+/ig, '.');
+                reg = /^\d+\.*\d*/ig;
+                regResult = reg.exec(version);
+                if(regResult){
+                    version = regResult[0];
+                }
+            }
+        };
+
+        //返回操作系统名称+版本号
+        //return [name, version].join(' ');
+        return name.toLocaleLowerCase();
+    };
+
+    //创建dom
+    function createDom(os,isWX){
+
+        var dom  =  isWX?'<div class="pop"></div>':'';
+        document.querySelector(".wrap").innerHTML = dom;
+
+        if(os == 'ios'){
+            document.querySelector(".download_button_android").style.display = 'none'
+        }
+        else{
+            document.querySelector(".download_button_ios").style.display = 'none'
+        }
+        
+        if(isWX){
+            if(os == 'ios'){
+                popDisplay(0)
+            }
+            else{
+                popDisplay(1)
+            }
+        }
+    }
+
+    function popDisplay(index){
+         document.querySelectorAll(".download_button")[index].addEventListener("touchend",function(event){
+            document.querySelector(".pop").style.display = "block"
+            event.preventDefault();
+        },false)
+    }
+
+    //初始化
+    function initialize(){
+        var isWX = isWeixn();
+        var os = getOS();
+        createDom(os,isWX);
+    }
+
+    initialize();
+</script>
+</html>

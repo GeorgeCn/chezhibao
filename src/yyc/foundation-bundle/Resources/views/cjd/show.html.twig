@@ -1,0 +1,64 @@
+{% extends 'YYCFoundationBundle::layout.html.twig' %}
+{% block yyc_foundation_body %}
+    <div class="container">
+        <div class="row">
+            <table class="table table-bordered">
+                <tr>
+                    <th colspan="2" class="bg-success">基本信息</th>
+                </tr>
+                <tr>
+                    <th>车架号</th>
+                    <td>{{ vars.vin }}</td>
+                </tr>
+                <tr>
+                    <th>品牌</th>
+                    <td>{{ vars.brandName }}</td>
+                </tr>
+                <tr>
+                    <th>最后入店时间</th>
+                    <td>在保养记录里查看</td>
+                </tr>
+                <tr>
+                    <th>最后入店公里数</th>
+                    <td>{{ vars.results.resume is defined and vars.results.resume ? vars.results.resume.mile : '' }} </td>
+                </tr>
+                <tr>
+                    <th>事故次数</th>
+                    <td>在保养记录里查看</td>
+                </tr>
+            </table>
+
+            <table class="table table-bordered">
+                <tr>
+                    <th class="bg-success">报告简述</th>
+                </tr>
+                <tr>
+                    <td>
+                        {% if vars.results.resume is defined and vars.results.resume %}
+                            结构部件{{ vars.results.resume.sd is same as('0') ? '正常' : '异常' }}<br>
+                            安全气囊{{ vars.results.resume.ab is same as('0') ? '正常' : '异常' }}<br>
+                            里程表{{ vars.results.resume.mi is same as('0') ? '正常' : '异常' }}<br>
+                            维保次数{{ vars.results.resume.ronum }}
+                        {% endif %}
+                    </td>
+                </tr>
+
+            </table>
+
+            <table class="table table-bordered">
+                <tr>
+                    <th class="bg-success">维修保养记录</th>
+                </tr>
+                {% set items = vars.results.reportJson %}
+                {% for item in items %}
+                    <tr>
+                        <td>
+                            {{ item.repairDate }}  {{ item.mileage }}公里 {{ item.type }} <br>
+                            {{ item.content | raw }}<br>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}

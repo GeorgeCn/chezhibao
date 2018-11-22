@@ -1,0 +1,82 @@
+{% extends 'admin_layout.html.twig' %}
+{% import 'macro/order_pic.html.macro' as macro %}
+
+{% block stylesheets %}
+	{{parent()}}
+	{{ macro.require_viewer_css() }}
+{% endblock %}
+
+{% block content %}
+	<div class="content-box content-has-pic" id="gallery">
+		<div class="page-show-back">
+			<span class="btn-back" onclick="history.go(-1)">返回</span>
+		</div>
+
+		{% if order.report %}
+		    {% if order.report.status == 2 %}
+		        {% if order.report.hplReason %}
+		        	<div class="module-default no-title">
+						<div class="module-content f700">拒绝原因：{{ order.report.hplReason }}</div>
+					</div>
+		        {% endif %}
+		    {% endif %}
+		{% endif %}
+
+		{% if order.valuation and fieldDisplay.valuation %}
+			<div class="module-default no-title">
+				<div class="module-content f700">预售价格：{{ order.valuation }}</div>
+			</div>
+		{% endif %}
+
+		{% if order.businessNumber and fieldDisplay.businessNumber %}
+		    <div class="module-default no-title">
+				<div class="module-content f700">业务流水号：{{ order.businessNumber }}</div>
+			</div>
+		{% endif %}
+		{{ macro.order_pic_list(order,metadatas,groups,"large",false) }}
+		{{ macro.order_pic_list(order,append_metadata,null,"large",false,true) }}
+
+		{% include 'components/copyright.html.twig' %}
+	</div>
+<a href="javascript:;" id="btn-pic-download" class="btn btn-default btn-side-download hide">下载图片</a>
+{% endblock %}
+
+{% block javascripts %}
+	{{parent()}}
+	{{ macro.require_viewer_js() }}
+	<script src="{{ asset('download/zip.js') }}"></script>
+	<script src="{{ asset('download/dataview.js') }}"></script>
+	<script src="{{ asset('download/popup.js') }}"></script>
+	<script type="text/javascript">
+		window.onload = function(){
+			var imgbox = document.querySelectorAll('#gallery .pic');
+			var downloadButton = document.getElementById("btn-pic-download");
+			var orderId = "{{order.id}}";
+			var blob;
+
+			//排除不支持Blob的浏览器
+			try{
+				blob = new Blob();
+			}catch(error){
+				return;
+			}
+
+			//排除ie和Edge浏览器
+			if(!!window.ActiveXObject || "ActiveXObject" in window || navigator.userAgent.indexOf("Edge") > -1){
+				return ;
+			}
+
+			//还剩下的浏览器貌似只有Chrome、Firefox(Opera未测)
+			$(downloadButton).removeClass('hide');
+			
+            downloadButton.addEventListener("click", function(event) {
+                if(this.getAttribute('disabled') == 'disabled'){
+                    //event.preventDefault();
+                    return;
+                }
+                this.setAttribute('disabled', 'disabled');
+                initPopEvents(imgbox, downloadButton, orderId, event);
+            }, false);
+		};
+	</script>
+{% endblock %}

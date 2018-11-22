@@ -1,0 +1,86 @@
+{% extends 'common/base_list.html.twig' %}
+
+{% block list_filter %}
+    <form class="form-horizontal table-form-filter clearfix" id="formFilterBar">
+        <div class="filter-input" data-form-name="vars[mixed]" data-form-value="{{vars['mixed']}}">
+            <div class='value-current search-icon-end'></div>
+        </div>
+        <div class="filter-select" data-form-name="vars[company]" data-form-value="{{vars['company']}}" data-child-search="had" data-child-url="{{path('config_get_all_companies')}}">
+            <div class="value-current">金融公司</div>
+        </div>
+        <div class="filter-select" data-form-name="vars[dateType]|vars[startDate]|vars[endDate]" data-form-value="{{vars['dateType']~"|"~vars['startDate']~'|'~vars['endDate']}}">
+            <div class="value-current">退回日期</div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block list_additional %}
+    <div class="list-additional">
+        <div class="download-report had-icon link" data-download-url="{{path('examerhistory_csv')}}"><i class="icon-font-xiazai"></i>下载报表</div>
+    </div>
+{% endblock %}
+
+{% block list_content %}
+    <table class="table">
+        <thead>
+			<tr>
+				<th>评估单号</th>
+                <th>信贷员(提交人)</th>
+                <th>金融公司</th>
+                <th>经销商</th>
+                <th>车架号</th>
+				<th>品牌</th>
+				<th>车系</th>
+                <th>车型</th>
+				<th>提交时间</th>
+				<th>退回时间</th>
+				<th>退回原因</th>
+                <th>审核人</th>
+				<th>操作</th>
+			</tr>
+        </thead>
+        <tbody>
+			{% for order in pagination %}
+			<tr>
+                <td>
+                    {{ order.orderNo }}
+                    {% if order.businessNumber %}
+                        <br>({{order.businessNumber}})
+                    {% endif %}
+                </td>
+                <td>{{ order.loadOfficer.name }}</td>
+                <td>{{ order.company ? order.company.company : ''}}</td>
+                <td>{{ order.agencyName}}</td>
+                <td>{{ order.report.vin }}</td>
+			    <td>{{ order.report ? order.report.brand : '' }}</td>
+			    <td>{{ order.report ? order.report.series : '' }}</td>
+                <td>{{ order.report.model }}</td>
+			    <td>{{ order.submitedAt |date("Y-m-d H:i:s")}}</td>
+			    <td>{{ order.lastBack ? order.lastBack.createdAt |date("Y-m-d H:i:s") : ''}}</td>
+                <td data-custom-tips>
+                    {% set back = order.getLastBack %}
+                    {% set reasonMetadatas = orderLogic.matchBackReasonMetas(back.getReason) %}
+                    {% if back.getMainReason %} {{ back.getMainReason }}&nbsp;&nbsp;{% endif %}
+                    {% set break = 1 %}
+                    {% for metadata in reasonMetadatas if break == 1 %}
+                        {% if reasonMetadatas|length > 1 %}
+                            {{metadata.display}} ：{{metadata.value.value}}等多条&nbsp;&nbsp;
+                            {% set break = 0 %}
+                        {% else %}
+                            {{metadata.display}} ：{{metadata.value.value}}&nbsp;&nbsp;
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ order.report.examer.name }}</td>
+                <td>
+                    <a href="{{ path('back_show', { 'id': order.getLastBack.id }) }}" class="btn-td">退回详情</a>
+                        {% if order.businessNumber %}
+                            <br><span style="visibility:hidden;">dummy</span>
+                        {% endif %}
+                </td>
+            </tr>
+			{% endfor %}
+        </tbody>
+	</table>
+{% endblock %}
+

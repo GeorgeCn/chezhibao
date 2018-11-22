@@ -1,0 +1,51 @@
+<script>
+    $('.select2').select2();
+
+    var $username = $('#user_username');
+    var $mobile = $('#user_mobile');
+    var $province = $('#user_province');
+    var $userReceiveLower = $("#user_receive_lower");
+    var $userReceiveTypes = $("#user_receive_types").parents(".form-group");
+    var $company = $('#form_company');
+    var isMessage = function(bool){
+      if(bool){
+        $userReceiveTypes.show();
+      }else{
+        $userReceiveTypes.hide();
+      }
+    }
+
+    $userReceiveLower.length && isMessage($userReceiveLower[0].checked);
+
+    $userReceiveLower.on("change",function(){
+      isMessage(this.checked)
+    })
+
+    // When province gets selected ...
+    $province.change(function() {
+      // ... retrieve the corresponding form.
+      var $form = $(this).closest('form');
+      // Simulate form data, but only include the selected province value.
+      var data = {};
+
+      data[$username.attr('name')] = $username.val();
+      data[$mobile.attr('name')] = $mobile.val();
+      data[$province.attr('name')] = $province.val();
+      // Submit data via AJAX to the form's action path.
+      $.ajax({
+        url : $form.attr('action'),
+        type: $form.attr('method'),
+        data : data,
+        success: function(html) {
+          // Replace current province field ...
+          $('#user_city').replaceWith(
+            // ... with the returned one from the AJAX response.
+            $(html).find('#user_city')
+          );
+          // Position field now displays the appropriate positions.
+        }
+      });
+    });
+
+    $company.find('option:contains("又一车")').attr('selected', 'true');
+</script>

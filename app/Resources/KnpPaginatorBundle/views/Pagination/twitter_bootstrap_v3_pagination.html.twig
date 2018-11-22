@@ -1,0 +1,105 @@
+{#
+/**
+ * @file
+ * Twitter Bootstrap v3 Sliding pagination control implementation.
+ *
+ * View that can be used with the pagination module
+ * from the Twitter Bootstrap CSS Toolkit
+ * http://getbootstrap.com/components/#pagination
+ *
+ * @author Pablo Díez <pablodip@gmail.com>
+ * @author Jan Sorgalla <jsorgalla@gmail.com>
+ * @author Artem Ponomarenko <imenem@inbox.ru>
+ * @author Artem Zabelin <artjomzabelin@gmail.com>
+ */
+#}
+
+{% if pageCount > 1 %}
+    {# <ul class="pagination vertical-align:middle">
+
+    {% if previous is defined %}
+        <li>
+            <a rel="prev" href="{{ path(route, query|merge({(pageParameterName): previous})) }}">&nbsp;上一页</a>
+        </li>
+    {% else %}
+        <li class="disabled">
+            <span>&nbsp;上一页</span>
+        </li>
+    {% endif %}
+
+    {% if startPage > 1 %}
+        <li>
+            <a href="{{ path(route, query|merge({(pageParameterName): 1})) }}">1</a>
+        </li>
+        {% if startPage == 3 %}
+            <li>
+                <a href="{{ path(route, query|merge({(pageParameterName): 2})) }}">2</a>
+            </li>
+        {% elseif startPage != 2 %}
+        <li class="disabled">
+            <span>&hellip;</span>
+        </li>
+        {% endif %}
+    {% endif %}
+
+    {% for page in pagesInRange %}
+        {% if page != current %}
+            <li>
+                <a href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+            </li>
+        {% else %}
+            <li class="active">
+                <span>{{ page }}</span>
+            </li>
+        {% endif %}
+
+    {% endfor %}
+
+    {% if pageCount > endPage %}
+        {% if pageCount > (endPage + 1) %}
+            {% if pageCount > (endPage + 2) %}
+                <li class="disabled">
+                    <span>&hellip;</span>
+                </li>
+            {% else %}
+                <li>
+                    <a href="{{ path(route, query|merge({(pageParameterName): (pageCount - 1)})) }}">{{ pageCount -1 }}</a>
+                </li>
+            {% endif %}
+        {% endif %}
+        <li>
+            <a href="{{ path(route, query|merge({(pageParameterName): pageCount})) }}">{{ pageCount }}</a>
+        </li>
+    {% endif %}
+
+    {% if next is defined %}
+        <li>
+            <a rel="next" href="{{ path(route, query|merge({(pageParameterName): next})) }}">下一页&nbsp;</a>
+        </li>
+    {% else %}
+        <li class="disabled">
+            <span>下一页&nbsp;</span>
+        </li>
+    {% endif %}
+    </ul> #}
+    <div class="pagination-custom">
+        <div class="pagination-list">
+            {% if previous is defined %}
+                <a class="pagination-btn prev" href="{{ path(route, query|merge({(pageParameterName): previous})) }}" title="上一页"></a>
+            {% else %}
+                <span class="pagination-btn prev disabled" title="上一页"></span>
+            {% endif %}
+            <span class="c-red">{{current}}</span><span>/</span><span>{{pageCount}}</span>
+            {% if next is defined %}
+                <a class="pagination-btn next" href="{{ path(route, query|merge({(pageParameterName): next})) }}" title="下一页"></a>
+            {% else %}
+                <span class="pagination-btn next disabled" title="下一页"></span>
+            {% endif %}
+        </div>
+        <div class="pagination-to search-box">
+            <input id="pageTo" class="underline had-search" type="text" autocomplete="off" data-pagecount="{{pageCount}}" data-route="{{ path(route,query|merge({(pageParameterName): "pageCount"})) }}" />
+        </div>
+        <div class="pagination-page-all">共{{pageCount}}页</div>
+        <div class="pagination-item-all">{{totalCount}}条记录</div>
+    </div>
+{% endif %}

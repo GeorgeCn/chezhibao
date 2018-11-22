@@ -1,0 +1,35 @@
+﻿app 目录主要是前端的twig模板页面
+java 目录是上传图片到平安云的java sdk代码
+src 目录是主要的代码逻辑目录
+web 目录是前端的静态资源如css，js等
+
+
+
+src/AppBundle/Business 主要是一些封装的可以在控制器里面调用的共用业务逻辑。
+
+src/AppBundle/BusinessExtend 是不同公司对应图片的meta信息。
+
+src/AppBundle/Consumer 是rabbitmq的消费端，包括上传图片到平安云和通知金融公司2个消费端
+
+src/AppBundle/Controller 是控制器，类似mvc中的c
+
+src/AppBundle/Entity 是实体，类似mvc中的m
+
+src/AppBundle/Event 定义的是事件
+src/AppBundle/EventSubscriber 是事件订阅
+src/AppBundle/Form 是entity和前端页面渲染表单的桥梁
+
+src/AppBundle/Menu 菜单
+
+src/AppBundle/Model 是定义的图片meta信息及审核页面的一些表单meta
+
+src/AppBundle/Repository 是数据库查询语句
+src/AppBundle/Resources 覆写部分bundle字段验证逻辑
+
+src/AppBundle/Security 是安全认证相关的
+src/AppBundle/Third 是对接的第三方接口的定义
+
+src/AppBundle/Twig 扩展的twig方法
+src/AppBundle/util 共用的一些方法 
+
+

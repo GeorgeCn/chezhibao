@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>又一车-二手车检测评估系统</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    {% block stylesheets %}
+        <!-- Bootstrap Core CSS -->
+        <link href="{{ asset('bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        {% stylesheets filter="scssphp" output='export/css/index.css'
+            'assets/scss/index.sass'
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+    {% endblock %}
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="{{ asset('sbadmin/dist/js/html5shiv.js') }}"></script>
+        <script src="{{ asset('sbadmin/dist/js/respond.min.js') }}"></script>
+    <![endif]-->
+
+    {% block pagestyle %}
+        <style>
+            {# 不同页面可以自己定义css #}
+        </style>
+    {% endblock %}
+</head>
+<body>
+    {% block body %}{% endblock %}
+    <script src="{{ asset('bootstrap/js/jquery.min.js')}}"></script>
+    <script type="text/javascript">
+        /**
+         *出错弹出框
+         *@property {String} message 错误提示文字
+         *@property {String} className 自定义容器样式
+         */
+        function errorPop(message,className){
+            var className = className?(" "+className):"";
+            var message = message || "no prompt";
+            var errorPopBg = '<div class="error-pop-bg'+className+'"></div>';
+            var errorPop   = '<div class="error-pop'+className+'">'
+                           +     '<div class="error-content">'
+                           +         '<div class="error-icon"></div>'
+                           +         '<div class="error-text">'+message+'</div>'
+                           +     '</div>'
+                           +     '<div class="error-btn">'
+                           +         '<span class="btn btn-danger">确定</span>'
+                           +     '</div>'
+                           +     '<span class="error-close">×</span>'
+                           + '</div>';
+
+            $("body").append(errorPopBg+errorPop);
+
+            setTimeout(function(){
+                $(".error-pop-bg").addClass('show');
+                $(".error-pop").addClass('show');
+                handle();
+            })
+
+            function handle(){
+                $(".error-pop").on("click",".error-close,.error-btn .btn",function(){
+                    $(".error-pop-bg").remove();
+                    $(".error-pop").remove();
+                })
+            }
+        }
+    </script>
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

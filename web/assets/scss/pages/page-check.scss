@@ -1,0 +1,631 @@
+$red:#ed5565;
+$red2:#f05463;
+$boxShadow:0 0 6px 0 rgba(0, 0, 0, .1),0 10px 12px 0 rgba(170, 182, 206, .36);
+
+
+/*************************审核页面使用*************************/
+
+.page-check{
+    .content-wrapper{
+        margin-left: 0;
+    }
+}
+
+.check-header-fix{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: #fff;
+    z-index: 2999;
+    min-width: 1050px;
+    box-shadow: $boxShadow;
+    .info-area{
+        float: left;
+        height: 100%;
+        padding: 0;
+        list-style: none;
+        &>li{
+            float: left;
+            min-width: 160px;
+            max-width: 170px;
+            height: 100%; 
+            padding: 4px 12px 0;
+            text-align: center;
+            position:relative;
+            &:after{
+                content:"";
+                width: 1px;
+                height: 20px;
+                overflow: hidden;
+                background-color:#e7e7ec;
+                position:absolute;
+                right:0;
+                top: 50%;
+                margin-top: -10px;
+            }
+            &.btn-back{
+                min-width: 50px;
+                background: url("/images/icon-check-back.png") no-repeat center center;
+                a{
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+        .t1,.t3{
+            overflow: hidden;
+            font-weight: 700;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .t3,.t4{
+        color:#f00;
+        }
+        .t2{
+            color: #999;
+        }
+        .item-look .t1{
+            color: #ed5564;
+        }
+    }
+    .popup-content{
+        border-radius: 4px;
+        box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        text-align: left;
+    }
+    .popup{
+        position: absolute;
+        left: -30px;
+        top: 43px;
+        cursor: auto;
+        display: none;
+        ul{
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .popup-content{
+            width: 420px;
+            padding: 15px; 
+        }
+    }
+    .arrow-top{
+        display: block;
+        position: relative;
+        margin: 0 0 0 23%;
+        width: 16px;
+        height: 8px;
+        overflow: hidden;
+        background: url("/images/icon-arrow3.png") no-repeat;
+    }
+    .item-standard{
+        position: relative;
+        cursor: pointer;
+        &:hover .popup{
+            display: block;
+        }
+    }
+    .item-standard-content{
+        font-size: 12px;
+        list-style: none;
+        li{
+            padding:2px 0;
+            .sub{
+                margin: 4px 0 0 2em;
+            }
+        }
+    }
+    .btn-area{
+        float: right;
+        padding:0 35px 0 0;
+        margin: 9px 0 0;
+        .btn-video,
+        .btn-untread,
+        .btn-save{
+            display: inline-block;
+            vertical-align: middle;
+            padding: 4px 0 4px 25px;
+            cursor: pointer;
+            &:hover{
+                color: $red;
+            }
+        }
+        .btn-video{
+            background: url("/images/video.png") no-repeat left center;
+        }
+        .btn-untread{
+            margin-left: 40px;
+            background: url("/images/icon-check-return.png") no-repeat left center;
+        }
+        .btn-save{
+            margin-left: 40px;
+            background: url("/images/icon-check-save.png") no-repeat left center;
+        }
+    }
+    .notice-area{
+        float: left;
+        height: 100%;
+        position: relative;
+        display: none;
+        cursor:pointer;
+        .icon-notice{
+            padding: 0 25px;
+            width: 76px;
+            height: 100%;
+            text-indent: -9999px;
+            background: url("/images/icon-notice.png") no-repeat center center;
+            font-size: 16px;
+        }
+        .popup{
+            left:-410px;
+        }
+        .arrow-top{
+            margin-left: 440px;
+        }
+        .popup-content{
+            width: 600px;
+            font-size: 16px;
+            padding: 15px 10px 0;
+            max-height: 240px;
+            overflow: auto;
+        }
+        .vin-tip{
+            font-weight: 700;
+            padding-left: 8px;
+        }
+        ul{
+            margin-top: 15px;
+            padding-bottom: 15px;
+            overflow: hidden;
+            li{
+                padding: 8px;
+                line-height: 27px;
+                &:nth-of-type(odd){
+                    background-color: #f6f8fa;
+                }
+                .sub-item{
+                    float: left;
+                }
+                .time{
+                    width: 30%;
+                }
+                .status{
+                    width: 16%;
+                }
+                .price{
+                    width: 24%;
+                }
+                .btn-group-specific{
+                    text-align: right;
+                    width: 30%;
+                }
+                .btn{
+                    font-size: 12px;
+                    width: 78px;
+                    padding-bottom: 4px;
+                    padding-top: 4px;
+                    & + .btn{
+                        margin-left: 8px;
+                    }
+                }
+            }
+        }
+    }
+    &.show-popup{
+        .notice-area{
+            .popup{
+                display: block;
+            }
+        }
+    }
+}
+
+.page-check-left{
+    position: absolute;
+    left: 20px;
+    right: 565px;
+    top: 20px;
+    bottom: 20px;
+    word-break:break-all; 
+    word-wrap:break-word;
+    white-space: normal;
+    overflow: auto;
+    .check-left-content{
+        .module-default:last-child{
+            margin-bottom: 0;
+        }
+    }
+    .viewer-container {
+        margin-right: 565px;
+        top: 70px;
+        left: 20px;
+        bottom:20px;
+    }
+}
+
+.page-check-right{
+    position: absolute;
+    width: 525px;
+    right: 20px;
+    top: 20px;
+    bottom: 20px;
+    background-color: #fff;
+    padding-top: 43px;
+    box-shadow: 0 0 1px 1px rgba(122, 122, 122, 0.15);
+    overflow: hidden;
+    .nav-tabs{
+        background-color: #f6f8fa;
+        border: 0;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        &>li{
+            width: 16.666%;
+            text-align: center;
+            margin-bottom: 0;
+            &>a{
+                padding:0;
+                border: 0;
+                border-top: 3px solid transparent;
+                border-radius: 0;
+                margin: 0;
+                color: #333;
+                line-height: 40px;
+                font-size: 16px;
+                position: relative;
+                i{
+                    position: absolute;
+                    right: 2px;
+                    top: 3px;
+                    width: 16px;
+                    height: 16px;
+                    overflow: hidden;
+                    background: url("/images/icon-exclamatory.png") no-repeat;
+                    display: none;
+                    &.dot{
+                        background: #ed5565;
+                        right: 17px;
+                        top: 5px;
+                        width: 9px;
+                        height: 9px;
+                        border-radius: 100%;
+                    }
+                }
+            }
+            &.active>a{
+                border: 0;
+                border-top: 3px solid #ed5565;
+            }
+            &.tip>a{
+                i{
+                    display: block;
+                }
+            }
+            &.first-child{
+                width:16.667%;
+            }
+        }
+    }
+}
+
+.page-check-right .check-form-box{
+    height: 100%;
+    overflow: auto;
+    padding: 15px 15px;
+}
+
+.page-check-right .tab-content{
+    padding-bottom: 40px;
+    width: 478px;
+    margin:0 auto;
+}
+.page-check-right .tab-content.tab-content1{
+    padding-bottom: 0 !important;
+    width: 100% !important;
+    
+}
+.page-check-right .tab-content1 .fail{
+    font-size: 16px;
+    text-align: center;
+    
+}
+.page-check-right .tab-content .step-btn-footer{
+    margin-top: 30px;
+}
+
+.page-check-right .dl-horizontal{
+    margin-bottom: 15px;
+}
+
+.page-check-right .btn-spreadOrRetract{
+    position: absolute;
+    right: 0;
+    top: 0;
+    line-height: 36px;
+    padding-right: 13px;
+    background: url("/images/icon-arrow2.png") no-repeat right 16px;
+    cursor: pointer;
+    color: #999;
+}
+
+.page-check-right .retract .btn-spreadOrRetract{
+    background-position: right -35px;
+}
+
+.page-check-right .dl-horizontal dd.spread,
+.page-check-right .dl-horizontal dd.retract{
+    position: relative;
+}
+
+.page-check-right .dl-horizontal dd.spread ul{
+    height: 36px;
+    overflow: hidden;
+}
+
+.page-check-right .dl-horizontal dt{
+    width: 120px;
+    font-size: 16px;
+    font-weight: 400;
+    height: 36px;
+    line-height: 36px;
+}
+
+.page-check-right .dl-horizontal dt.small-style{
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.page-check-right .dl-horizontal dt.only-row{
+    line-height: 36px;
+}
+
+.page-check-right .dl-horizontal dt span{
+    display: inline-block;
+    padding-left: 20px;
+    height: 100%;
+    min-width: 16px;
+}
+
+.page-check-right .dl-horizontal.tip dt span{
+    background: url("/images/icon-exclamatory.png") no-repeat 0 center;
+}
+
+.page-check-right .tab-content .step-btn-footer,
+.page-check-right .dl-horizontal dd{
+    margin-left: 136px;
+}
+
+.page-check-right .tab-content .step-btn-footer.btn-group-center{
+    margin-left: 0;
+    text-align: center;
+}
+
+.page-check-right .dl-horizontal .form-control{
+    height: 36px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+.page-check-right .dl-horizontal .radioType,
+.page-check-right .dl-horizontal .checkType{
+    display: none;
+}
+
+.page-check-right .dl-horizontal textarea{
+    width: 100%;
+    height: 90px;
+    padding: 8px;
+    color: #555;
+    border:1px solid #ccc;
+}
+
+.page-check-right .dl-horizontal .input-red{
+    background-color: #ed5564;
+}
+
+.page-check-right .search-maintain-btn{
+    color: #ed5564;
+    cursor: pointer;
+    text-align: center;
+}
+
+.page-check-right .dl-horizontal .search-maintain-group{
+    margin-top: 15px;
+}
+
+.page-check-right .dl-horizontal .search-maintain-btn{
+    float: left;
+    width: 33.33%;
+    line-height: 1.1;
+    border-left: 1px solid #ccc;
+}
+
+.page-check-right .dl-horizontal .search-maintain-btn:first-child{
+    border-left: 0;
+}
+
+/*查维保模块*/
+
+.page-check-right .step-content-2 .search-maintain-group{
+    margin-top: 20px;
+}
+
+.page-check-right .step-content-2 .search-maintain-vin{
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.page-check-right .step-content-2 .search-maintain-record{
+    margin-top: 15px;
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+}
+
+.page-check-right .step-content-2 .search-maintain-record-title{
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.page-check-right .step-content-2 .maintain-detail-btn{
+    color: #ed5564;
+}
+
+.page-check-right .step-content-2 .maintain-detail-btn.disabled{
+    cursor: not-allowed;
+}
+
+/*估价模块*/
+
+.page-check-right .step-appraisal{
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px;
+}
+
+.page-check-right .step-appraisal-btn-group{
+    position: relative;
+}
+
+.page-check-right .step-appraisal-btn{
+    color: #666;
+}
+
+.page-check-right .step-appraisal-btn.choose{
+    border-color: #ed5564;
+    color: #ed5564;
+}
+
+.page-check-right .step-appraisal-ctrl{
+    top: 6px;
+}
+
+.page-check-right .step-appraisal-content{
+    margin-top: 15px;
+    padding:15px 20px 15px 0;
+    background-color: #f6f8fa;
+    display: none;
+}
+
+.page-check-right .step-appraisal-item{
+    display: none;
+}
+
+.page-check-right .step-appraisal-item:first-child{
+    display: block;
+}
+
+.page-check-right .step-appraisal-content dt{
+    width: 100px;
+}
+
+.page-check-right .step-appraisal-content .btn-group-specific,
+.page-check-right .step-appraisal-content dd{
+    margin-left: 116px;
+}
+
+.page-check-right .step-appraisal-result{
+    border:1px solid #ccc;
+    border-radius: 3px;
+    font-size: 16px;
+    margin:15px 0 0 20px;
+    padding: 10px 10px 10px 20px;
+    display: none;
+}
+
+.page-check-right .step-appraisal-result_new{
+    font-size: 16px;
+    padding: 10px;
+}
+.page-check-right .step-appraisal-result_new .yyc-bjx-price,.page-check-right .step-appraisal-result_new .yyc-bjx-oneyear{
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    padding:4px;
+}
+.page-check-right .step-appraisal-result_new .yyc-bjx-price .present,.page-check-right .step-appraisal-result_new .yyc-bjx-oneyear .oneyear{
+    flex: 2;
+    display: flex;
+}
+.page-check-right .step-appraisal-result_new .yyc-bjx-price .currentRating-wrap,.page-check-right .step-appraisal-result_new .yyc-bjx-oneyear .oneYearRating-wrap{
+   padding:0 8px;
+   flex: 1;
+   height: 20px;
+   background: url('../../../images/icon-rating.png')no-repeat center/100px;
+}
+.page-check-right .step-appraisal-result_new  .price-title{
+    flex: 2;
+}
+.page-check-right .step-appraisal-result_new  .flex4{
+    flex: 4;
+}
+.page-check-right .step-appraisal-result_new  .text-center{
+    width: 16px;
+    height: 16px;
+    background: url('../../../images/tishi.png')no-repeat left/16px;
+}
+.page-check-right .step-appraisal-result_new .search-maintain-record-title{
+    padding:8px 0; 
+}
+ 
+.page-check-right .step-appraisal-result-title{
+    color: #ed5564;
+}
+
+.page-check-right .step-appraisal-result ul{
+    margin:5px 0 0;
+    padding: 0;
+}
+
+.page-check-right .step-appraisal-result li{
+    display: inline-block;
+    vertical-align: top;
+}
+.page-check-right .step-appraisal-result li + li{
+    margin-left: 20px;
+}
+
+.page-check-right .step-appraisal.retract .step-appraisal-content{
+    display: block;
+}
+
+/*车型库*/
+.page-check-right .vehicle-model-filter-title{
+    font-size: 16px;
+    border-top:1px solid #ddd;
+    padding-top:15px;
+    margin-bottom: 15px;
+}
+.page-check-right .vehicle-model-filter-list .filter-item-title{
+    width: 24%;
+}
+.page-check-right .vehicle-model-filter-list .filter-item-content{
+    width: 76%
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

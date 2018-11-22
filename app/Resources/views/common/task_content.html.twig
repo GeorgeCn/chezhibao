@@ -1,0 +1,27 @@
+{% extends 'admin_layout.html.twig' %}
+{% block task_content %}
+    <h3 class="page-title">{{ title }}</h3>
+
+    {% block content_additional %}{% endblock %}
+
+    <div class="list-filter">
+        {% block list_filter %}{% endblock %}
+    </div>
+    <div class="task module-default clearfix">
+            {% block list_additional %}{% endblock %}
+            <div class="table-content">
+                <div class="table-wraper">
+                    {% block task %}{% endblock %}
+                </div>
+            </div>
+    </div>
+    <!--/end 列表-->
+    {% include 'components/copyright.html.twig' %}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+      var $task=$('.task');
+        $task.css({'float': 'left', 'width': "100%", 'border': '1px solid #e7e7eb'})
+    </script>
+{% endblock %}

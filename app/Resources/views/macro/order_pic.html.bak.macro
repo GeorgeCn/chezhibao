@@ -1,0 +1,95 @@
+{% macro require_photoswipe_css(width, height) %}
+    <link rel="stylesheet" href="{{ asset('photoswipe/viewer.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('custom/css/upload.css') }}">
+    <style>
+    .bill-m-content .pic-box li{
+        width: {{width}}px;
+    }
+    .bill-m-content .pic-box .pic{
+        height: {{height}}px;
+        width: {{width}}px;
+    }
+    </style>
+{% endmacro %}
+
+{% macro require_photoswipe_js() %}
+    <script src="{{ asset('photoswipe/viewer-jquery.min.js') }}"></script>
+    <script src="{{ asset('qiniu/js/qiniu.js')}}"></script>
+    <script type="text/javascript">
+    Qiniu.domain = "{{qiniu_domain}}";
+    </script>
+{% endmacro %}
+
+{% macro order_pic(order, metadatas, append_metadata, groups, width, height,isSmallPic) %}
+
+    {# 额外字段的meta渲染#}
+    {% set orderCompany = order.loadOfficer.company %}
+    {% set mm = businessFactory.getMetadataManager(orderCompany) %}
+
+    {% if order.extraData %}
+        {% set extraDoms = mm.buildDom(mm.getMetadata4OrderExtra(false), order.extraData) %}
+        <div class="bill-module extra-info">
+            <div class="bill-m-content">
+                <div class="des">车主自填</div>
+                <div class="extra-info-content">
+                    <table>
+                    {% for extraDom in extraDoms %}
+                        {{ extraDom }}
+                    {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+
+    {% set placeholder = isSmallPic?asset('images/img-default-small.png'):asset('images/img-default-large.png') %}
+    {% set data = order.pictures %}
+    <div class="bill-module" id="gallery">
+        {% for group in groups %}
+            <div class="bill-module">
+                <div class="bill-m-content">
+                    <div class="des">{{ group }}</div>
+                    <div class="pic-box">
+                        <ul>
+                        {% for key, metadata in metadatas %}
+                            {% if metadata.options.groups == group %}
+                                {% for key in data[metadata.key]|default([]) if key is not empty %}
+                                    {% set sequence = "" %}
+                                    {% if metadata.key=='k1' or metadata.key=='k23' %}
+                                        {% set sequence = loop.index %}
+                                    {% endif %}
+                                    <li>
+                                        <img class='pic' src="{{placeholder}}" data-default="{{qiniu_domain}}/{{key}}?imageView2/1/w/{{width}}/h/{{height}}" data-original="{{qiniu_domain}}/{{key}}" alt="{{metadata.display~sequence}}">
+                                        <div class="pic-title" title="{{metadata.display~sequence}}">{{metadata.display~sequence}}</div>
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% for key, image_keys in data if key starts with append_metadata.key %}
+        <div class="bill-module">
+            <div class="bill-m-content">
+                <div class="des">{{append_metadata.display}}</div>
+                <div class="pic-box">
+                    <ul>
+                        {% for key2 in image_keys|default([]) if key2 is not empty %}
+                            <li>
+                                <img class='pic' src="{{placeholder}}" data-default="{{qiniu_domain}}/{{key2}}?imageView2/1/w/{{width}}/h/{{height}}" data-original="{{qiniu_domain}}/{{key2}}" alt="{{append_metadata.display~loop.index}}">
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{% macro pswp_element() %}
+{% endmacro %}

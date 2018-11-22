@@ -1,0 +1,47 @@
+{% extends 'admin_layout.html.twig' %}
+{% block content %}
+    <h3 class="page-title">{{ title }}</h3>
+
+    {% block content_additional %}{% endblock %}
+
+    <div class="list-filter">
+        {% block list_filter %}{% endblock %}
+    </div>
+
+    <div class="list-content module-default">
+        <div class="module-title">数据图表</div>
+        {% if pagination|length>0 %}
+            {% block list_additional %}{% endblock %}
+            <div class="table-new-box-border">
+                <div class="table-new-box" data-table-fix="{% block table_fix %}all{% endblock %}">
+                    <div class="table-new table-default">
+                        <div class="table-content">
+                            <div class="table-wraper">
+                                {% block list_content %}{% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="navigation text-center">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+
+        {% else %}
+            <div class="list-not-content had-icon"><i class="icon-font-zhushi c-red"></i>没有查询到结果，请尝试其它选项</div>
+        {% endif %}
+    </div>
+    <!--/end 列表-->
+    {% include 'components/copyright.html.twig' %}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            {% for flash_message in app.session.flashBag.get('notice') %}
+            var flashMessage = "{{ flash_message }}";
+            commonMethod.showTopTips(flashMessage);
+            {% endfor %}
+        })
+    </script>
+{% endblock %}

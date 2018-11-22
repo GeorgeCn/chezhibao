@@ -1,0 +1,53 @@
+services:
+
+    OpenApiSubscriber:
+        class: AppBundle\EventSubscriber\OpenApiSubscriber
+        calls:
+            - [ setContainer, [ @service_container ] ]
+        tags:
+            - { name: kernel.event_subscriber }
+    OrderBackSubscriber:
+        class: AppBundle\EventSubscriber\OrderBackSubscriber
+        tags:
+            - { name: hpl.order_back_subscriber}
+        calls:
+            - [ setContainer, [ @service_container ] ]
+    OrderFinishSubscriber:
+        class: AppBundle\EventSubscriber\OrderFinishSubscriber
+        tags:
+            - { name: hpl.order_finish_subscriber}
+        calls:
+            - [ setContainer, [ @service_container ] ]
+    OrderSubmitSubscriber:
+        class: AppBundle\EventSubscriber\OrderSubmitSubscriber
+        tags:
+            - { name: hpl.order_submit_subscriber}
+        calls:
+            - [ setContainer, [ @service_container ] ]
+    OrderExamSubscriber:
+        class: AppBundle\EventSubscriber\OrderExamSubscriber
+        tags:
+            - { name: hpl.order_exam_subscriber}
+        calls:
+            - [ setContainer, [ @service_container ] ]
+    OrderRecheckSubscriber:
+        class: AppBundle\EventSubscriber\OrderRecheckSubscriber
+        tags:
+            - { name: hpl.order_recheck_subscriber}
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    OrderPrimaryExamSubscriber:
+        class: AppBundle\EventSubscriber\OrderPrimaryExamSubscriber
+        tags:
+            - { name: kernel.event_subscriber }
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    InsuranceCallback_Subsriber:
+        class: AppBundle\EventSubscriber\InsuranceCallbackSubscriber
+        calls:
+            - [ setContainer, [ @service_container ] ]
+        tags:
+            - { name: kernel.event_subscriber }
+

@@ -1,0 +1,172 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+parameters:
+#    parameter_name: value
+
+imports:
+    - { resource: subscriber.yml }
+    - { resource: bussiness.yml }
+    - { resource: consumer.yml }
+
+services:
+
+    Qiniu:
+        class: AppBundle\Third\Qiniu
+        arguments:
+            - @service_container
+
+    Liyang:
+        class: AppBundle\Third\Liyang
+        arguments:
+            - @service_container
+
+    app.third.notify_company:
+        class: AppBundle\Third\NotifyCompany
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    app.third.dyc:
+        class: AppBundle\Third\Dyc
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    Chesanbai:
+        class: AppBundle\Third\Chesanbai
+        arguments:
+            - @service_container
+
+    verifycode_authenticator:
+          class: AppBundle\Security\VerifycodeAuthenticator
+          arguments: ["@security.encoder_factory", "@security.user_checker"]
+          calls:
+              - [setContainer, [@service_container]]
+
+    token_authenticator:
+          class: AppBundle\Security\TokenAuthenticator
+          arguments: ['@doctrine.orm.entity_manager']
+
+    app.form.change_password:
+        class: AppBundle\Form\ChangePasswordType
+        tags:
+            - { name: form.type, alias: app_user_change_password }
+
+    app.form.registration:
+        class: AppBundle\Form\RegistrationType
+        tags:
+            - { name: form.type, alias: app_user_registration }
+
+    app.form.user:
+        class: AppBundle\Form\UserType
+        arguments:
+            - @service_container
+        tags:
+            - { name: form.type }
+
+    app.form.apply:
+        class: AppBundle\Form\ApplyType
+        arguments:
+            - @service_container
+        tags:
+            - { name: form.type }
+
+    app.form.agency:
+        class: AppBundle\Form\AgencyType
+        arguments:
+            - @service_container
+        tags:
+            - { name: form.type }
+
+    util.rabbitmq:
+          class: AppBundle\util\RabbitMQ
+          calls:
+              - [setContainer, [@service_container]]
+
+    util.smverifycode:
+          class: AppBundle\util\SMVerifyCode
+          calls:
+              - [setContainer, [@service_container]]
+
+    app.user_provider:
+        class: AppBundle\Security\UserProvider
+        arguments:
+            - @service_container
+
+    app.business_factory:
+        class: AppBundle\BusinessExtend\BusinessFactory
+        arguments:
+            - @service_container
+
+    app.security.validation:
+        class: AppBundle\Security\ValidationServices
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    api_ip_validation:
+        class:  AppBundle\Security\ApiAuthenticator
+        public: false
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    #添加twig扩展
+    app.twig_extension:
+        class: AppBundle\Twig\AppExtension
+        public: false
+        tags:
+            - { name: twig.extension }
+
+    # 3des加密
+    util.std3des:
+        class: AppBundle\util\Std3Des
+        calls:
+            - [setContainer, [@service_container]]
+
+    util.systemapisign:
+        class: AppBundle\util\SystemApiSign
+        arguments:
+            - @service_container
+    util.curl_helper:
+        class: AppBundle\util\CurlHelper
+        arguments:
+            - @service_container
+
+    util.hessian_client_sunwu:
+        class: AppBundle\util\HessianClient
+        arguments:
+            - "%sunwu_url%"
+
+    util.hessian_client_polaris:
+        class: AppBundle\util\HessianClient
+        arguments:
+            - "%polaris_url%"
+
+    util.dateTime:
+        class: AppBundle\util\DateTime
+
+    util.str:
+        class: AppBundle\util\Str
+
+    # 生成随机字符串
+    util.random:
+        class: AppBundle\util\Random
+
+    # 生成和验证app端token
+    util.token:
+        class: AppBundle\util\AppToken
+
+    util.rabbitmq:
+          class: AppBundle\util\RabbitMQ
+          calls:
+              - [setContainer, [@service_container]]
+
+    # pc端登录需ip白名单
+    ip_authenticator:
+        class:     AppBundle\Security\IpAuthenticator
+        calls:
+            - [ setContainer, [ @service_container ] ]
+        arguments: ["@request_stack"]
+
+    #车置宝短信服务
+    app.third.sms:
+        class: AppBundle\Third\Sms
+        arguments:
+            - @service_container

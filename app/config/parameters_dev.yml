@@ -1,0 +1,138 @@
+#开发测试环境的parameters.yml
+parameters:
+    database_driver: pdo_mysql
+
+    # 主数据库
+    database_host: 192.168.1.251
+    database_port: null
+    database_name: jingmingzhu_hpl
+    database_user: youyiche
+    database_password: 123456
+
+    database_host_youyiche: 192.168.1.251
+    database_port_youyiche: null
+    database_name_youyiche: youyiche
+    database_user_youyiche: youyiche
+    database_password_youyiche: 123456
+
+    #session保存目录（带斜杠），生产环境请设置在site目录以外
+    session_path: %kernel.root_dir%/sessions/
+
+    # redis服务
+    # redis_server 空或者是no表示不使用redis,123456@10.45.34.232
+    # redis_xx_db 用来设置业务上使用的redis子数据库
+    redis_server: no
+    redis_default_db: 10
+    redis_cache_db: 11
+
+    mailer_transport: smtp
+    mailer_host: smtp.exmail.qq.com
+    mailer_user: server@youyiche.com
+    mailer_password: Kaimendaji626
+
+    # symfony framework相关配置
+    locale: zh_CN
+    secret: ThisTokenIsNotSoSecretChangeIt
+
+    # 验证码相关
+    verifycode_login_key: login_verifycode
+    verifycode_login_switch: false
+
+    # 七牛
+    qiniu_domain: http://7xki7s.com1.z0.glb.clouddn.com
+    qiniu_bucket: test
+    qiniu_prefix: test
+
+    # 审核通过后通知各公司的开关
+    notice_company: false
+
+    # 启用rabbitmq，开发测试环境用不到或者没有安装rabbit_server的时候，请关闭！
+    rabbitmq_enable: true
+    rabbitmq_host: '127.0.0.1'
+    rabbitmq_port: 5672
+    rabbitmq_user: 'guest'
+    # 密码要改一下
+    rabbitmq_password: 'guest'
+
+    # 消息模块的调试标志，开发和测试环境必须为true！
+    message_debug: true
+    # Jpush推送，true为推送给订单所属人员，false推送给admin！
+    jpush_debug: true
+    jpush_key_hpl: 3a77fcf2fa44c42a8f16c1ed
+    jpush_secret_hpl: fa481076b46a777de86adb94
+
+    # 云检测地址 后面不带/
+    jiance_domain: http://qa1.jiance.youyiche.com
+
+    #有一车erp 配置
+    yyc_domain: http://www.youyiche.com
+
+    # 大圣来了线上配置
+    # dsll_url: http://api.dashenglaile.com/gateway/v2
+    # dsll_private_key: ed2721882024f809c597a5652d295a97
+    # dsll_partner: 7066582967130314
+    # 大圣来了测试环境
+    dsll_url: http://test.dashenglaile.com/gateway/v2
+    dsll_private_key: 73ca368e10e96616e11951c1d2e12ef5
+    dsll_partner: 7066715120801731
+
+    #车鉴定测试环境提供的url，用户id，密码,rsa私钥
+    cjd_url: https://test-pif.chejianding.com
+    cjd_uid: f39d0a454e63829b014e709691d606b8
+    cjd_pwd: e10adc3949ba59abbe56e057f20f883e
+    cjd_rsa_private_key: cert/cjd_uat_rsa_private_key.pem
+
+    #查博士测试环境
+    cbs_url: http://api.chaboshi.cn
+    cbs_uid: 1627
+    cbs_key: 2d0c0c1ef14d414fcbbed9d94dd5188f
+
+    # 平安云测试环境相关的参数
+    pinganyun_url: 'http://test1-iobs.pingan.com.cn'
+    pinganyun_bucket: 'iobs-dmz-dev'
+    pinganyun_access_key: '60Kd0F6CMV60KCWYdCd02IWW6220dYJK'
+    pinganyun_secret_key: 'WCKJV0WI898DYF6DDV9KdIIdCd6I0M2W'
+    temp_save_file_path: %kernel.root_dir%/../temp/
+
+    #测试环境下console中调用网站url.
+    router.request_context.host: uathpl.youyiche.com
+
+    # 老司机保险相关的参数
+    yyc_foundation.lsj.url: http://api.lsj001.com/a/OrderByVin
+    yyc_foundation.lsj.private_key: 1EC0EC10-877B-4FA6-96CB-F9F20D1C25D3
+    yyc_foundation.lsj.user_token: b0b51138-763c-4fcc-822b-00821dd3504e
+    yyc_foundation.lsj.user_id: 27
+
+    # 聚合数据，测试环境一定要用debug，作为mock测试
+    juhe_claims_key: debug
+    juhe_maintence_key: debug
+
+    # 蚂蚁女王，测试环境key一定要用debug，作为mock测试
+    antqueen_partnerid: 85456987
+    antqueen_key: debug
+
+    #海通恒运
+    hthyNumberUrl: http://58.246.145.114/iFinCarGateway/dealJsonEsc
+    hthyNumberPort: 18080
+
+    # 验证业务流水号的开关
+    validateBusinessNumberSwitch: false
+
+    #车型库url
+    chexiUrl: http://vmodel.youyiche.com
+    chexiPort: 80
+
+    #sunwu hession url
+    sunwu_url: http://sit.sunwu.mychebao.com:8080/sunwu-web/carBaseInfo.hs?md=c43553df787bb9fbff4f3cfe1836f015
+    
+    # 北极星查价格信息 url
+    polaris_url: http://polarissit.mychebao.com/valuationInfo.hs?md=c43553df787bb9fbff4f3cfe1836f015
+
+    # 登录系统是否开启ip白名单验证
+    ip_validate_switch: false
+
+    #车置宝短信服务
+    sms_url: http://message.public.mychebao.com/msg/notify/pushSMS
+    sms_appKey: 54c82aa0b8324ee1bab0e1cf0788db1b
+    sms_appSecret: d6184f0d26c4fbd5c1ac949b0f41f8bc
+    sms_switch: false

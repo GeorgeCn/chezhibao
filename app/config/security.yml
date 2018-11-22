@@ -1,0 +1,81 @@
+security:
+    encoders:
+        FOS\UserBundle\Model\UserInterface: bcrypt
+        Symfony\Component\Security\Core\User\User: plaintext
+
+    role_hierarchy:
+        ROLE_LOADOFFICER:
+        ROLE_LOADOFFICER_MANAGER:
+        ROLE_EXAMER:
+        ROLE_EXAMER_RECHECK:
+        ROLE_EXAMER_MANAGER: [ROLE_EXAMER, ROLE_EXAMER_RECHECK]
+        ROLE_EXAMER_HPL:
+        ROLE_ADMIN_HPL:
+        ROLE_ADMIN: [ROLE_USER, ROLE_LOADOFFICER, ROLE_EXAMER, ROLE_EXAMER_HPL, ROLE_ADMIN_HPL, ROLE_EXAMER_MANAGER, ROLE_EXAMER_RECHECK]
+        ROLE_KEFU:
+
+    providers:
+        fos_userbundle:
+            id: fos_user.user_provider.username
+        custom:
+            id: app.user_provider
+        in_memory:
+            memory:
+                users:
+                    kefu:
+                        password: 123456
+                        roles: 'ROLE_KEFU'
+
+    firewalls:
+        rest_api:
+            pattern: ^/openapi/v
+            methods: [GET, POST, PUT, DELETE]
+            guard:
+                authenticators: [token_authenticator]
+            stateless: true
+
+
+        pingan_api:
+            context: pingan
+            pattern: ^/pingan
+            stateless: true
+            simple_preauth:
+                authenticator: api_ip_validation
+
+        kefu:
+            pattern: ^/kefu/new
+            anonymous:    true
+            http_basic: ~
+            provider: in_memory
+
+        main:
+            pattern: ^/
+            simple_form:
+                authenticator: ip_authenticator
+                login_path: /
+                provider: custom
+                csrf_token_generator: security.csrf.token_manager
+                default_target_path: dashboard
+
+            logout:       true
+            anonymous:    true
+
+            remember_me:
+                secret: '%secret%'
+
+    access_control:
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/openapi/code, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/openapi/resetpw, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/, role: ROLE_ADMIN }
+        - { path: ^/kefu/new, role: ROLE_KEFU }
+
+
+        # pingan api
+        - { path: ^/pingan, roles: ROLE_BUSINESS_API }
+
+        # foundation bundle
+        - { path: ^/juhe/notify$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/juhe/, role: ROLE_USER }

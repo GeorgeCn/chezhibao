@@ -1,0 +1,73 @@
+/***************************分页样式调整***************************/
+
+.pagination-custom{
+    padding: 30px 0 0;
+    text-align: center;
+}
+
+.pagination-custom>div{
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.pagination-list a,
+.pagination-list span{
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 20px;
+}
+
+.pagination-list a:hover{
+    text-decoration: none;
+}
+
+.pagination-btn{
+    width: 20px;
+    height: 20px;
+    background: url("/images/arrow.png");
+}
+
+.pagination-btn.prev{
+    margin-right: 5px;
+}
+
+.pagination-btn.next{
+    margin-left: 5px;
+}
+
+.pagination-btn.prev,
+.pagination-btn.prev.disabled,
+.pagination-btn.prev.disabled:hover{
+    background-position: -60px 0;
+}
+
+.pagination-btn.prev:hover{
+    background-position: -60px -20px;
+}
+
+.pagination-btn.next,
+.pagination-btn.next.disabled,
+.pagination-btn.next.disabled:hover{
+    background-position: -20px 0;
+}
+
+.pagination-btn.next:hover{
+    background-position: -20px -20px;
+}
+
+.pagination-to{
+    width: 100px;
+    margin: -10px 0 0 20px;
+}
+
+.pagination-page-all,
+.pagination-item-all{
+    color: #999999;
+    margin-left: 18px;
+    font-size: 12px;
+}
+
+
+
+
+

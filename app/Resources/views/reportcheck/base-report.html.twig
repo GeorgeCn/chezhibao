@@ -1,0 +1,35 @@
+{% if recheck is not defined %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>{% block title %}{% endblock %}</title>
+        {# <link href="{{asset('bootstrap/css/bootstrap.min.css',null,true)}}" rel="stylesheet"> #}
+        <link href="{{ asset('report/css/appraisal-report.css',null,true) }}" rel="stylesheet">
+
+        {% if displayType is defined and displayType == 'appHtml' %}
+            <link href="{{asset('report/css/appraisal-report-responsive.css',null,true) }}" rel="stylesheet">
+        {% endif %}
+        {% block stylesheets %}
+            <style>
+                * {
+                    overflow: visible !important;
+                }
+            </style>
+
+        {% endblock %}
+    </head>
+    <body>
+{% endif %}
+    {% block body %}{% endblock %}
+
+{% if recheck is not defined %}
+        <script src="{{asset('bootstrap/js/jquery.min.js',null,true)}}"></script>
+        {% block javascripts %}{% endblock %}
+    </body>
+    </html>
+{% endif %}

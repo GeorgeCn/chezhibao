@@ -1,0 +1,211 @@
+{% extends 'common/task_content.html.twig' %}
+{% block list_filter %}
+    <div class="receiving_header">
+        <div class="total_task span1">
+            <div class="task_total">任务池总数<span>0</span>单&nbsp;&nbsp;(退回<b>0</b>单)</div>
+        </div>
+        <div class="day_task span1">
+            <div class="task_total">今日完成 <span>0</span>单</div>
+        </div>
+        <div class="timeout_task span1">
+            <div class="task_total">任务平均完成时间 <span>0</span>分钟</div>
+        </div>
+        <div class="message_box span1">
+            <div class="task_total">
+                <div>友情提示：</div>
+                <p></p></div>
+        </div>
+    </div>
+{% endblock %}
+{% block task %}
+    <form id="receivingFrom">
+        {% if order %}
+            <div class="module-title" style="text-align:center;">数据图表</div>
+            <div class="receivingTable clearfix">
+                <dl>
+                    <dt>评估单号</dt>
+                    <dd class="orderNo">
+                        {{ order.orderNo }}
+                        {% if order.businessNumber %}
+                            ({{ order.businessNumber }})
+                        {% endif %}
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>信贷员</dt>
+                    <dd class="name">{{ order.loadOfficer ? order.loadOfficer.name : '' }}</dd>
+                </dl>
+                <dl>
+                    <dt>电话</dt>
+                    <dd class="mobile">{{ order.loadOfficer ? order.loadOfficer.mobile : '' }}</dd>
+                </dl>
+                <dl>
+                    <dt>金融公司</dt>
+                    <dd class="company">{{ order.company ? order.company.company : '' }}</dd>
+                </dl>
+                <dl>
+                    <dt>经销商</dt>
+                    <dd class="companyCode">{{ order.agencyName }}</dd>
+                </dl>
+                <dl>
+                    <dt>审核人</dt>
+                    <dd class="examer">{{ order.report ? order.report.examer.name : '' }}</dd>
+                </dl>
+                <dl>
+                    <dt>单据状态</dt>
+                    <dd class="status">
+                        {% if order.status == 1 and order.report is not null and order.report.hplReason %}
+                            <td>第三方退回</td>
+                        {% elseif order.status == 1 and order.lastBack is not null %}
+                            <td>重新提交</td>
+                        {% else %}
+                            <td>初次提交</td>
+                        {% endif %}
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>提交时间</dt>
+                    <dd class="submittedAt">{{ order.submitedAt |date("Y-m-d H:i:s") }}</dd>
+                </dl>
+                <dl>
+                    <dt>最晚完成时间</dt>
+                    <dd class="finishAt">{{ order.submitedAt |date_modify("+1 hour")|date("Y-m-d H:i:s") }}</dd>
+                </dl>
+            </div>
+            <div class="submit_btn">
+                <a href="{{ path('work_check',{'id': order.id}) }}" class="btn btn-info">审核</a>
+            </div>
+        {% else %}
+            <div class="task_start">
+                <div class="btn btn-info" type="button">开始接单</div>
+            </div>
+            <div class="module-title" style="text-align:center;display:none;">数据图表</div>
+            <div class="receivingTable clearfix" style="display:none">
+                <dl>
+                    <dt>评估单号</dt>
+                    <dd class="orderNo">
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>信贷员</dt>
+                    <dd class="name"></dd>
+                </dl>
+                <dl>
+                    <dt>电话</dt>
+                    <dd class="mobile"></dd>
+                </dl>
+                <dl>
+                    <dt>金融公司</dt>
+                    <dd class="company"></dd>
+                </dl>
+                <dl>
+                    <dt>经销商</dt>
+                    <dd class="companyCode"></dd>
+                </dl>
+                <dl>
+                    <dt>审核人</dt>
+                    <dd class="examer"></dd>
+                </dl>
+                <dl>
+                    <dt>单据状态</dt>
+                    <dd class="status">
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>提交时间</dt>
+                    <dd class="submittedAt"></dd>
+                </dl>
+                <dl>
+                    <dt>最晚完成时间</dt>
+                    <dd class="finishAt"></dd>
+                </dl>
+            </div>
+            <div class="submit_btn" style="display:none">
+            </div>
+        {% endif %}
+    </form>
+{% endblock %}
+    {% block javascripts %}
+        {{ parent() }}
+        <script type="text/javascript">
+            // 审核状态样式
+            var $receivingTable = $('.receivingTable');
+            var $receivingFrom = $('#receivingFrom');
+            var get_task = "{{ path('get_order') }}";//接口获取
+            var url = "{{ path('order_task_count') }}";
+            $('.message_box .task_total').hide();
+
+            // 任务头部状态更新
+            function refresh() {
+                $.ajax({
+                    type: "get",
+                    url: url,
+                    success: function (data) {
+                        if (data) {
+                            $('.total_task .task_total span').text(data.totalCount);
+                            $('.day_task .task_total span').text(data.todayFinishCount);
+                            $('.timeout_task .task_total span').text(data.averageTime);
+                            $('.total_task .task_total b').text(data.backCount);
+                        }
+                    },
+                    error: function () {
+                        alert("数据获取失败，请稍后再试！");
+                    }
+                })
+            };
+
+            refresh();
+            setInterval('refresh()', 60000); //指定1秒刷新一次
+
+            {% if limit %}
+                $receivingTable.hide();
+                $('.module-title').hide();
+                $receivingFrom.html('请勿频繁刷新系统，谢谢！');
+            {% endif %}
+
+            //点击接单
+            $('.task_start').on('click', function () {
+                var self = this;
+                $.ajax({
+                    type: "get",
+                    url: get_task,
+                    success: function (data) {
+                        refresh();
+                        if (data.data) {
+                            $('.module-title').show();
+                            $receivingTable.show();
+                            $(self).hide();
+                            $('.submit_btn').show();
+                            $receivingTable.find('dd').filter(function (i, v) {
+                                $.each(data.data, function (key, val) {
+                                    if (v.className == key) {
+                                        $(v).text(val)//要刷新的div
+                                    }
+                                })
+                            });
+                            var link = "{{ path('work_check',{'id':'id' }) }}";
+                            link = link.replace("id", data.data.id);
+                            $(".submit_btn").append("<a href=' " + link + "' class='btn btn-info'>审核</a>");
+
+                        } else {
+                            refresh();
+                            $receivingTable.hide();
+                            $(self).hide();
+                            $('.module-title').hide();
+                            $('.message_box .task_total div').show();
+                            if (data.code != 0) {
+                                commonMethod.prompt({
+                                    msgHTML: data.msg,
+                                    confirmTxt: "退出",
+                                })
+                                $receivingFrom.html(data.msg);
+                            }
+                        }
+                    },
+                    error: function () {
+                        $receivingFrom.html("数据返回错误，请尝试刷新页面！");
+                    }
+                })
+            });
+        </script>
+    {% endblock %}

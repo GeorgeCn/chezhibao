@@ -1,0 +1,1032 @@
+/*simplify from normalize.css v5.0.0*/
+
+html {
+    font-family: sans-serif;
+    /* 1 */
+    line-height: 1.15;
+    /* 2 */
+    -ms-text-size-adjust: 100%;
+    /* 3 */
+    -webkit-text-size-adjust: 100%;
+    /* 3 */
+}
+
+body {
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica, "Microsoft YaHei", sans-serif;
+}
+
+article,
+aside,
+footer,
+header,
+nav,
+section {
+    display: block;
+}
+
+h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+figcaption,
+figure,
+main {
+    display: block;
+}
+
+figure {
+    margin: 1em 40px;
+}
+
+hr {
+    box-sizing: content-box;
+    /* 1 */
+    height: 0;
+    /* 1 */
+    overflow: visible;
+    /* 2 */
+}
+
+pre {
+    font-family: monospace, monospace;
+    /* 1 */
+    font-size: 1em;
+    /* 2 */
+}
+
+a {
+    background-color: transparent;
+    /* 1 */
+    -webkit-text-decoration-skip: objects;
+    /* 2 */
+}
+
+a:active,
+a:hover {
+    outline-width: 0;
+}
+
+abbr[title] {
+    border-bottom: none;
+    /* 1 */
+    text-decoration: underline;
+    /* 2 */
+    text-decoration: underline dotted;
+    /* 2 */
+}
+
+b,
+strong {
+    font-weight: inherit;
+}
+
+b,
+strong {
+    font-weight: bolder;
+}
+
+small {
+    font-size: 80%;
+}
+
+sub,
+sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+sup {
+    top: -0.5em;
+}
+
+img {
+    border-style: none;
+    vertical-align: top;
+}
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+fieldset {
+    border: 1px solid #c0c0c0;
+    margin: 0 2px;
+    padding: 0.35em 0.625em 0.75em;
+}
+
+/*add other common*/
+/** {
+    box-sizing: border-box;
+}*/
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+    width: 100%;
+}
+
+td {
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+ul,
+ol {
+    list-style: none outside none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+li,
+dl,
+dd,
+td,
+th {
+    margin: 0;
+    padding: 0;
+}
+
+.clearfix:after,
+.appraisal-report-content-wrap:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.float-left {
+    float: left !important;
+}
+
+.float-right {
+    float: right !important;
+}
+
+.color-red {
+    color: #ed5565 !important;
+}
+
+.color-gray {
+    color: #999 !important;
+}
+
+/*.tr-one-third td,
+.td-one-third {
+    width: 33.3333%;
+}
+
+.tr-one-third td:first-child {
+    width: 33.3334%;
+}
+
+.tr-one-sixth td,
+.td-one-sixth {
+    width: 16.66665%;
+}
+
+.tr-one-sixth td:first-child {
+    width: 16.66675%;
+}
+
+.tr-mixed-0 td:first-child {
+    width: 16.66675%;
+}
+
+.tr-mixed-1 td:first-child {
+    width: 43%;
+}
+*/
+
+/*************************report*********************/
+
+.report-canvas {
+    width: 100%;
+    margin: 0 auto;
+    background-color: #fff;
+}
+
+.appraisal-report-header {
+    /*display: none;*/
+    background-color: #2b2e34;
+    color: #fff;
+}
+
+.appraisal-report-content-wrap,
+.appraisal-report-header-border {
+    /*width: 850px;*/
+    margin: 0 auto;
+    position: relative;
+}
+
+.appraisal-report-header-border {
+    height: 10px;
+    overflow: hidden;
+    background-color: #ed5565;
+}
+
+.appraisal-report-header .appraisal-report-content-wrap {
+    padding: 25px 0;
+}
+
+.appraisal-report-footer {
+    text-align: right;
+    padding: 10px 0 40px;
+}
+
+.appraisal-report-footer img {
+    width: 120px;
+}
+
+.appraisal-report-logo {
+    width: 35%;
+    text-align: left;
+}
+
+.appraisal-report-synopsis {
+    width: 65%;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.appraisal-report-body {
+    text-align: center;
+    padding: 30px 8px;
+}
+
+.appraisal-report-body h2 {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.appraisal-report-body .t-chinese {
+    font-size: 30px;
+}
+
+.appraisal-report-detail {
+    margin-top: 30px;
+    border-top: 1px solid #d4d4d4;
+}
+
+.appraisal-report-module {
+    margin-top: 8px;
+}
+
+.appraisal-report-module .module-title {
+    text-indent: 1em;
+    letter-spacing: 1em;
+    line-height: 40px;
+    background: #ebebeb;
+    font-size: 18px;
+}
+
+.appraisal-report-module .module-subtitle {
+    text-indent: 1em;
+    letter-spacing: 1em;
+    border: 1px solid #d4d4d4;
+    font-size: 16px;
+    line-height: 38px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.appraisal-report-module .module-subtitle-record {
+    padding: 15px 0;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.appraisal-report-module .module-subtitle-record h4 {
+    border-left: 2px solid #333;
+    text-indent: 1em;
+    letter-spacing: 1em;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.appraisal-report-module .module-content.single-table {
+    margin-top: 8px;
+    padding: 8px 0;
+    border-top: 1px solid #d4d4d4;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.appraisal-report-module .module-content.more-table {
+    padding-bottom: 8px;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.appraisal-report-module .module-table {
+    text-align: center;
+}
+
+.appraisal-report-module .table-type-5 tbody tr {
+    width: 50%;
+    float: left;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.appraisal-report-module .table-type-5 tbody tr .no-border {
+    display: none;
+}
+
+.appraisal-report-module .table-type-5 tbody tr td {
+    text-align: center;
+}
+
+.appraisal-report-module .table-type-5 tbody tr:nth-child(even) {
+    border-left: 1px solid #ebebeb;
+}
+
+.appraisal-report-module .table-type-5 tbody tr:nth-child(2) {
+    border-top: 0;
+}
+
+.appraisal-report-module .table-type-5 tbody tr td:nth-child(odd) {
+    width: 150px;
+}
+
+.appraisal-report-module .table-type-5 tbody tr td:nth-child(even) {
+    width: 50%;
+}
+
+/*.appraisal-report-module .table-type-5 tbody tr td:nth-last-child(1){
+ width: 100%;
+}
+.appraisal-report-module .table-type-5 tbody tr td:nth-last-child(2){
+ width: 100%;
+}*/
+
+.appraisal-report-module .table-type-2 tbody .tr-one-nine {
+    width: 100%;
+    border-left: 0;
+    border-bottom: 0;
+    border-top: 0;
+}
+
+.appraisal-report-module .table-type-2 tbody .tr-two-nine {
+    border-left: 0;
+    border-bottom: 1px solid #ebebeb;
+    border-top: 0;
+}
+
+.appraisal-report-module .table-type-2 tbody .tr-three-nine td:nth-child(1) {
+    width: 1% !important;
+}
+
+.appraisal-report-module .table-type-2 tbody .tr-one-ten {
+    width: 100%;
+    border-left: 0;
+}
+
+.appraisal-report-module .table-type-2 tbody .tr-one-ten {
+    width: 100%;
+    border-left: 0;
+}
+
+.appraisal-report-module .table-type-2 tbody .tr-one-for {
+    width: 100%;
+    border: 0;
+}
+
+.appraisal-report-module .table-type-2 tbody .tr-one-for td {
+    border-right: 1px solid #ebebeb;
+    border-bottom: 1px solid #ebebeb;
+}
+
+.appraisal-report-module .table-type-2 tbody .tr-one-for td:last-child {
+    border-right: 0;
+}
+
+.appraisal-report-module .table-type-2 tbody .tr-one-nine:first-child td {
+    border-top: 0;
+}
+
+.appraisal-report-module .table-type-2 tbody .tr-one-nine td {
+    text-align: center;
+    box-sizing: border-box;
+
+}
+
+.appraisal-report-module .table-type-2 tbody .tr-one-nine td:nth-child(1) {
+    border-left: 0;
+    width: 5%;
+}
+
+.appraisal-report-module .table-type-2 tbody .tr-one-nine td:nth-child(2) {
+    width: 5%;
+}
+
+.appraisal-report-module .table-type-2 tbody .tr-one-ten td {
+    text-indent: 2em;
+    font-size: 14px;
+    line-height: 1.5;
+    border: 0;
+}
+
+.appraisal-report-module .table-type-2 tbody .tr-one-ten {
+    border-top: 1px solid #ebebeb;
+    border-bottom: 1px solid #ebebeb;
+}
+
+.appraisal-report-module .table-type-2 tbody tr {
+    width: 33.333333%;
+    float: left;
+    box-sizing: border-box;
+}
+
+.appraisal-report-module .table-type-2 tbody tr td {
+    /*flex: 1;*/
+    width: 15%;
+}
+
+.appraisal-report-module .module-table tr {
+    border-top: 1px solid #ebebeb;
+}
+
+.appraisal-report-module .module-table tr:first-child {
+    border-top: 0;
+}
+
+.appraisal-report-module .module-table td {
+    padding: 8px;
+    border-left: 1px solid #ebebeb;
+}
+
+.appraisal-report-module .module-table td:first-child,
+.appraisal-report-module .module-table td.no-border {
+    border-left: 0;
+}
+
+.appraisal-report-module .module-table td.had-border {
+    border-left: 1px solid #ebebeb !important;
+}
+
+.appraisal-report-module ul.sketch {
+    padding: 10px;
+}
+
+.appraisal-report-module ul.sketch li {
+    padding: 5px 0;
+}
+
+/*授权申请继承此页面*/
+.appraisal-report-module .form-control {
+    width: 40%;
+    height: 28px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    background-color: white;
+    margin-right: 10%;
+}
+
+.appraisal-report-module .form-verify {
+    display: inline-block;
+    padding: 1.2% 1.4%;
+    background-color: #fcedf2;
+    border: 1px solid #ffbee0;
+    border-radius: 3px;
+    text-decoration: none;
+    text-align: center;
+    vertical-align: top;
+    transition: .3s;
+    color: #999;
+}
+
+.appraisal-report-module .form-verify:hover {
+    cursor: pointer;
+    background-color: #d0d0d0;
+}
+
+.appraisal-report-module .form-div {
+    margin-bottom: 20px;
+}
+
+.appraisal-report-module .form-div .form-control-width {
+    width: 20%;
+}
+
+.appraisal-report-module .form-div span {
+    display: block;
+    width: 10%;
+    float: right;
+    position: relative;
+    right: 30%;
+    top: 10%;
+}
+
+.appraisal-report-module .form-div .form-btn {
+    display: inline-block;
+    padding: 6px 12px;
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid #ed5564;
+    border-radius:4px;
+    /*width: 15%;*/
+    font-size: 14px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #ed5564;
+    /*border-color: #ed5564;*/
+    margin-right: 20px;
+}
+
+/*车辆价格影响因素*/
+
+.report-module-price-effect .module-content {
+    border-top: 1px solid #d4d4d4;
+    border-bottom: 1px solid #d4d4d4;
+    margin-top: 8px;
+    padding: 5px 15px;
+}
+
+.report-module-price-effect .module-content tr {
+    border-top: 1px solid #ebebeb;
+}
+
+.report-module-price-effect .module-content tr:first-child {
+    border-top: 0;
+}
+
+/*.report-module-price-effect .module-content .appraisal-report-icon {
+    width: 30%;
+    font-size: 16px;
+}*/
+
+.report-module-price-effect .module-content td {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.report-module-price-effect .module-content td .list {
+    margin-top: -10px;
+}
+
+.report-module-price-effect .module-content .item {
+    box-sizing: border-box;
+    float: left;
+    width: 20%;
+    margin-left: 32px;
+    margin-top: 10px;
+    background: url("/report/img/icon0.png") no-repeat 0 center;
+    padding-left: 15px;
+}
+
+.report-module-price-effect .appraisal-report-icon.icon1 {
+    background: url("/report/img/icon1.png") no-repeat 37% center;
+    padding-left: 30px;
+}
+
+.report-module-price-effect .appraisal-report-icon.icon2 {
+    background: url("/report/img/icon2.png") no-repeat 37% center;
+    padding-left: 30px;
+}
+
+/*车辆未来价格趋势*/
+#canvasChart {
+    width: 100%;
+}
+
+.report-module-future-price .module-content {
+    border-top: 1px solid #d4d4d4;
+    margin-top: 8px;
+    padding-right: 15px;
+}
+
+.report-module-future-price .unit {
+    padding: 8px 0 8px 25px;
+    margin: 0 0 0 35px;
+    border-bottom: 1px solid #ebebeb;
+}
+
+.report-module-future-price .chart {
+    position: relative;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #d4d4d4;
+    padding-left: 35px;
+    margin-top: -5px;
+}
+
+.report-module-future-price .chart-content {
+    /*height: 205px;*/
+    position: relative;
+}
+
+.report-module-future-price .price-number {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+}
+
+.report-module-future-price .price-number .value {
+    float: left;
+    width: 33.3333%;
+    /*height: 100%;*/
+}
+
+.report-module-future-price .price-number .value:first-child {
+    width: 33.3334%;
+}
+.report-module-future-price .price-number .value.price-0 {
+   margin-top: 2% !important;
+}
+.report-module-future-price .price-number .value.price-1{
+   margin-top: 4% !important;
+}
+.report-module-future-price .price-number .value.price-2 {
+   margin-top: 6% !important;
+}
+.report-module-future-price .vertical-axis {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    text-align: center;
+    width: 35px;
+}
+
+.report-module-future-price .vertical-axis .value {
+    position: absolute;
+    left: 0;
+    width: 100%;
+}
+
+.report-module-future-price .vertical-0 {
+    top: 0;
+}
+
+.report-module-future-price .vertical-1 {
+    top: 35%;
+}
+
+.report-module-future-price .vertical-2 {
+    top: 78%;
+}
+
+.report-module-future-price .horizontal-axis .value {
+    float: left;
+    width: 33.3333%;
+    position: relative;
+}
+
+.report-module-future-price .horizontal-axis .value:first-child {
+    width: 33.3334%;
+}
+
+.report-module-future-price .horizontal-axis .value:after,
+.report-module-future-price .horizontal-axis .horizontal-0:before {
+    content: "";
+    width: 1px;
+    height: 10px;
+    background-color: #999;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin-top: -4px;
+    overflow: hidden;
+}
+
+.report-module-future-price .horizontal-axis .horizontal-0:before {
+    right: auto;
+    left: 0;
+}
+
+/*维修保养记录*/
+
+.report-module-repair-maintain {
+    padding-bottom: 40px;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.report-module-repair-maintain .module-content {
+    border-top: 1px solid #d4d4d4;
+    margin-top: 8px;
+    text-align: left;
+}
+.report-module-repair-maintain .module-content .item-content1 {
+    border-right: 1px solid #d4d4d4;
+    border-left: 1px solid #d4d4d4;
+}
+.report-module-repair-maintain .item {
+    border-bottom: 1px solid #ebebeb;
+}
+
+.report-module-repair-maintain .item-title {
+    border-bottom: 1px solid #ebebeb;
+    padding: 8px 15px;
+}
+
+.report-module-repair-maintain .item-content {
+    margin-left: 18px;
+    border-left: 1px solid #c0c0c0;
+}
+
+.report-module-repair-maintain .dot {
+    margin-right: 8px;
+}
+
+.report-module-repair-maintain .pic-list {
+    padding: 8px 0 8px 16.6667%;
+    border-top: 1px solid #ebebeb;
+}
+ .pic-list1 {
+    display: flex;
+    flex-wrap: wrap;
+    border-top: 1px solid #ebebeb;
+}
+ .pic-list1.border-bottom {
+    border-bottom: 1px solid #ebebeb;
+}
+ .pic-list1 img{
+   padding: 20px;
+}
+
+.report-module-repair-maintain .pic-list img {
+    max-width: 100%;
+    border: 1px solid #ebebeb;
+    display: block;
+}
+
+.report-module-repair-maintain .pic-list img + img {
+    margin-top: 10px;
+}
+
+.report-module-repair-maintain .extend-bar {
+    position: relative;
+    height: 36px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.report-module-repair-maintain .item-content-p + .item-content-p {
+    margin-top: 20px;
+}
+
+/*法律声明*/
+
+.appraisal-report-legal-statement {
+    text-align: left;
+    margin-top: 40px;
+}
+
+.appraisal-report-legal-statement p {
+    text-indent: 2em;
+    line-height: 2;
+}
+
+.appraisal-report-legal-statement .title {
+    margin-bottom: 8px;
+}
+
+/**********pc端************/
+@media (min-width: 751px) {
+    .report-canvas {
+        width: 750px;
+    }
+
+    /*  .report-canvas .appraisal-report-header {
+        display: block; }*/
+    /*********新增授权********/
+    .apply_web_body h2 {
+        font-size: 16px;
+
+    }
+    .appraisal-report-module .form-verify {
+
+        height: 36px;
+        line-height: 300%;
+        width: 100px;
+
+    }
+    .apply_web_body .invitation {
+        /*text-align: left;*/
+        font-size: 24px;
+    }
+
+    .appraisal-report-module .title_message {
+        letter-spacing: 0;
+        text-indent: 0;
+
+    }
+    .appraisal-report-module .form-right {
+       /*text-align: left;*/
+
+    }
+
+    .appraisal-report-module .form-text {
+        font-size: 14px;
+        color: #979daa;
+        margin-right: 100px;
+    }
+
+    .appraisal-report-module .user_text {
+        font-size: 18px;
+        text-align: left;
+        margin-left: 28%;
+        padding: 10px;
+    }
+    .appraisal-report-module .verify .user_text{
+        margin-left: 0;
+    }
+
+    .appraisal-report-module .form-save {
+        margin-top: 20px
+    }
+
+    .appraisal-report-module .form_user {
+        text-align: left;
+        margin-right: 0;
+    }
+
+    .appraisal-report-module .verify {
+        width: 43%;
+        margin:0 auto;
+    }
+
+    .appraisal-report-module .verify:after {
+        display: block;
+        content: '';
+        clear: both;
+    }
+
+    .appraisal-report-module .verify input {
+        width: 60%;
+        margin-right: 0;
+        float: left;
+    }
+
+    .appraisal-report-module .form-padding {
+        float: right;
+
+    }
+
+    .appraisal-report-module .form-padding span {
+        padding: 12px
+    }
+
+    .appraisal-report-module .form-save {
+        margin-top: 20px
+    }
+
+    .seal {
+        background: url("/images/seal.png");
+        position: absolute;
+        width: 300px;
+        height: 284px;
+        right: 0;
+    }
+
+}
+
+.table-type-2 tbody {
+
+}
+
+.table-type-2 tbody tr {
+    width: 50%;
+
+    box-sizing: border-box;
+}
+
+.table-type-2 tbody tr:nth-child(2) {
+    border-top: 0;
+    border-left: 1px solid #ebebeb;
+}
+
+.table-type-2 tbody tr:nth-child(3) {
+    border-top: 0;
+    border-left: 1px solid #ebebeb;
+}
+
+.table-type-2 tbody tr:nth-child(5) {
+    border-left: 1px solid #ebebeb;
+}
+
+.table-type-2 tbody tr:nth-child(6) {
+    border-left: 1px solid #ebebeb;
+}
+
+.table-type-2 tbody tr:nth-child(8) {
+    border-left: 1px solid #ebebeb;
+}
+
+.table-type-2 tbody tr:nth-child(9) {
+    border-left: 1px solid #ebebeb;
+}
+
+.table-type-2 tbody tr:nth-child(11) {
+    border-left: 1px solid #ebebeb;
+}
+
+.table-type-2 tbody tr:nth-child(12) {
+    border-left: 1px solid #ebebeb;
+}
+
+.table-type-2 tbody tr:nth-child(14) {
+    width: 66.666666%;
+    border-left: 1px solid #ebebeb;
+}
+
+.table-type-2 tbody tr:nth-child(15) {
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.table-type-2 tbody tr:nth-child(16) {
+    width: 50%;
+    box-sizing: border-box;
+    border-left: 1px solid #ebebeb;
+}
+
+.table-type-2 tbody tr td.no-border {
+    display: none;
+}
+
+.table-type-3 tbody tr:nth-child(1) td:nth-child(1) {
+    width: 20%;
+}
+
+.table-type-3 tbody tr td:nth-child(3) {
+    display: none;
+}
+
+.table-type-4 tbody tr {
+    width: 100%;
+}
+
+.table-type-4 tbody tr .th {
+    width: 100%;
+}
+
+.table-type-4 tbody tr:nth-child(2) td {
+    width: 50%;
+    float: left;
+    text-align: left;
+    line-height: 150%;
+}
+
+.table-type-4 tbody tr td dd {
+    text-align: left;
+    padding-left: 10px;
+}
+
+.appraisal-report-icon {
+    font-size: 16px;
+    padding: 8px;
+}
+
+@media (min-width: 850px) {
+    .report-canvas {
+        width: 100%;
+    }
+
+    .appraisal-report-content-wrap, .appraisal-report-header-border {
+        width: 850px;
+        margin: 0 auto;
+    }
+}
+
+
+

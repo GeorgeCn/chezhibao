@@ -1,0 +1,436 @@
+{% extends "login_layout.html.twig" %}
+{% form_theme form 'form_div_layout.html.twig'  %}
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block body %}
+<div class="register-wrap">
+    <div class="register-header"></div>
+    <div class="register-content">
+        <ul class="step-indicator clearfix">
+            <li class="current">第一步</li>
+            <li>第二步</li>
+        </ul>
+        <div class="step-box">
+            <div class="step step1 current">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="item-name control-label">手机号</label>
+                        <div class="item-value">
+                            <input type="text" class="form-control" id="mobile" name="mobile" placeholder="请输入您的手机号" required="required" />
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="item-name control-label">验证码</label>
+                        <div class="item-value clearfix">
+                            <span class="short-input"><input type="text" class="form-control" id="code" name="code" placeholder="请输入验证码" required="required" /></span>
+                            <span class="btn btn-danger short-btn" id="getCode">获取验证码</span>
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="btn-group-custom">
+                        <input type="submit" class="btn btn-danger" id="submitStep1" value="下一步" />
+                    </div>
+                </form>
+            </div>
+            <div class="step step2">
+                {# <form class="form-horizontal"> #}
+                {{ form_start(form, {'attr': {'class': 'form-horizontal'}} ) }}
+                    <div class="form-group">
+                        <label class="item-name control-label">用户名</label>
+                        <div class="item-value">
+                            {# <input type="text" class="form-control" id="username" placeholder="请输入您的用户名" required="required" /> #}
+                            {{ form_widget(form.username, {'id': 'username', 'attr': {'class': 'form-control'}}) }}
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="item-name control-label">密码</label>
+                        <div class="item-value">
+{#                             <input type="password" class="form-control" id="password1" placeholder="请输入字母、数字，8-16位" required="required" />
+ #}                         {{ form_widget(form.plainPassword.first, {'id': 'password1', 'attr': {'class': 'form-control'}}) }}
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="item-name control-label">确认密码</label>
+                        <div class="item-value">
+                            {# <input type="password" class="form-control" id="password2" placeholder="请确认密码" required="required" /> #}
+                            {{ form_widget(form.plainPassword.second, {'id': 'password2', 'attr': {'class': 'form-control'}}) }}
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="item-name control-label">姓名</label>
+                        <div class="item-value">
+                            {# <input type="text" class="form-control" id="name" placeholder="请输入真实姓名" required="required" /> #}
+                            {{ form_widget(form.name, {'id': 'name', 'attr': {'class': 'form-control'}}) }}
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="item-name control-label">公司名</label>
+                        <div class="item-value">
+                            {# <input type="text" class="form-control" id="company" placeholder="请输入您的公司完整名称" required="required" /> #}
+                            {{ form_widget(form.company, {'id': 'company', 'attr': {'class': 'form-control'}}) }}
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="item-name control-label">邮箱</label>
+                        <div class="item-value">
+                            {# <input type="text" class="form-control" id="email" placeholder="请输入您的联系邮箱" required="required" /> #}
+                            {{ form_widget(form.email, {'id': 'email', 'attr': {'class': 'form-control'}}) }}
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="item-name control-label">省市</label>
+                        <div class="item-value clearfix">
+{#                             <select class="form-control short-select" id="province">
+                                <option value='1'>上海</option>
+                            </select> #}
+                            {{ form_widget(form.province, {'id': 'province', 'attr': {'class': 'form-control short-select'}}) }}
+{#                             <select class="form-control short-select" id="city">
+                                <option value='1'>上海</option>
+                            </select> #}
+                            {{ form_widget(form.city, {'id': 'city', 'attr': {'class': 'form-control short-select'}}) }}
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <div class="agreement-group">
+                        <span class="icon selected" id="agreementSelect"></span>
+                        <span class="text">阅读并接受<a href="{{ path('app_agreement') }}" target="_blank">《又一车用户协议》</a></span>
+                    </div>
+                    <div class="btn-group-custom">
+                        <input type="submit" class="btn btn-danger" id="submitStep2" name="submitStep2" value="确定" />
+                        {{ form_widget(form.mobile) }}
+                    </div>
+                {# </form> #}
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+
+    /*验证表单项*/
+    var authFormItem = {
+        pattern:function(reg,value){
+            var result = (!reg.test(value))?false:true;
+            return result;
+        },
+        isNull:function(value){
+            var reg = /^\S+$/;
+            return this.pattern(reg,value);
+        },
+        mobile:function(value){
+            var reg = /^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+            return this.pattern(reg,value);
+        },
+        username:function(value,length){
+            var reg = new RegExp("^.{1,"+length+"}$"); 
+            return this.pattern(reg,value);
+        },
+        password:function(value){
+            var reg = /^(?=.*\d.*)(?=.*[a-zA-Z].*).{8,16}$/;
+            return this.pattern(reg,value);
+        },
+        repeat:function(value1,value2){
+            var reg = new RegExp(value1);
+            return this.pattern(reg,value2);
+        },
+        email:function(value){
+            var reg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+            return this.pattern(reg,value);
+        }
+    }
+
+    /*显示错误*/
+    function showError(result,$element,tip,select){
+        var $error = $element.parents(".item-value").find(".error");
+        if(!result){ 
+            $error.text(tip).addClass('show');
+        }
+
+        if(!select&&!$element.hasClass('yetHandle')){
+            $element.on("keydown",function(){
+                $error.text("").removeClass('show');
+            })
+            $element.addClass('yetHandle');
+        }
+    }
+
+</script>
+<script type="text/javascript">
+
+(function(){
+
+    registerStep1();
+    
+    /*注册第一步*/
+    function registerStep1(){
+
+        //验证手机号格式
+        var authMobile = function(value){
+            var result = authFormItem.mobile(value);
+            showError(result,$("#mobile"),"请输入正确格式的手机号");
+            return result;
+        }
+
+        //验证是否输入了验证码
+        var authCode = function(value){
+            var result = authFormItem.isNull(value);
+            showError(result,$("#code"),"请输入验证码");
+            return result; 
+        }
+
+        //获取验证码
+        $("#getCode").on("click",function(){
+            var mobile = $.trim($("#mobile").val());
+            var disabled = $(this).attr("disabled");
+            var authMobildItem = authMobile(mobile);
+            var callback = function(data){
+                if(data.success){
+                    $("#getCode").attr("disabled","disabled");
+                    setTimeout(function(){
+                        $("#getCode").removeAttr("disabled");
+                    },60000)
+                }else{
+                    errorPop(data.message);
+                }
+            };
+
+            if(disabled===undefined && authMobildItem){
+                $.ajax({
+                    method:"POST",
+                    url:"{{ path('register_sendMsg') }}",
+                    data:{
+                        mobile:mobile
+                    },
+                    success:function(data){
+                        callback(data);
+                    }
+                })
+            } 
+        })
+
+        //提交表单
+        $("#submitStep1").on("click",function(){
+            var mobile = $.trim($("#mobile").val());
+            var code = $.trim($("#code").val());
+            var authMobildItem = authMobile(mobile);
+            var authCodeItem = authCode(code);
+            var url = "{{ path('register_validateMsg') }}";
+
+            var callback = function(data){
+                if(data.success){
+                    registerStep2(mobile,code);
+                }else{
+                    errorPop(data.message);
+                }
+            }
+
+            if(authMobildItem && authCodeItem){
+                $.post(url,{
+                    mobile:mobile,
+                    code:code
+                },function(data){
+                    callback(data);
+                })
+            }
+
+            return false;
+        })
+    }
+
+    /*注册第二步*/
+    function registerStep2(mobile,code){
+
+        //验证用户名
+        var authUsername = function(value){
+            var length = 255;
+            var result1 = authFormItem.isNull(value);
+            var result2 = authFormItem.username(value,length);
+            if(!result1){
+                showError(result1,$("#username"),"请输入用户名");
+                return false;
+            }
+            if(!result2){
+                showError(result2,$("#username"),"用户名最长"+length+"位");
+                return false;
+            }
+            
+            return true;
+        }
+
+        //验证密码
+        var authPassword = function(value){
+            var result1 = authFormItem.isNull(value);
+            var result2 = authFormItem.password(value);
+            if(!result1){
+                showError(result1,$("#password1"),"请输入密码");
+                return false;
+            }
+            if(!result2){
+                showError(result2,$("#password1"),"密码长度8-16位，必须包含字母和数字");
+                return false;
+            }
+            
+            return true;
+        }
+
+        //确认密码
+        var authRepeatPassword = function(value1,value2){
+            var result1 = authFormItem.isNull(value2);
+            var result2 = authFormItem.repeat(value1,value2);
+            if(!result1){
+                showError(result1,$("#password2"),"请再输一次密码");
+                return false;
+            }
+            if(!result2){
+                showError(result2,$("#password2"),"两次密码输入不一致");
+                return false;
+            }
+            
+            return true;
+        }
+
+        //验证姓名
+        var authName = function(value){
+            var result = authFormItem.isNull(value);
+            showError(result,$("#name"),"请输入真实姓名");
+            return result; 
+        }
+
+        //验证公司
+        var authCompany = function(value){
+            var result = authFormItem.isNull(value);
+            showError(result,$("#company"),"请输入您的公司完整名称");
+            return result;
+        }
+
+        //验证邮箱
+        var authEmail = function(value){
+            var result1 = authFormItem.isNull(value);
+            var result2 = authFormItem.email(value);
+            if(!result1){
+                showError(result1,$("#email"),"请输入邮箱");
+                return false;
+            }
+            if(!result2){
+                showError(result2,$("#email"),"邮箱格式不正确");
+                return false;
+            }
+            
+            return true;
+        }
+
+        //验证地址
+        var authAddress = function(provinceValue,cityValue){
+            var $error = $("#province").parents(".item-value").find(".error");
+            if(!(provinceValue>0 && cityValue>0)){
+                $error.text("请输入省市").addClass('show');
+                return false;
+            }
+            return true;
+        }
+
+        $("#username").val(mobile);
+        $("#app_user_registration_mobile").val(mobile);
+
+        $(".step2").on("change","#province,#city",function(){
+            var $error = $("#province").parents(".item-value").find(".error");
+            if($("#province").val()>0 && $("#city").val()>0){
+                $error.text("").removeClass('show');
+            }
+        })
+
+        $(".step-indicator li").eq(0).removeClass('current').next().addClass('current');
+        $(".step-box .step").eq(0).removeClass('current').next().addClass('current');
+
+        $(".agreement-group .icon").on("click",function(){
+            $(this).toggleClass('selected');
+        })
+
+        $("#submitStep2").on("click",function(){
+            if(!$("#agreementSelect").hasClass('selected')){
+                errorPop("请先同意《又一车用户协议》");
+            }
+
+            var request = {
+                'app_user_registration[username]' : $.trim($("#username").val()),
+                'app_user_registration[plainPassword][first]' : $("#password1").val(),
+                'app_user_registration[plainPassword][second]' : $("#password2").val(),
+                'app_user_registration[name]' : $.trim($("#name").val()),
+                'app_user_registration[company]' : $.trim($("#company").val()),
+                'app_user_registration[email]' : $.trim($("#email").val()),
+                'app_user_registration[province]' : $("#province").val(),
+                'app_user_registration[city]' : $("#city").val(),
+                submitStep2 : "submitStep2",
+                'app_user_registration[mobile]' : mobile,
+                'app_user_registration[_token]': $("#app_user_registration__token").val(),
+            }
+
+            var authUsernameItem = authUsername($.trim($("#username").val()));
+            var authPasswordItem = authPassword($.trim($("#password1").val()));
+            var authRepeatPasswordItem = authRepeatPassword($.trim($("#password1").val()),$.trim($("#password2").val()));
+            var authNameItem = authName($.trim($("#name").val()));
+            var authCompanyItem = authCompany($.trim($("#company").val()));
+            var authEmailItem = authEmail($.trim($("#email").val()));
+            var authAddressItem = authAddress($("#province").val(),$("#city").val());
+
+            var url = "{{ path('fos_user_registration_register') }}";
+
+            var callback = function(data){
+                var redirect = "{{ path('dashboard') }}";
+                if(data.success){
+                    location.href = redirect;
+                }else{
+                    errorPop(data.message);
+                }
+            }
+
+            if(authUsernameItem && authPasswordItem && authRepeatPasswordItem && authNameItem && authCompanyItem && authEmailItem && authAddressItem)
+            {
+                $.post(url,request,function(data){
+                    callback(data);
+                })
+            }
+
+            return false;
+        })
+    }
+    
+})()
+</script>
+<script>
+    var $province = $('#province');
+
+    $province.change(function() {
+      // ... retrieve the corresponding form.
+      var $form = $(this).closest('form');
+      // Simulate form data, but only include the selected province value.
+      var data = {};
+      data[$province.attr('name')] = $province.val();
+      // Submit data via AJAX to the form's action path.
+      $.ajax({
+        url : $form.attr('action'),
+        type: $form.attr('method'),
+        data : data,
+        success: function(html) {
+          // Replace current province field ...
+          $('#city').replaceWith(
+            // ... with the returned one from the AJAX response.
+            $(html).find('#city')
+          );
+          // Position field now displays the appropriate positions.
+        }
+      });
+    });
+</script>
+
+{% endblock %}

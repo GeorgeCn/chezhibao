@@ -1,0 +1,498 @@
+{% include 'reportcheck/components/base-report-header.twig' %}
+<div class="appraisal-report-body">
+    <div class="appraisal-report-content-wrap">
+        <div class="seal"></div>
+        <h2><span class="t-chinese">车辆专业检测报告</span><br/>Cloud Inspection Report</h2>
+        <!--start 报告详情-->
+        <div class="appraisal-report-detail">
+            <div class="appraisal-report-module">
+                <div class="module-title color-red">报告概述</div>
+                <div class="module-content single-table">
+                    <table class="module-table table-type-0">
+                        <tr class="tr-one-third color-gray first-tr">
+                            <td class="first-td ">评估车型</td>
+                            <td>评估价格</td>
+                            <td>新车指导价</td>
+                        </tr>
+                        <tr class="tr-one-third color-red">
+                            <td class="first-td">{{ field_2040.value }} {{ field_2010.value }} {{ field_2020.value }} {{ field_2030.value }}</td>
+                            <td>
+                                {% if purchasePrice and not sellPrice and not futurePrice %}
+                                    {% if field_4010 is defined and field_4010.value %}
+                                        {{field_4010.value/10000}}万人民币
+                                    {% endif %}
+                                {% elseif sellPrice and not purchasePrice and not futurePrice  %}
+                                    {% if field_4012 is defined and field_4012.value %}
+                                        {{field_4012.value/10000}}万人民币
+                                    {% endif %}
+                                {% elseif futurePrice and not sellPrice and not purchasePrice %}
+                                    {% if field_4014 is defined and field_4014.value %}
+                                        {{field_4014.value/10000}}万人民币
+                                    {% endif %}
+                                {% else %}
+                                    {% set purchasePriceStr = purchasePrice and field_4010 is defined and field_4010.value ? field_4010.value/10000 ~ '万收购价/' : '' %}
+                                    {% set sellPriceStr = sellPrice and field_4012 is defined and field_4012.value ? field_4012.value/10000 ~ '万销售价/': '' %}
+                                    {% set futurePriceStr = futurePrice and field_4014 is defined and field_4014.value ? field_4014.value/10000 ~ '万未来价格/' : '' %}
+                                    {% set all = purchasePriceStr ~ sellPriceStr ~ futurePriceStr %}
+                                    {# 去除拼接的字符串末尾的/ #}
+                                    {{ all [0:-1] }}
+                                {% endif %}
+                            </td>
+                            <td>{{ field_4020.value/10000 }}万人民币</td>
+                        </tr>
+                        <tr class="tr-one-third color-red">
+                            {% if biddingCount and averagePrice %}
+                                <td colspan="3">以上数据来自于拍卖平台，拍卖次数{{ biddingCount }}次，平均价格{{ averagePrice/10000 }}万人民币
+                                </td>
+                            {% endif %}
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!--/end 报告概述-->
+            <div class="appraisal-report-module">
+                <div class="module-title color-red">车辆基本信息</div>
+                <div class="module-content single-table">
+                    <table class="module-table  table-type-1">
+                        <tr class="tr-mixed-0 first-tr">
+                            <td class="td-one-sixth color-gray first-td">牌照号码：</td>
+                            <td class="td-one-third">{{ field_1010.value }}</td>
+                            <td class="td-one-sixth color-gray">车架号VIN码：</td>
+                            <td class="td-one-third">{{ field_1040.value }}</td>
+                        </tr>
+                        <tr class="tr-mixed-0">
+                            <td class="td-one-sixth color-gray first-td">表显里程（km）：</td>
+                            <td class="td-one-third">{{ field_3010.value }}</td>
+                            <td class="td-one-sixth color-gray">厂牌型号：</td>
+                            <td class="td-one-third">{{ field_1030.value }}</td>
+                        </tr>
+                        <tr class="tr-mixed-0">
+                            <td class="td-one-sixth color-gray first-td">注册日期：</td>
+                            <td class="td-one-third">{{ field_1060.value }}</td>
+                            <td class="td-one-sixth color-gray">发动机号：</td>
+                            <td class="td-one-third">{{ field_1050.value }}</td>
+                        </tr>
+                        <tr class="tr-mixed-0">
+                            <td class="td-one-sixth color-gray first-td">出厂日期：</td>
+                            <td class="td-one-third">{{ field_3040.value }}</td>
+                            <td class="td-one-sixth color-gray">年检有效期至：</td>
+                            <td class="td-one-third">{{ field_1070.value }}</td>
+                        </tr>
+                        <tr class="tr-mixed-0">
+                            <td class="td-one-sixth color-gray first-td">使用性质：</td>
+                            <td class="td-one-third">{{ field_1020.value }}</td>
+                            <td class="td-one-sixth color-gray">车辆类型：</td>
+                            <td class="td-one-third">{{ field_3060.value }}</td>
+                        </tr>
+                        <tr class="tr-mixed-0">
+                            <td class="td-one-sixth color-gray first-td">排量（L）：</td>
+                            <td class="td-one-third">{{ field_3020.value }}</td>
+                            <td class="td-one-sixth color-gray">燃油类型：</td>
+                            <td class="td-one-third">{{ field_3070.value }}</td>
+                        </tr>
+                        <tr class="tr-mixed-0">
+                            <td class="td-one-sixth color-gray first-td">座位数：</td>
+                            <td class="td-one-third">{{ field_3050.value }}</td>
+                            <td class="td-one-sixth color-gray">功率（KW）：</td>
+                            <td class="td-one-third">{{ field_3080.value }}</td>
+                        </tr>
+                        <tr class="tr-mixed-0">
+                            <td class="td-one-sixth color-gray first-td">车身颜色：</td>
+                            <td class="td-one-third">{{ field_3030.value }}</td>
+                            <!--此处若不显示车龄，则保留td标签，删除文字"车龄"-->
+                            {# {% if carYear %} #}
+                            <td class="td-one-sixth color-gray">
+                                车龄：
+                            </td>
+                            <td class="td-one-third">
+                                {% if difference.y %}{{ difference.y }}年{% endif %}{% if difference.m %}{{ difference.m }}个月{% endif %}{% if difference.d %}{{ difference.d }}天{% endif %}
+                            </td>
+                            {#                             {% else %}
+                                                            <td class="td-one-sixth color-gray"></td>
+                                                            <td class="td-one-third"></td>
+                                                        {% endif %} #}
+                        </tr>
+                        <tr class="tr-mixed-0">
+                            <td class="td-one-sixth color-gray first-td">车辆所在地：</td>
+                            <td class="td-one-third">{{ carCity }}</td>
+                            <td class="td-one-sixth color-gray"></td>
+                            <td class="td-one-third"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!--/end 车辆基本信息-->
+            <div class="appraisal-report-module">
+                <div class="module-title color-red">车辆配置</div>
+                <div class="module-content single-table">
+                    <table class="module-table  table-type-5">
+                        <tr class="tr-one-six first-tr">
+                            <td class="color-gray first-td">环保标准：</td>
+                            <td>{{ field_3090.value }}</td>
+                        </tr>
+                        <tr class="tr-one-six">
+                            <td class="color-gray">变速形式：</td>
+                            <td>{{ field_3100.value }}</td>
+                        </tr>
+                        <tr class="tr-one-six">
+                            <td class="color-gray">车门数：</td>
+                            <td>{{ field_3110.value }}</td>
+                        </tr>
+                        <tr class="tr-one-six">
+                            <td class="color-gray first-td">驱动形式：</td>
+                            <td>{{ field_3120.value }}</td>
+                        </tr>
+                        <tr class="tr-one-six">
+                            <td class="color-gray">供油系统：</td>
+                            <td>{{ field_3070.value }}</td>
+                        </tr>
+                        <tr class="tr-one-six">
+                            <td class="color-gray">进气方式：</td>
+                            <td>{{ field_3130.value }}</td>
+                        </tr>
+                        <tr class="tr-one-six">
+                            <td class="color-gray first-td">天窗：</td>
+                            <td>{{ field_3140.value }}</td>
+                        </tr>
+                        <tr class="tr-one-six">
+                            <td class="color-gray">后排液晶显示器：</td>
+                            <td>{{ field_3160.value }}</td>
+                        </tr>
+                        <tr class="tr-one-six">
+                            <td class="color-gray">巡航系统：</td>
+                            <td>{{ field_3170.value }}</td>
+                        </tr>
+                        <tr class="tr-one-six">
+                            <td class="color-gray first-td">空气悬架：</td>
+                            <td>{{ field_3180.value }}</td>
+                        </tr>
+                        <tr class="tr-one-six">
+                            <td class="color-gray">底盘升降：</td>
+                            <td>{{ field_3190.value }}</td>
+                        </tr>
+                        <tr class="tr-one-six">
+                            <td class="color-gray">自动大灯：</td>
+                            <td>{{ field_3200.value }}</td>
+                        </tr>
+                        <tr class="tr-one-six">
+                            <td class="color-gray first-td">自动雨刮：</td>
+                            <td>{{ field_3210.value }}</td>
+                        </tr>
+                        <tr class="tr-one-six">
+                            <td class="color-gray">启动方式：</td>
+                            <td>{{ field_3220.value }}</td>
+                        </tr>
+
+                        {#<tr class="tr-one-six">#}
+                            {#<td class="no-border"></td>#}
+                            {#<td class="no-border"></td>#}
+                        {#</tr>#}
+                        <tr class="tr-one-six">
+                            <td class="color-gray first-td">空调：</td>
+                            {% for i in 0..4 %}
+                                <td class="{{ i==0?'':'no-border' }}">
+                                    {% if airconditions %}
+                                        {{ airconditions[i] is defined?airconditions[i].value:'' }}
+                                    {% else %}
+                                        {{ i==0?'无':'' }}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+
+                        {% if seats.newarr is defined and seats.count is defined and seats.count>0 %}
+                            {% if displayType!="pcPdf" or seats.count==1 %}
+                                {% for j in 1..seats.count %}
+                                    <tr class="tr-one-six">
+                                        {% if j==1 %}
+                                            <td class="color-gray first-td" {{ displayType!="pcPdf"?("rowspan="~seats.count):"" }}>
+                                                座椅：
+                                            </td>
+                                        {% endif %}
+                                        {% for k in (0+j*5-5)..(4+j*5-5) %}
+                                            <td class="{{ loop.index==1 ?'had-border':'no-border' }}">{{ seats.newarr[k] is defined?seats.newarr[k].value:'' }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr class="tr-one-six">
+                                    <td class="color-gray first-td">座椅：</td>
+                                    <td colspan="5">
+                                        {% for seatpdf in seats.newarr %}
+                                            {{ seatpdf.value }}{{ loop.last?'':'、' }}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% else %}
+                            <tr class="tr-one-six">
+                                <td class="color-gray first-td">座椅：</td>
+                                <td>无</td>
+                                <td class="no-border"></td>
+                                <td class="no-border"></td>
+                                <td class="no-border"></td>
+                                <td class="no-border"></td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                    <table class="module-table  table-type-2">
+
+                    </table>
+                </div>
+            </div>
+            <!--/end 报告概述-->
+            <div class="appraisal-report-module pdf-page2">
+                <div class="module-title color-red">车况结论综述</div>
+                <div class="module-content more-table">
+                    <div class="module-subtitle">车况概述</div>
+                    <table class="module-table  table-type-3">
+                        {# {% if maintain and displayType!="pcPdf" %}
+                            <tr class="tr-mixed-0">
+                                <td class="color-gray">维保情况：</td>
+                                <td><a href="{{ path('report_details', { 'vin': maintain_id,'id': report_id}) }}" target="_blank">查看详情</a></td>
+                            </tr>
+                        {% endif %} #}
+                        <tr class="tr-mixed-0 first-tr">
+                            <td class="color-gray first-td">特殊车况：</td>
+                            <td>
+                                {% if accidents.newarr is defined %}
+                                    {% for accident in accidents.newarr %}
+                                        {{ accident.value }}{{ loop.last?'':'、' }}
+                                    {% endfor %}
+                                {% else %}
+                                    无
+                                {% endif %}
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr class="tr-mixed-0">
+                            <td class="color-gray first-td">结论综述：</td>
+                            <td>
+                                {{ field_4150.value }}
+                                {% if refuseReason is defined %}
+                                    <br/>{{ refuseReason }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% if accidentImg %}
+
+                        <tr class="tr-mixed-0">
+                            <td class="color-gray first-td">事故照片：</td>
+                            <td>
+                                {% for img in accidentImg %}
+                                    {% if displayType == 'appHtml'  %}
+                                        <img src="{{qiniu_domain ~ '/' ~ img ~ '?imageView2/1/w/100/h/100'}}" alt="">
+                                    {% else %}
+                                        <img src="{{qiniu_domain ~ '/' ~ img ~ '?imageView2/1/w/230/h/160'}}" alt="">
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                    <div class="module-subtitle">配置概述</div>
+                    <table class="module-table  table-type-1">
+                        <tr class="tr-mixed-0 first-tr">
+                            <td class="td-one-sixth color-gray first-td">车身颜色：</td>
+                            <td class="td-one-third">{{ field_3030.value }}</td>
+                            <td class="td-one-sixth color-gray">天窗：</td>
+                            <td class="td-one-third">{{ field_3140.value }}</td>
+                        </tr>
+                        <tr class="tr-mixed-0">
+                            <td class="td-one-sixth color-gray first-td">空调：</td>
+                            <td class="td-one-third">
+                                {% if airconditions %}
+                                    {% for aircondition in airconditions %}
+                                        {{ aircondition.value }}{{ loop.last?'':'、' }}
+                                    {% endfor %}
+                                {% else %}
+                                    无
+                                {% endif %}
+                            </td>
+                            <td class="td-one-sixth color-gray">座椅：</td>
+                            <td class="td-one-third">
+                                {% if seats.newarr is defined %}
+                                    {% for seat in seats.newarr %}
+                                        {{ seat.value }}{{ loop.last?'':'、' }}
+                                    {% endfor %}
+                                {% else %}
+                                    无
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="module-subtitle">特殊车管业务说明</div>
+                    <table class="module-table  table-type-3">
+                        <tr class="tr-mixed-0 first-tr">
+                            <td class="color-gray first-td">过户次数：</td>
+                            <td>{{ field_1080.value }}</td>
+                        </tr>
+                        <tr class="tr-mixed-0">
+                            <td class="color-gray first-td">过户详情：</td>
+                            <td>{{ field_1080.options ? field_1080.options : '无' }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!--/end 车况结论综述-->
+            {% if reportPrice %}
+                <div class="appraisal-report-module report-module-price-effect">
+                    <div class="module-title color-red">车辆价格影响因素</div>
+                    <div class="module-content ">
+                        <table class="table-type-4">
+                            <tr class="first-tr" align="center">
+                                <th class="appraisal-report-icon icon1">新车价及二手车价说明</th>
+                            </tr>
+                                <tr>
+                                 <td>
+                                    <p>该车型当前新车价{{ field_4020.value/10000 }}万，优惠价{{ field_4020.value/10000 }}万。</p>
+                                       <p>该车购置税{{ field_4030.value/10000 }}万，购入价{{ field_4040.value/10000 }} 万。</p>
+                                         <p>该车型二手车估价中，涉及车龄调整{{ field_4060.value }}，成新率{{ field_4050.value }}。</p>
+                                </td>
+                                <td>
+                                    <p>二手车辆的价格需要参考当前新车的价格走势。如果新车价格出现波幅，二手车价格也会相应出现波幅。</p>
+                                </td>
+                           </tr>
+                            <tr>
+                                <th class="appraisal-report-icon icon2" align="center">价格影响因素</th>
+                            </tr>
+                            <tr>
+                                <td class="item">
+                                    <dd>更新换代{{ field_4080.value }}</dd>
+                                </td>
+                                <td class="item">
+                                    <dd>颜色系数{{ field_4120.value }}</dd>
+                                </td>
+                                <td class="item">
+                                    <dd>市场冷热{{ field_4070.value }}</dd>
+                                </td>
+                                <td class="item">
+                                    <dd>整修费用{{ field_4130.value/10000 }}万</dd>
+                                </td>
+                                <td class="item">
+                                    <dd>公里系数{{ field_4100.value }}</dd>
+                                </td>
+                                <td class="item">
+                                    <dd>车辆版本系数{{ field_4090.value }}</dd>
+                                </td>
+                                <td class="item">
+                                    <dd>车况等级{{ field_4110.value }}</dd>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+            <!--/end 车辆价格影响因素-->
+
+            {% if reportPriceTrend and displayType!="pcPdf" %}
+                <div class="appraisal-report-module report-module-future-price" id="reportModuleFuturePrice">
+                    <div class="module-title color-red">车辆未来价格趋势</div>
+                    <div class="module-content color-gray">
+                        <div class="unit text-left">单位：万元</div>
+                        <div class="chart">
+                            <div class="chart-content">
+                                <canvas id="canvasChart"></canvas>
+                                <div class="price-number" id="priceNumber">
+                                    <span class="value price-0"></span>
+                                    <span class="value price-1"></span>
+                                    <span class="value price-2"></span>
+                                </div>
+                            </div>
+                            <div class="horizontal-axis clearfix" id="horizontalAxis">
+                                <span class="value horizontal-0"></span>
+                                <span class="value horizontal-1"></span>
+                                <span class="value horizontal-2"></span>
+                            </div>
+                            <div class="vertical-axis" id="verticalAxis">
+                                <span class="value vertical-0"></span>
+                                <span class="value vertical-1"></span>
+                                <span class="value vertical-2"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/end 车辆未来价格趋势-->
+            {% endif %}
+
+            {% if maintainData %}
+                <div class="appraisal-report-module">
+                    <div class="module-title color-red">维修保养记录</div>
+                    <div class="module-content single-table">
+                        <table class="module-table text-left table-type-2">
+                            {% for item in maintainData %}
+                                <tr class="tr-one-nine">
+                                    <td class="color-gray first-td">{{ item.date }}</td>
+                                    <td>{{ item.kilometers }}公里</td>
+                                </tr>
+                                <tr class="tr-one-ten">
+                                    <td colspan="2" class="first-td text-left">{{ item.content }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if insuranceData %}
+                <div class="appraisal-report-module">
+                    <div class="module-title color-red">车辆保险信息</div>
+                    <div class="module-content single-table">
+                        <table class="module-table table-type-6">
+                            {% for item in insuranceData %}
+                                <tr class="tr-one-nine tr-two-nine">
+                                    <td class="color-gray first-td">事故日期</td>
+                                    <td>{{ item.date }}</td>
+                                    <td class="color-gray eval-loss">核损费用</td>
+                                    <td>{{ item.totalFee }}</td>
+                                </tr>
+                                <tr class="tr-one-nine tr-two-nine tr-three-nine">
+                                    <td class="color-gray first-td">事故描述</td>
+                                    <td colspan="3">{{ item.description }}</td>
+                                </tr>
+                                <tr class="tr-one-nine tr-two-nine tr-three-nine">
+                                    <td class="color-gray first-td">细节</td>
+                                    <td colspan="3">{{ item.detail }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+            {% if historyPrices %}
+                <div class="appraisal-report-module">
+                    <div class="module-title color-red">历史拍卖价格</div>
+                    <div class="module-content single-table">
+                        <table class="module-table table-type-6">
+                            {% for item in historyPrices %}
+                                <tr class="tr-one-for">
+                                    <td class="color-gray first-td">拍卖时间</td>
+                                    <td>{{ item.bidTime }}</td>
+                                    <td class="color-gray">拍卖价格</td>
+                                    <td>{{ item.bidPrice/10000 }}万</td>
+                                </tr>
+                                <tr class="tr-one-for ">
+                                    <td class="color-gray first-td">车况详情</td>
+                                    <td colspan="3">城市：{{ item.city }}，上牌时间：{{ item.regist }}，公里：{{ item.mileage }}
+                                        公里，车况：{{ item.rating }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <!--/end 报告详情-->
+        <div class="appraisal-report-legal-statement">
+            <div class="title color-gray">法律声明：</div>
+            <p>一、本报告评估日期为{{ examedat }}，评估结果基于麦拉云检测应用中所采集的车辆照片体现的车辆状态生成，有效期为车辆状态未发生改变的15个自然日。</p>
+            <p>二、本评估结果根据车辆正常行驶，车辆提交评估时所在地、及当地该车型供需关系等因素综合形成，且存在一定的容错率。</p>
+            <p>三、在评估有效期内，如车况有变动，市场价格有变动，则需重新评估价格。如果超过有效期，则需进入第二次评估价格阶段。</p>
+        </div>
+    </div>
+</div>
+<!--/end body-->
+{% include 'reportcheck/components/base-report-footer.twig' %}
+
+
+

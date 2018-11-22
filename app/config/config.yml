@@ -1,0 +1,285 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+    - { resource: version.yml }
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: zh_CN
+    fos_user.security.interactive_login_listener.class: AppBundle\Security\LastLoginListener
+
+framework:
+    #esi:             ~
+    translator:      { fallbacks: ["%locale%"] }
+    secret:          "%secret%"
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation:      { enable_annotations: true }
+    #serializer:      { enable_annotations: true }
+    templating:
+        engines: ['twig']
+    default_locale:  "%locale%"
+    trusted_hosts:   ~
+    trusted_proxies: [10.100.13.21, 10.100.13.20]
+    session:
+        # handler_id set to null will use default session handler from php.ini
+        # handler_id: dummy_session_handler
+        cookie_lifetime: 86400
+        gc_maxlifetime: 86400
+        save_path: "%session_path%"
+    fragments:       ~
+    http_method_override: true
+    assets:
+        version : "%asset_version%"
+    serializer:
+        enabled: true
+
+# Twig Configuration
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+    autoescape: false
+    globals:
+        verifycode_login_key: "%verifycode_login_key%"
+        qiniu_domain: "%qiniu_domain%"
+        businessFactory: "@app.business_factory"
+        ReportLogic: "@ReportLogic"
+        revision: "%revision%"
+    form:
+        # resources: ['bootstrap_3_layout.html.twig']
+        resources: ['bootstrap_3_horizontal_layout.html.twig']
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        default_connection: default
+        connections:
+            default:
+                host:     "%database_host%"
+                port:     "%database_port%"
+                dbname:   "%database_name%"
+                user:     "%database_user%"
+                password: "%database_password%"
+                charset:  UTF8
+            youyiche:
+                host:     "%database_host_youyiche%"
+                port:     "%database_port_youyiche%"
+                dbname:   "%database_name_youyiche%"
+                user:     "%database_user_youyiche%"
+                password: "%database_password_youyiche%"
+                charset:  UTF8
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        default_entity_manager: default
+        entity_managers:
+            default:
+                connection: default
+                naming_strategy: doctrine.orm.naming_strategy.underscore
+                mappings:
+                    AppBundle: ~
+                    YYCFoundationBundle: ~
+                dql:
+                    datetime_functions:
+                        date:           Oro\ORM\Query\AST\Functions\SimpleFunction
+                        time:           Oro\ORM\Query\AST\Functions\SimpleFunction
+                        timestamp:      Oro\ORM\Query\AST\Functions\SimpleFunction
+                        convert_tz:     Oro\ORM\Query\AST\Functions\DateTime\ConvertTz
+                    numeric_functions:
+                        timestampdiff:  Oro\ORM\Query\AST\Functions\Numeric\TimestampDiff
+                        dayofyear:      Oro\ORM\Query\AST\Functions\SimpleFunction
+                        dayofmonth:     Oro\ORM\Query\AST\Functions\SimpleFunction
+                        dayofweek:      Oro\ORM\Query\AST\Functions\SimpleFunction
+                        week:           Oro\ORM\Query\AST\Functions\SimpleFunction
+                        day:            Oro\ORM\Query\AST\Functions\SimpleFunction
+                        hour:           Oro\ORM\Query\AST\Functions\SimpleFunction
+                        minute:         Oro\ORM\Query\AST\Functions\SimpleFunction
+                        month:          Oro\ORM\Query\AST\Functions\SimpleFunction
+                        quarter:        Oro\ORM\Query\AST\Functions\SimpleFunction
+                        second:         Oro\ORM\Query\AST\Functions\SimpleFunction
+                        year:           Oro\ORM\Query\AST\Functions\SimpleFunction
+                        sign:           Oro\ORM\Query\AST\Functions\Numeric\Sign
+                        pow:            Oro\ORM\Query\AST\Functions\Numeric\Pow
+                    string_functions:
+                        md5:            Oro\ORM\Query\AST\Functions\SimpleFunction
+                        group_concat:   Oro\ORM\Query\AST\Functions\String\GroupConcat
+                        concat_ws:      Oro\ORM\Query\AST\Functions\String\ConcatWs
+                        cast:           Oro\ORM\Query\AST\Functions\Cast
+                        replace:        Oro\ORM\Query\AST\Functions\String\Replace
+                        date_format:    Oro\ORM\Query\AST\Functions\String\DateFormat
+            youyiche:
+                connection: youyiche
+                mappings:
+                    YouyicheBundle: ~
+
+# Swiftmailer Configuration
+swiftmailer:
+    transport: "%mailer_transport%"
+    host:      "%mailer_host%"
+    username:  "%mailer_user%"
+    password:  "%mailer_password%"
+
+fos_user:
+    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+    firewall_name: main
+    user_class: AppBundle\Entity\User
+    change_password:
+        form:
+            type: AppBundle\Form\ChangePasswordType
+            name: app_user_change_password
+            validation_groups:  [CustomChangePassword, Default]
+    registration:
+        form:
+            type: AppBundle\Form\RegistrationType
+            name: app_user_registration
+            validation_groups:  [CustomNew, CustomRegistration, CustomChangePassword, Default]
+
+gregwar_captcha: ~
+
+knp_paginator:
+    page_range: 5                      # default page range used in pagination control
+    default_options:
+        page_name: page                # page query parameter name
+        sort_field_name: sort          # sort field query parameter name
+        sort_direction_name: direction # sort direction query parameter name
+        distinct: true                 # ensure distinct results, useful when ORM queries are using GROUP BY statements
+    template:
+        pagination: KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig     # sliding pagination controls template
+        sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template
+
+knp_menu:
+    # use "twig: false" to disable the Twig extension and the TwigRenderer
+    twig:
+        template: knp_menu.html.twig
+    #  if true, enables the helper for PHP templates
+    templating: false
+    # the renderer to use, list is also available by default
+    default_renderer: twig
+
+
+old_sound_rabbit_mq:
+    connections:
+        default:
+            host:     "%rabbitmq_host%"
+            port:     "%rabbitmq_port%"
+            user:     "%rabbitmq_user%"
+            password: "%rabbitmq_password%"
+            vhost:    '/'
+            lazy:     false
+            connection_timeout: 3
+            read_write_timeout: 3
+
+            # requires php-amqplib v2.4.1+ and PHP5.4+
+            keepalive: false
+
+            # requires php-amqplib v2.4.1+
+            heartbeat: 0
+    producers:
+        jpush_sender:
+            connection:       default
+            exchange_options: {name: 'jpush-sender', type: x-delayed-message, arguments: {x-delayed-type: [S, direct]}}
+            queue_options:    {name: 'jpush-sender'}
+        hplreport_sender:
+            connection:       default
+            exchange_options: {name: 'hplreport-sender', type: x-delayed-message, arguments: {x-delayed-type: [S, direct]}}
+            queue_options:    {name: 'hplreport-sender'}
+        company_sender:
+            connection:       default
+            exchange_options: {name: 'company-sender', type: x-delayed-message, arguments: {x-delayed-type: [S, direct]}}
+            queue_options:    {name: 'company-sender'}
+        pingan_img_upload_sender:
+            connection:       default
+            exchange_options: {name: 'pingan-img-upload-sender', type: x-delayed-message, arguments: {x-delayed-type: [S, direct]}}
+            queue_options:    {name: 'pingan-img-upload-sender'}
+    consumers:
+        company_sender:
+            connection:       default
+            exchange_options: {name: 'company-sender', type: x-delayed-message, arguments: {x-delayed-type: [S, direct]}}
+            queue_options:    {name: 'company-sender'}
+            callback:         company_sender
+        pingan_img_upload_sender:
+            connection:       default
+            exchange_options: {name: 'pingan-img-upload-sender', type: x-delayed-message, arguments: {x-delayed-type: [S, direct]}}
+            queue_options:    {name: 'pingan-img-upload-sender'}
+            callback:         pingan_img_upload_sender
+        sm_sender:
+            connection:       default
+            exchange_options: {name: 'sm-sender', type: x-delayed-message, arguments: {x-delayed-type: [S, direct]}}
+            queue_options:    {name: 'sm-sender'}
+            callback:         sm_sender
+        jpush_sender:
+            connection:       default
+            exchange_options: {name: 'jpush-sender', type: x-delayed-message, arguments: {x-delayed-type: [S, direct]}}
+            queue_options:    {name: 'jpush-sender'}
+            callback:         jpush_sender
+
+yyc_foundation:
+    dsll:
+        url: "%dsll_url%"
+        private_key: "%dsll_private_key%"
+        partner: "%dsll_partner%"
+    cjd:
+        url: "%cjd_url%"
+        uid: "%cjd_uid%"
+        pwd: "%cjd_pwd%"
+        rsa_private_key: "%cjd_rsa_private_key%"
+    cbs:
+        url: "%cbs_url%"
+        uid: "%cbs_uid%"
+        key: "%cbs_key%"
+    juhe:
+        claims_key: "%juhe_claims_key%"
+        maintence_key: "%juhe_maintence_key%"
+    ant_queen:
+        partner_id: "%antqueen_partnerid%"
+        key: "%antqueen_key%"
+assetic:
+    debug:          '%kernel.debug%'
+    use_controller: false
+    filters:
+        scssphp:
+            formatter: 'Leafo\ScssPhp\Formatter\Compressed'
+        cssrewrite: ~
+
+knp_snappy:
+    pdf:
+        enabled:    true
+        binary:     /usr/local/wkhtmltox/bin/wkhtmltopdf
+        options:    []
+    image:
+        enabled:    true
+        binary:     /usr/local/wkhtmltox/bin/wkhtmltoimage
+        options:    []
+
+snc_redis:
+    clients:
+        default:
+            type: predis
+            alias: default
+            dsn: "redis://%redis_server%/%redis_default_db%"
+            logging: false
+        cache:
+            type: predis
+            alias: cache
+            dsn: "redis://%redis_server%/%redis_cache_db%"
+            logging: false
+    session:
+        client: default
+        prefix: hpl_session
+    doctrine:
+        metadata_cache:
+            client: cache
+            entity_manager: default
+            namespace: "hpl_dcmc:"
+        result_cache:
+            client: cache
+            entity_manager: default
+            namespace: "hpl_dcrc:"
+        query_cache:
+            client: cache
+            entity_manager: default
+            namespace: "hpl_dcqc:"

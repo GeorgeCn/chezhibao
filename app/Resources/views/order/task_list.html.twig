@@ -1,0 +1,132 @@
+{% extends 'common/base_list.html.twig' %}
+{% block list_filter %}
+    <form class="form-horizontal table-form-filter clearfix" id="formFilterBar">
+        <div class="filter-select" data-form-name="vars[type]" data-form-value="{{vars['type']}}">
+            <div class="value-current">用户类型</div>
+        </div>
+        <div class="filter-select" data-form-name="vars[orderStatus]" data-form-value="{{vars['orderStatus']}}">
+            <div class="value-current">单据状态</div>
+        </div>
+        <div class="filter-select" data-form-name="vars[stage]" data-form-value="{{vars['stage']}}">
+            <div class="value-current">审核状态</div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block list_content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>评估单号</th>
+                <th>信贷员</th>
+                <th>电话</th>
+                <th>金融公司</th>
+                <th>经销商</th>
+                <th>审核人</th>
+                <th>单据状态</th>
+                <th>审核状态列</th>
+                <th>提交时间</th>
+                <th>最晚完成时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in pagination %}
+            <tr>
+                <td>
+                    {{ order.orderNo }}
+                    {% if order.businessNumber %}
+                        <br>({{order.businessNumber}})
+                    {% endif %}
+                </td>
+                <td>{{ order.loadOfficer ? order.loadOfficer.name : '' }}</td>
+                <td>{{ order.loadOfficer ? order.loadOfficer.mobile : '' }}</td>
+                <td>{{ order.company ? order.company.company : ''}}</td>
+                <td>{{ order.agencyName }}</td>
+                <td>{{ order.report ? order.report.examer.name : '' }}</td>
+
+                {% if order.status == 1 and order.report is not null and order.report.hplReason %}
+                    <td>第三方退回</td>
+                {% elseif order.status == 1 and order.lastBack is not null %}
+                    <td>重新提交</td>
+                {% else %}
+                    <td>初次提交</td>
+                {% endif %}
+                <td>
+                    {% if order.report %}
+                        {% if order.report.locked %}
+                            审核中
+                        {% else %}
+                            {% if order.report.stage == 1 %}
+                                待确认基本信息
+                            {% elseif order.report.stage == 2 %}
+                                待确认车型
+                            {% elseif order.report.stage == 3 %}
+                                待确认配置
+                            {% elseif order.report.stage == 4 %}
+                                待总结
+                            {% elseif order.report.stage == 5 %}
+                                待核价
+                            {% elseif order.report.stage == 6 %}
+                                已完成
+                            {% else %}
+                                未知（异常或老单子数据）
+                            {% endif %}
+                        {% endif %}
+
+                    {% else %}
+                        待审核
+                    {% endif %}
+                </td>
+                <td>{{ order.submitedAt |date("Y-m-d H:i:s")}}</td>
+                <td>{{ order.submitedAt |date_modify("+1 hour")|date("Y-m-d H:i:s")}}</td>
+                <td>
+                    {% if orderLogic.allowAudit(order) %}
+                        {% if order.status == 1 and order.report is null %}
+                            <a href="{{ path('work_check',{'id': order.id}) }}" class="btn-td">审核</a>
+                        {% elseif order.status == 1 and order.report is not null and not order.report.locked  %}
+                            <a href="{{ path('work_check',{'id': order.id}) }}" class="btn-td confirmation">继续审核</a>
+                        {% elseif order.status == 1 and order.report is not null and order.report.locked  %}
+                            {% if is_granted('ROLE_EXAMER_MANAGER') or app.user == order.report.examer %}
+                                <a href="{{ path('work_check',{'id': order.id}) }}" class="btn-td confirmation">继续审核</a>
+                            {% else %}
+                                <span class="btn-not">继续审核</span>
+                            {% endif %}
+                        {% elseif order.report is not null and (order.report.status == 1 or order.report.status == 2) %}
+                            已审核过
+                        {% else %}
+                            异常
+                        {% endif %}
+
+                        {% if order.lastBack is null and order.jump != true and not order.locked %}
+                            <a href="{{ path('order_jump', {'id': order.id}) }}" class="btn-td confirmation">插队</a>
+                        {% endif %}
+                    {% else %}
+                        <span class="btn-not">子单(父单:{{ order.parent.orderNo }})
+                    {% endif %}
+                    {% if order.businessNumber %}
+                        <br><span style="visibility:hidden;">dummy</span>
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascripts %}
+    {{parent()}}
+    <script>
+        $('.table-new-box').on("click",".confirmation",function(event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            var text = $(this).text();
+            commonMethod.prompt({
+                title:text,
+                msgHTML:"确定要"+ text + "吗？",
+                confirm:function(){
+                    window.location.href = href;
+                }
+            })
+        });
+    </script>
+{% endblock %}

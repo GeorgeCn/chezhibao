@@ -1,0 +1,221 @@
+{% extends 'common/base_list.html.twig' %}
+
+{% block list_filter %}
+    <form class="form-horizontal table-form-filter clearfix" id="formFilterBar">
+        <div class="filter-input" data-form-name="vars[mixed]" data-form-value="{{ vars['mixed'] }}">
+            <div class='value-current search-icon-end'></div>
+        </div>
+        <div class="filter-select" data-form-name="vars[company]" data-form-value="{{vars['company']}}" data-child-search="had" data-child-url="{{path('config_get_all_companies')}}">
+            <div class="value-current">金融公司</div>
+        </div>
+
+        <div class="filter-select" data-form-name="vars[agency]" data-form-value="{{vars['agency']}}" data-child-search="had" data-child-url="{{path('get_agencies', {'company': vars['company']})}}">
+            <div class="value-current">经销商</div>
+        </div>
+        <div class="filter-select" data-form-name="vars[status]" data-form-value="{{ vars['status'] }}"
+             data-remove-value="10">
+            <div class="value-current">单据状态</div>
+        </div>
+        <div class="filter-select" data-form-name="vars[dateType]|vars[startDate]|vars[endDate]"
+             data-form-value="{{ vars['dateType']~"|"~vars['startDate']~'|'~vars['endDate'] }}">
+            <div class="value-current">提交日期</div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block list_additional %}
+    <div class="list-additional">
+        <div class="download-report had-icon link" data-download-url="{{ path('vehiclereport_csv') }}"><i
+                    class="icon-font-xiazai"></i>下载报表
+        </div>
+    </div>
+{% endblock %}
+
+{% block list_content %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>评估单号</th>
+            <th>单据状态</th>
+            <th>评估结果</th>
+            <th>信贷员</th>
+            {% if fieldDisplay.showExamer and is_granted('ROLE_EXAMER') %}
+                <th>审核师</th>
+            {% endif %}
+            <th>金融公司</th>
+            <th>经销商</th>
+            <th>车牌号</th>
+            <th>品牌</th>
+            <th>车系</th>
+            <th>车型</th>
+            <th>厂牌型号</th>
+            <th>vin码</th>
+            <th>排量</th>
+            {% if fieldDisplay.valuation %}
+                <th>预售价格</th>{% endif %}
+            <th>出厂日期</th>
+            <th>登记日期</th>
+            <th>公里数</th>
+
+            {% if fieldDisplay.purchasePricePc and fieldDisplay.sellPricePc %}
+                <th>评估收购价</th>
+                <th>评估销售价</th>
+            {% elseif fieldDisplay.purchasePricePc %}
+                <th>评估价格</th>
+            {% elseif fieldDisplay.sellPricePc %}
+                <th>评估价格</th>
+            {% endif %}
+
+            <th>备注</th>
+            <th>提交时间</th>
+            <th>评估完成时间</th>
+            <th>评估时长(分钟)</th>
+            <th>总时长(分钟)</th>
+            <th>省份</th>
+            <th>城市</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in pagination %}
+            <tr>
+                <td>
+                    {{ order.orderNo }}
+                    {% if order.businessNumber %}
+                        <br>({{ order.businessNumber }})
+                    {% endif %}
+                </td>
+
+                {% if order.report %}
+                    {% if order.report.status == 1 %}
+                        <td>通过</td>
+                    {% elseif order.report.status == 2 %}
+                        {% if order.company.company == '平安租赁' and order.report.hplExaming and order.report.hplReason and is_granted('ROLE_EXAMER') %}
+                            <td>复审拒绝</td>
+                        {% else %}
+                            <td>拒绝</td>
+                        {% endif %}
+                    {% else %}
+                        <td>已提交</td>
+                    {% endif %}
+                {% else %}
+                    <td>已提交</td>
+                {% endif %}
+                <td>
+                    {% if order.report.status == 1 %}
+                        通过
+                    {% elseif order.report.status == 2 %}
+                        {% if order.report.getReport.field_result.options.textarea is defined %}
+                            {{ order.report.getReport.field_result.options.textarea }}
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>{{ order.loadOfficer ? order.loadOfficer.name : '' }}</td>
+                {% if fieldDisplay.showExamer and is_granted('ROLE_EXAMER') %}
+                    <td>{{ order.report ? order.report.examer.name : '' }}</td>
+                {% endif %}
+                <td>{{ order.company ? order.company.company : '' }}</td>
+                <td>{{ order.agencyName ? order.agencyName : '' }}</td>
+                <td>{{ order.report.report? order.report.report['field_1010']['value'] : '' }}</td>
+                <td>{{ order.report ? order.report.brand : '' }}</td>
+                <td>{{ order.report ? order.report.series : '' }}</td>
+                <td>{{ order.report ? order.report.model : '' }}</td>
+                <td>{{ order.report.report? order.report.report['field_1030']['value'] : '' }}</td>
+                <td>{{ order.report.vin }}</td>
+                <td>{{ order.report.report? order.report.report['field_3020']['value'] : '' }}</td>
+                {% if fieldDisplay.valuation %}
+                    <td>{{ order.valuation }}</td>
+                {% endif %}
+                <td>{{ order.report.report? order.report.report['field_3040']['value'] : '' }}</td>
+                <td>{{ order.report.report? order.report.report['field_1060']['value'] : '' }}</td>
+                <td>{{ order.report.report? order.report.report['field_3010']['value'] : '' }}</td>
+
+                {% if fieldDisplay.purchasePricePc and fieldDisplay.sellPricePc %}
+                    {% if order.report.report %}
+                        {% set reportData = order.report.report %}
+
+                        {% if reportData.field_4010 is defined and reportData.field_4010.value %}
+                            <td>{{ reportData.field_4010.value }}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+
+                        {% if reportData.field_4012 is defined and reportData.field_4012.value %}
+                            <td>{{ reportData.field_4012.value }}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    {% else %}
+                        <td></td>
+                        <td></td>
+                    {% endif %}
+                {% elseif fieldDisplay.purchasePricePc %}
+                    {% if order.report.report %}
+                        {% set reportData = order.report.report %}
+
+                        {% if reportData.field_4010 is defined and reportData.field_4010.value %}
+                            <td>{{ reportData.field_4010.value }}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                {% elseif fieldDisplay.sellPricePc %}
+                    {% if order.report.report %}
+                        {% set reportData = order.report.report %}
+
+                        {% if reportData.field_4012 is defined and reportData.field_4012.value %}
+                            <td>{{ reportData.field_4012.value }}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                {% endif %}
+
+                <td data-custom-tips>{{ order.remark }}</td>
+                <td>{{ order.submitedAt|date("Y-m-d H:i:s") }}</td>
+                <td>{{ order.report.report? order.report.examedAt|date("Y-m-d H:i:s") }}</td>
+                {% if order.report.examedAt %}
+                    <td>{{ ((order.report.examedAt.getTimestamp - order.report.createdAt.getTimestamp)/60)|number_format() }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                {% if order.report.examedAt %}
+                {% set times = dateTime.calculateDiffTime(order.submitedAt, order.report.examedAt) %}
+                    <td>{{ times }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                <td>{{ order.loadOfficer ? order.loadOfficer.province : '' }}</td>
+                <td>{{ order.loadOfficer ? order.loadOfficer.city : '' }}</td>
+                <td>
+                    <a href="{{ path('order_show', { 'id': order.id}) }}" class="btn-td">详情</a>
+                    {% if fieldDisplay.report %}
+                        {% if '先锋太盟' == order.company.company %}
+                            <a href="{{ path('pdfreport', { 'orderid': order.id, '_format': 'pdf' }) }}" class="btn-td"
+                               target="_blank">报告</a>
+                        {% else %}
+                            <a href="{{ path('pdfreport', { 'orderid': order.id }) }}" class="btn-td"
+                               target="_blank">报告</a>
+                        {% endif %}
+                    {% endif %}
+                    {% if fieldDisplay.maintain %}
+                        {% if order.report.getMaintain == 0 %}
+                            <span class="btn-not-maintain">暂无维保记录</span>
+                        {% else %}
+                            <a href="{{ url('yyc_common_show', { 'id': order.report.getMaintain , 'report': order.report.id }) }}"
+                               class="btn-td" target="_blank">查看维保详情</a>
+                        {% endif %}
+                    {% endif %}
+                    {% if order.businessNumber %}
+                        <br><span style="visibility:hidden;">dummy</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

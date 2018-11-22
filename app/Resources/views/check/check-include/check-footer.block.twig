@@ -1,0 +1,98 @@
+<script src="{{ asset('bootstraptable/bootstrap-table.js') }}"></script>
+<script src="{{ asset('vehicle-model-filter/js/vehicle-model-filter.jquery.js') }}"></script>
+<script src="{{ asset('video/js/video.js')}}"></script>
+{{ macro.require_viewer_js() }}
+<script type="text/javascript">
+    var twigObject = {//check.js依赖此对象(twig变量转化而来)
+        origin: "{{ origin }}",//来源模板
+        id: "{{ id }}",
+        orderNo: "{{ order.orderNo }}",
+        orderCompanyNew: "{{ order.company.companyNew }}",
+        orderStatus: "{{ order.status }}",
+        reportID: "{{ report.id }}",
+        stage: "{{ report.stage }}",
+        isXFTM:{{ isHpl|json_encode() }},//是否先锋太盟
+        isMct:{{ isMct|json_encode() }},//是否是美车堂
+        isCzb:{{ isCzb|json_encode() }},//是否是车置宝
+        hasData:{{ hasData|json_encode() }},//是否报告有数据
+        isManager: "{{ is_granted('ROLE_EXAMER_MANAGER') }}", //是否是审核师主管
+        showPurchasePrice: true,//是否显示收购价
+        showSellPrice: true,//是否显示销售价
+        limitMinutes: "{{ limitMinutes }}",//所在公司配置的审核时间
+        interval:{{ interval|json_encode() }},//倒计时
+        remainSeconds: "{{ remainSeconds }}",//剩余时间显示
+        pathDoCheck: "{{ path('do_check', {'id': id}) }}",//保存
+        pathDoConfirm: "{{ path('do_confirm', {'id': id}) }}",//复审保存路径
+        pathBack: "{{ path('back', {'id': id}) }}",//退回
+        IfNeedRecheck: "{{ ReportLogic.checkIfNeedRecheck(report) }}", //是否需要复审
+        pathPrepareCheck: "{{ origin=='admin' ? path('prepare_check', {'id': id}) : path('report_erppass', {'id': id}) }}",//准备提交
+        pathPrimaryFinishCheck: "{{ origin=='admin' ? path('primary_finish_check', {'id': id}) : path('order_confirm') }}",//准备提交确认后的跳转路由
+        pathFinishCheck: "{{ origin=='admin' ? path('finish_check', {'id': id}) : path('order_task_list') }}",//复审师准备提交确认后的跳转路由
+
+        pathSearchMaintainRequest: ["{{ path('yyc_dsll_newest') }}", "{{ path('yyc_cjd_newest') }}", "{{ path('yyc_cbs_newest') }}", "{{ path('yyc_juhe_newest') }}", "{{ path('yyc_antqueen_newest') }}"],//查维保
+        pathSearchMaintainRecord: "{{ path('yyc_common_synchpl') }}",//更新维修记录
+        urlMaintainRecordDetail: "{{ url('yyc_common_show', { 'id':'maintain_id' , 'report': 'report_id' }) }}",//维修记录详情
+
+        pathSearchLSJRequest: "{{ path('yyc_foundation_lsj_newest') }}",//查老司机
+        pathSearchLSJRecord: "{{ path('yyc_foundation_lsj_recently') }}",//更新老司机记录
+        urlLSJRecordDetail: "{{ url('yyc_foundation_lsj_show', { 'id':'insuranceId' }) }}",//老司机记录详情
+
+        pathEvalPriceYYC: "{{ path('report_historical_appraisal', {'brand': 'bv', 'series': 'sv', 'model': 'mv', 'year': 'yv', 'modelId': 'mId', 'city':'ct'}) }}",//又一车估价
+        pathEvalPrice300: "{{ path('eval_price') }}",//车300估价(获取车300车系、车型也用此路由)
+        pathFirstPinPai: "{{ url('report_dyc_brands') }}",//获取第一车网品牌
+        pathFirstCheXi: "{{ url('report_dyc_series', { 'brandId': "brandId" }) }}",//获取第一车网车系
+        pathFirstNianFen: "{{ url('report_dyc_years', { 'seriesId': 'seriesId' }) }}",//获取第一车网年份
+        pathFirstCheXing: "{{ url('report_dyc_models', { 'seriesId': 'seriesId', 'purchaseYear': 'purchaseYear' }) }}",//获取第一车网车型
+        pathEvalPriceFirst: "{{ url('report_dyc_prices', { 'modelId': 'modelId', 'purchaseYear': 'purchaseYear' }) }}",//第一车网估价
+        pathGetReportsByVin: "{{ url('report_check_getReportsByVin') }}", //通过vin获取历史报告
+        pathReport: "{{ path('pdfreport',{'orderid':'orderid'}) }}",//报告详情(复审报告)
+        pathSecReport: "{{ path('pdfreport_pri',{'orderid':'orderid'}) }}",//报告详情(初审报告)
+        pathAuctionInfo: "{{ path('vm_auction_info') }}",
+        pathAppraisalBeiJiXin: "{{ path('get_price') }}",//北极星系统估价
+        videoSrc: "{{videoSrc}}",//审核页面视频地址
+        componentRefuse: "{{fieldDisplay.componentRefuse}}",//线上标准化是否拒绝
+    };
+    //5分钟倒计时显示
+    $(document).ready(function () {
+        var $lastTime = $(".item-lastTime");
+        var x =twigObject.remainSeconds,t;
+        var startTime = new Date().getTime();
+        t=setInterval(function () {
+            var offset = (new Date().getTime() - startTime) / 1000;
+            var endTime = parseInt(x - offset);
+            var m = parseInt(endTime / 60);
+            var s =Math.floor(endTime % 60);
+            m = m < 10 ? "0" + m : m;
+            s = s < 10 ? "0" + s : s;
+            $lastTime.find('.t3').text(m + ":" + s);
+            $lastTime.find('.t4').text("还剩余");
+            if (m>0&&m<=4) {
+                $lastTime.show();
+                if(m==4&&s==59){
+                   commonMethod.prompt({
+                    title: "友情提示", 
+                    msgHTML: "审单时间剩余五分钟"
+                })  
+                }
+               
+            } else if (m == 0 && s == 0) {
+                $lastTime.hide();
+                commonMethod.prompt({
+                    title: "友情提示",
+                    msgHTML: "审单时间到"
+                });
+                clearInterval(t);
+                return;
+            }
+        }, 1000);
+        if(twigObject.orderCompanyNew == 1) {
+            commonMethod.alert({
+                msgHTML:"这是新打单的公司,请保证质量"
+            }) 
+        };
+    });
+</script>
+{% javascripts output='export/js/check.js'
+'assets/js/pages/check.js' %}
+<script src="{{ asset_url }}"></script>
+{% endjavascripts %}

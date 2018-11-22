@@ -1,0 +1,116 @@
+<script type="text/javascript">
+    $('.radioCss').parent().parent().parent('.col-sm-10').prev('.col-sm-2').css({"display": "none",});
+
+    var $cid = $('#apply_company');
+    var $aid = $('#apply_agency');
+    var $grade = $('#apply_grade');
+    var $mobile = $('#apply_mobile');
+    {% set role = user.roles[0] %}
+
+    $cid.change(function() {
+      var $form = $(this).closest('form');
+      var data = {};
+
+      data[$cid.attr('name')] = $cid.val();
+      $.ajax({
+        url : $form.attr('action'),
+        type: $form.attr('method'),
+        data : data,
+        async: false,
+        success: function(html) {
+          $('#apply_agency').replaceWith(
+            $(html).find('#apply_agency')
+          );
+          {% if role == 'ROLE_ADMIN' %}
+            if($grade.val() == 1) {
+              $('#apply_agency').find('option:first').remove();
+              $("#apply_agency option").each(function() {
+              if($(this).text() == "管理员") {
+                  $(this).attr('selected', 'true'); 
+                  }
+              })
+
+            } else {
+              $('#apply_agency').find('option:first').remove();         
+            }
+          {% endif %}
+
+            var data = {};
+            data['agency'] = $('#apply_agency').val();
+            $.ajax({
+              url : "{{ path('user_apply_agency') }}",
+              type: "post",
+              data : data,
+              dataType: "json",
+              success: function(data) {  
+                  $('#apply_province').find('option[value='+data['province']+']').attr('selected', 'true');
+                  $('#apply_province').trigger('change');
+                  $('#apply_city').find('option[value='+data['city']+']').attr('selected', 'true');
+              }
+            });
+
+            $('#apply_agency').change(function() {
+                var data = {};
+                data['agency'] = $(this).val();
+
+                $.ajax({
+                url : "{{ path('user_apply_agency') }}",
+                type: "post",
+                data : data,
+                dataType: "json",
+                success: function(data) {  
+                    $('#apply_province').find('option[value='+data['province']+']').attr('selected', 'true');
+                    $('#apply_province').trigger('change');
+                    $('#apply_city').find('option[value='+data['city']+']').attr('selected', 'true');
+                }
+            });
+          });
+        }
+      });
+    });
+
+    
+    
+    {% if is_granted('ROLE_ADMIN') %}
+        $grade.change(function() {
+            if($grade.val() == 1) {
+                $('#apply_agency').parent().parent().hide();
+            } else if($grade.val() == 2) {
+                $('#apply_agency').parent().parent().show();
+            } else if($grade.val() == 3){
+                $('#apply_agency').parent().parent().show();
+            }
+        });
+    {% elseif is_granted('ROLE_ADMIN_HPL') %}
+            {% set company = user.agencyRels[0].company.id %}
+            $grade.find('option[value="1"]').remove();
+            $cid.find('option[value="{{ company }}"]').attr('selected', 'true');
+            $cid.trigger('change');
+            $cid.parent().parent().hide()
+    {% elseif is_granted('ROLE_LOADOFFICER_MANAGER') %}
+            $grade.find('option[value="1"]').remove();
+            $grade.find('option[value="2"]').remove();
+            $grade.find('option[value="3"]').attr('selected', 'true');
+    {% endif %}
+
+    var $province = $('#apply_province');
+    var $city = $('#apply_city');
+
+    $province.change(function() {
+        var $form = $(this).closest('form');
+        var data = {};
+
+      data[$province.attr('name')] = $province.val();
+          $.ajax({
+          url : $form.attr('action'),
+          type: $form.attr('method'),
+          data : data,
+          async: false,
+          success: function(html) {
+            $('#apply_city').replaceWith(
+            $(html).find('#apply_city')
+          );
+        }
+      });
+    });
+</script>

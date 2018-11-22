@@ -1,0 +1,236 @@
+<div class="page-check-right">
+
+    <!--.videos-->
+    {% if videoSrc != '' %}
+        <div class="videos" style="display:none;">
+            <video width="100%" height="100%" id="video1" preload="auto" autoplay="true"></video>
+            <div class="video-exit"></div>
+        </div>
+    {% endif %}
+    <!--/.videos-->
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" id="checkNavTabs">
+        <li class="active" data-tabtitle="jbxx"><a href="#step1" data-toggle="tab" aria-expanded="true">基本信息<i></i></a>
+        </li>
+        {% if origin=="admin" %}
+            <li data-tabtitle="cwb"><a href="#step2" data-toggle="tab" aria-expanded="false">查维保<i class="dot"></i></a>
+            </li>
+        {% endif %}
+        <li data-tabtitle="qdcx"><a href="#step3" data-toggle="tab" aria-expanded="false">确定车型<i></i></a>
+        </li>
+        <li data-tabtitle="clpz"><a href="#step4" data-toggle="tab" aria-expanded="false">车辆配置<i></i></a>
+        </li>
+        {% if origin=="admin" %}
+            <li data-tabtitle="clzj"><a href="#step5" data-toggle="tab" aria-expanded="false">车辆总结<i></i></a>
+            </li>
+            <li data-tabtitle="clhj"><a href="#step6" data-toggle="tab" aria-expanded="false">车辆核价<i></i></a>
+            </li>
+        {% endif %}
+    </ul>
+    <div class="check-form-box" id="formCheckBox">
+        {% set doms1 = domsArray[0] %} {% set doms2 = domsArray[1] %} {% set doms3 = domsArray[2] %} {% set doms4 = domsArray[3] %} {% set doms5 = domsArray[4] %}
+        <form id="formCheck">
+            <div class="tab-content">
+                <div class="tab-pane fade active in" id="step1">
+                    <div class="step-content">
+                        {% for dom in doms1 %}
+                            <dl class="dl-horizontal form-check-dl clearfix">{{ dom }}</dl>
+                        {% endfor %}
+                    </div>
+                    <div class="step-btn-footer btn-group-specific small">
+
+                        <span data-href="{{ origin=='admin'?'#step2':'#step3' }}" class="btn btn-danger first-next">下一页</span>
+                    </div>
+                </div>
+                <!--/end 基本信息-->
+                {% if origin=="admin" %}
+                    <div class="tab-pane fade" id="step2">
+                        <div class="step-content step-content-2">
+                            <div class="search-maintain-vin">VIN：<span id="nowVIN"></span></div>
+                            <div class="search-maintain-vin">发动机号：<span id="nowENGINE"></span></div>
+                            <div class="search-maintain-group clearfix btn-group-specific small">
+                                <span class="btn btn-default search-maintain-btn" style="display:none">查大圣来了</span>
+                                <span class="btn btn-default search-maintain-btn">查车鉴定</span>
+                                <span class="btn btn-default search-maintain-btn">查查博士</span>
+                                <span class="btn btn-default search-maintain-btn" style="display:none">查聚合数据</span>
+                                <span class="btn btn-default search-maintain-btn">查蚂蚁女王</span>
+                            </div>
+                            <div class="search-maintain-record">
+                                <div class="search-maintain-record-title">查询最新记录</div>
+                                <table id="searchMaintainRecord" class="table-list table-list-head"></table>
+                            </div>
+                            <div class="search-maintain-group clearfix btn-group-specific small">
+                                <span class="btn btn-default search-lsj-btn">查老司机</span>
+                                <span class="btn btn-default search-lsj-btn" style="display:none">查聚合数据</span>
+                            </div>
+                            <div class="search-maintain-record">
+                                <div class="search-maintain-record-title">查询最新记录</div>
+                                <table id="searchLSJRecord" class="table-list table-list-head"></table>
+                            </div>
+                        </div>
+                        <div class="step-btn-footer btn-group-specific btn-group-center small">
+                            <span data-href="#step1" class="btn btn-default">上一页</span>
+                            <span data-href="#step3" class="btn btn-danger">下一页</span>
+                        </div>
+                    </div>
+                    <!--/end 查维保-->
+                {% endif %}
+                <div class="tab-pane fade" id="step3">
+                    <div class="step-content">
+                        {% for dom in doms2 %}
+                            <dl class="dl-horizontal form-check-dl clearfix">{{ dom }}</dl>
+                        {% endfor %}
+                        <div class="vehicle-model-filter-title">车型筛选</div>
+                        <div class="vehicle-model-filter-content" id="vehicleModelFilter"></div>
+                    </div>
+                </div>
+                <!--/end 确定车型-->
+                <div class="tab-pane fade" id="step4">
+                    <div class="step-content" id="getCheckStep3">
+                        {% for dom in doms3 %}
+                            <dl class="dl-horizontal form-check-dl clearfix">{{ dom }}</dl>
+                        {% endfor %}
+                    </div>
+                    <div class="step-btn-footer btn-group-specific small">
+                        <span data-href="#step3" class="btn btn-default">上一页</span> {% if origin=="admin" %}
+                        <span data-href="#step5" class="btn btn-danger">下一页</span> {% else %}
+                        <span class="btn btn-danger btn-ready-submit" id="btnReadySubmit">准备提交</span> {% endif %}
+                    </div>
+                </div>
+                <!--/end 车辆配置-->
+                {% if origin=="admin" %}
+                    <div class="tab-pane fade" id="step5">
+                        <div class="step-content">
+                            {% for key,dom in doms4 %}
+                                {% if key == 'field_7010'%}
+                                    <div class='component-head'><h3>头部事故</h3>
+                                        <dl class="dl-horizontal form-check-dl clearfix">{{ dom }}</dl>
+                                    {% elseif key == 'field_7110' %} </div><div class='search-maintain-vin'><h3>侧部事故</h3><dl class="dl-horizontal form-check-dl clearfix">{{ dom }}</dl>
+                                    {% elseif key == 'field_7210' %} </div><div class='search-maintain-vin'><h3>尾部事故</h3><dl class="dl-horizontal form-check-dl clearfix">{{ dom }}</dl>
+                                    {% elseif key == 'field_7310' %} </div><div class='search-maintain-vin'><h3>顶部事故</h3><dl class="dl-horizontal form-check-dl clearfix">{{ dom }}</dl>
+                                    {% elseif key == 'field_7410' %} </div><div class='search-maintain-vin'><h3>底部事故</h3><dl class="dl-horizontal form-check-dl clearfix">{{ dom }}</dl>
+                                    {% elseif key == 'field_7510' %} </div><div class='search-maintain-vin'><h3>机械装置</h3><dl class="dl-horizontal form-check-dl clearfix">{{ dom }}</dl>
+                                    {% elseif key == 'field_7550' %} <dl class="dl-horizontal form-check-dl clearfix">{{ dom }}</dl></div>
+                                    {% else %}<dl class="dl-horizontal form-check-dl clearfix">{{ dom }}</dl>
+                                {% endif %}   
+                            {% endfor %}
+                        </div>
+                        <div class="step-btn-footer btn-group-specific small">
+                            <span data-href="#step4" class="btn btn-default">上一页</span>
+                            <span data-href="#step6" class="btn btn-danger">下一页</span>
+                        </div>
+                    </div>
+                    <!--/end 车辆总结-->
+                    <div class="tab-pane fade" id="step6">
+                        <div class="step-content">
+                            <div class="step-appraisal retract">
+                                <div class="step-appraisal-btn-group">
+                                    <ul class="btn-group-specific small">
+                                    	<a class="btn btn-default" href="{{ path('pdfreport', { 'orderid': order.id, '_format': 'html' }) }}" class="btn-td" target="_blank">报告预览</a>
+	                                    <a class="btn btn-default " target="_blank" href="javascript:;" id="btn-yyc-price">历史检测</a>
+	                                    <a class="btn btn-default step-appraisal-system" id="btn-czb-price" data-toggle="pill" href="#bjx-price">系统估价</a>
+                                    </ul>
+                                </div>
+                                <div class="step-appraisal-content">
+                                    <div class="step-appraisal-item item-yyc">
+                                        <dl class="dl-horizontal clearfix">
+                                            <dt>品牌</dt>
+                                            <dd class="textType">
+                                                <input autocomplete="off" type="text" readonly="readonly" class="form-control pinpai"/>
+                                            </dd>
+                                        </dl>
+                                        <dl class="dl-horizontal clearfix">
+                                            <dt>车系</dt>
+                                            <dd class="textType">
+                                                <input autocomplete="off" type="text" readonly="readonly" class="form-control chexi"/>
+                                            </dd>
+                                        </dl>
+                                        <dl class="dl-horizontal clearfix">
+                                            <dt>车型</dt>
+                                            <dd class="textType">
+                                                <input autocomplete="off" type="text" readonly="readonly" class="form-control chexing"/>
+                                            </dd>
+                                        </dl>
+                                        <dl class="dl-horizontal clearfix">
+                                            <dt>年款</dt>
+                                            <dd class="textType">
+                                                <input autocomplete="off" type="text" readonly="readonly" class="form-control niankuan"/>
+                                            </dd>
+                                        </dl>
+                                        <dl class="dl-horizontal clearfix">
+                                            <dt>新车指导价</dt>
+                                            <dd class="textType">
+                                                <input autocomplete="off" type="text" readonly="readonly" class="form-control zhidaojia"/>
+                                            </dd>
+                                        </dl>
+                                        <dl class="dl-horizontal clearfix">
+                                            <dt>城市</dt>
+                                            <dd class="textType">
+                                                <input autocomplete="off" type="text" readonly="readonly" value="{{order.loadOfficer.city?order.loadOfficer.city:''}}" class="form-control chengshi"/>
+                                            </dd>
+                                        </dl>
+										<dl class="dl-horizontal clearfix">
+										    <dt>首次上牌时间</dt>
+										    <dd class="textType">
+										        <input autocomplete="off" type="text" readonly="readonly" class="form-control shangpai" />
+										    </dd>
+										</dl>
+                                        <dl class="dl-horizontal clearfix">
+                                            <dt>表显里程(km)</dt>
+                                            <dd class="textType">
+                                                <input autocomplete="off" type="text" readonly="readonly" class="form-control licheng"/>
+                                            </dd>
+                                        </dl>
+                                        <div class="panel panel-default panel-price" style="display:none;">
+                                            <div class="panel-body">
+                                                <div class="tab-content tab-content1">
+                                                    <div id="bjx-price" class="tab-pane fade">
+	                                                    <div class="fail" style="display:none"></div>
+                                                        <div class="step-appraisal-result_new" style="display:none">
+	                                                        <div class="yyc-bjx-price" style="display:none">
+	                                                            <div class="present">
+	                                                                <span class="price-title">现值：</span>
+	                                                                <span class="rangePrice" style="display:none;"></span>
+	                                                                <span class="present-price flex4"></span>
+	                                                           </div>
+	                                                            <div class="currentRating-wrap"></div>
+	                                                            <div class="text-center" data-toggle="tooltip" id="currentPricePoint"></div>
+	                                                        </div>
+	                                                        <div class="yyc-bjx-oneyear" style="display:none">
+	                                                            <div class="oneyear">
+	                                                                <span class="price-title">1年后：</span>
+	                                                                <span class="oneyear-price flex4"></span>
+	                                                            </div>
+	                                                            <div class="oneYearRating-wrap"></div>
+	                                                            <div class="text-center" data-toggle="tooltip" id="oneYearPoint"></div>
+	                                                        </div>
+															<div class="search-maintain-record deal-list" style="display:none;">
+	                                                            <div class="search-maintain-record-title">成交数据</div>
+	                                                            <table id="deal" class="table-list table-list-head"></table>
+	                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="step-form-content">
+                                {% for dom in doms5 %}
+                                    <dl class="dl-horizontal form-check-dl clearfix">{{ dom }}</dl>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="step-btn-footer btn-group-specific small">
+                            <span data-href="#step5" class="btn btn-default">上一页</span>
+                            <span class="btn btn-danger btn-ready-submit" id="btnReadySubmit">准备提交</span>
+                        </div>
+                    </div>
+                    <!--/end 车辆核价-->
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>

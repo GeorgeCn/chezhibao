@@ -1,0 +1,108 @@
+{% extends 'common/base_list.html.twig' %}
+
+{% block list_filter %}
+    <form class="form-horizontal table-form-filter clearfix" id="formFilterBar">
+        <div class="filter-select" data-form-name="vars[dateType]|vars[startDate]|vars[endDate]" data-form-value="{{vars['dateType']~"|"~vars['startDate']~'|'~vars['endDate']}}">
+            <div class="value-current">提交日期</div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block list_content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>评估单号</th>
+                <th>车架号</th>
+                <th>单据状态</th>
+                <th>品牌</th>
+                <th>车系</th>
+                <th>年款</th>
+                <th>车型</th>
+                <th>提交人</th>
+                <th>金融公司</th>
+                <th>经销商</th>
+                <th>提交时间</th>
+                <th>复审人</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in pagination %}
+                <tr>
+                    <td>
+                        {{ order.orderNo }}
+                        {% if order.businessNumber %}
+                            <br>({{order.businessNumber}})
+                        {% endif %}
+                    </td>
+                    <td>{{ order.report ? order.report.vin : '' }}</td>
+                    {% if order.report %}
+                        {% if order.report.status == 0 %}
+                            <td>已提交</td>
+                        {% elseif order.report.status == 1 %}
+                            <td>通过</td>
+                        {% elseif order.report.status == 2 %}
+                            {% if order.company.company == '平安租赁' and order.report.hplExaming and order.report.hplReason %}
+                                <td>复审拒绝</td>
+                            {% else %}
+                                <td>拒绝</td>
+                            {% endif %}
+                        {% else %}
+                            <td>状态异常</td>
+                        {% endif %}
+                    {% else %}
+                        <td>已提交</td>
+                    {% endif %}
+                    <td>{{ order.report ? order.report.brand : '' }}</td>
+                    <td>{{ order.report ? order.report.series : '' }}</td>
+
+                    {% if order.report %}
+                        <td>{{ order.report.report ? order.report.report.field_2040['value'] : '' }}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+
+                    <td>{{ order.report ? order.report.model : '' }}</td>
+                    <td>{{ order.loadOfficer ? order.loadOfficer.name : '' }}</td>
+                    <td>{{ order.company ? order.company.company : ''}}</td>
+                    <td>{{ order.agencyName }}</td>
+                    <td>{{ order.submitedAt|date("Y-m-d H:i:s") }}</td>
+                    <td>{{ order.report.rechecker ? order.report.rechecker.name : ''}}</td>
+                    <td>
+                        {% if order.status == 3 and order.locked == 0 %}
+                            <a href="{{ path('task_confirm', { 'id': order.report.id }) }}" class="btn-td">复核</a>
+                        {% elseif order.status == 3 and order.locked == 1  %}
+                            <a href="{{ path('task_confirm', { 'id': order.report.id }) }}" class="btn-td confirmation">继续复审</a>
+                        {% elseif order.status == 2 %}
+                            已完成
+                        {% else %}
+                            异常
+                        {% endif %}
+                        {% if order.businessNumber %}
+                        <br><span style="visibility:hidden;">dummy</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascripts %}
+    {{parent()}}
+    <script>
+        $('.table-new-box').on("click",".confirmation",function(event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            var text = $(this).text();
+            commonMethod.prompt({
+                title:text,
+                msgHTML:"确定要"+ text + "吗？",
+                confirm:function(){
+                    window.location.href = href;
+                }
+            })
+        });
+    </script>
+{% endblock %}

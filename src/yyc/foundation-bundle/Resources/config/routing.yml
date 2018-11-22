@@ -1,0 +1,144 @@
+# 大圣来了的路由
+yyc_dsll_index:
+    path:      /dsll
+    defaults:  { _controller: YYCFoundationBundle:Dsll:index }
+
+yyc_dsll_newest:
+    path:      /dsll/newest
+    defaults:  { _controller: YYCFoundationBundle:Dsll:newestAjax }
+
+yyc_dsll_recently:
+    path:      /dsll/recently
+    defaults:  { _controller: YYCFoundationBundle:Dsll:recentlyAjax }
+
+yyc_dsll_show:
+    path:      /dsll/{id}/show
+    defaults:  { _controller: YYCFoundationBundle:Dsll:show }
+
+yyc_dsll_brand:
+    path:      /dsll/brand
+    defaults:  { _controller: YYCFoundationBundle:Dsll:brand }
+
+yyc_dsll_balance:
+    path:      /dsll/balance
+    defaults:  { _controller: YYCFoundationBundle:Dsll:balance }
+
+yyc_dsll_do:
+    path:      /dsll/do
+    defaults:  { _controller: YYCFoundationBundle:Dsll:do }
+
+# 车鉴定的路由
+yyc_cjd_index:
+    path:      /cjd
+    defaults:  { _controller: YYCFoundationBundle:Cjd:index }
+
+yyc_cjd_newest:
+    path:      /cjd/newest
+    defaults:  { _controller: YYCFoundationBundle:Cjd:newestAjax }
+
+yyc_cjd_recently:
+    path:      /cjd/recently
+    defaults:  { _controller: YYCFoundationBundle:Cjd:recentlyAjax }
+
+yyc_cjd_show:
+    path:      /cjd/{id}/show
+    defaults:  { _controller: YYCFoundationBundle:Cjd:show }
+
+yyc_cjd_balance:
+    path:      /cjd/balance
+    defaults:  { _controller: YYCFoundationBundle:Cjd:balance }
+
+yyc_cjd_do:
+    path:      /cjd/do
+    defaults:  { _controller: YYCFoundationBundle:Cjd:do }
+
+
+#查博士
+yyc_cbs_newest:
+    path:      /cbs/newest
+    defaults:  { _controller: YYCFoundationBundle:Cbs:newest }
+
+yyc_cbs_notify:
+    path:      /cbs/notify
+    defaults:  { _controller: YYCFoundationBundle:Cbs:notify }
+
+yyc_cbs_reportDetails:
+    path:     /cbs/report
+    defaults: { _controller: YYCFoundationBundle:Cbs:report }
+
+yyc_cbs_go:
+    path:     /cbs/go
+    defaults: { _controller: YYCFoundationBundle:Cbs:go }
+
+#老司机
+yyc_foundation_lsj_index:
+    path:      /lsj
+    defaults:  { _controller: YYCFoundationBundle:Lsj:index }
+
+yyc_foundation_lsj_newest:
+    path:      /lsj/newest
+    defaults:  { _controller: YYCFoundationBundle:Lsj:newestAjax }
+
+yyc_foundation_lsj_recently:
+    path:      /lsj/recently
+    defaults:  { _controller: YYCFoundationBundle:Lsj:recentlyAjax }
+
+yyc_foundation_lsj_show:
+    path:      /lsj/{id}/show
+    defaults:  { _controller: YYCFoundationBundle:Lsj:show }
+
+yyc_foundation_lsj_do:
+    path:      /lsj/do
+    defaults:  { _controller: YYCFoundationBundle:Lsj:do }
+
+#聚合数据路由
+yyc_juhe_newest:
+    path:      /juhe/newest
+    defaults:  { _controller: YYCFoundationBundle:Juhe:newest }
+
+yyc_juhe_notify:
+    path:      /juhe/notify
+    defaults:  { _controller: YYCFoundationBundle:Juhe:notify }
+
+yyc_juhe_reportDetails:
+    path:     /juhe/report
+    defaults: { _controller: YYCFoundationBundle:Juhe:report }
+
+yyc_juhe_go:
+    path:     /juhe/go
+    defaults: { _controller: YYCFoundationBundle:Juhe:go }
+
+#蚂蚁女王路由
+yyc_antqueen_newest:
+    path:      /antqueen/newest
+    defaults:  { _controller: YYCFoundationBundle:AntQueen:newest }
+
+yyc_antqueen_notify:
+    path:      /antqueen/notify
+    defaults:  { _controller: YYCFoundationBundle:AntQueen:notify }
+
+yyc_antqueen_reportDetails:
+    path:     /antqueen/report
+    defaults: { _controller: YYCFoundationBundle:AntQueen:report }
+
+yyc_antqueen_go:
+    path:     /antqueen/go
+    defaults: { _controller: YYCFoundationBundle:AntQueen:go }
+
+
+#--------第三方公共路由----------
+#详情迁移新版路由
+yyc_common_show:
+    path:      /common/{id}/show
+    defaults:  { _controller: YYCFoundationBundle:Common:show }
+
+#hpl 订制路由(查询维保)
+yyc_common_synchpl:
+    path:      /common/synchpl
+    defaults:  { _controller: YYCFoundationBundle:Common:synchpl }
+
+# 检查最新vin码的状态判断是否已有结果返回
+yyc_foundation_check_status:
+    path:      /common/checkStatus
+    defaults:  { _controller: YYCFoundationBundle:Common:checkStatus }
+

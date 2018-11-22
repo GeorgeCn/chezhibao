@@ -1,0 +1,39 @@
+{% extends 'admin_layout.html.twig' %}
+
+{% block stylesheets %}
+    {{parent()}}
+    <link href="{{ asset('report/css/appraisal-report.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% form_theme form with ['form/form.html.twig', _self] %}
+
+{% block wrapper %}
+    <div class="wrapper scroll" id="wrapper">
+        <div class="report">
+            {{ form_start(form, {'attr': {'role': 'form', 'class' : 't-center'}}) }}
+                {{ form_row(form.finish) }}
+                {{ form_row(form.back) }}
+            {{ form_end(form) }}
+            {{
+                render(controller('AppBundle:Reportpdf:report', { 'orderid': order.id , '_format': 'html','recheck':1}))
+            }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{parent()}}
+    <script src="{{ asset('report/js/report-chart.js')}}"></script>
+    <script>
+        $("#form_back").on("click", function(){
+            window.location.href = '{{ path('task_check', {'id': id}) }}';
+        });
+
+        $("#form_finish").click(function(event) {
+            if($(this).hasClass('disabled')){
+                return false;
+            }
+            $(this).addClass('disabled');
+        });
+    </script>
+{% endblock %}

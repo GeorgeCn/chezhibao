@@ -1,0 +1,46 @@
+{% extends 'common/base_list.html.twig' %}
+{% block list_content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>评估单号</th>
+                <th>信贷员</th>
+                <th>电话</th>
+                <th>金融公司</th>
+                <th>经销商</th>
+                <th>提交时间</th>
+
+                <th>审核师</th>
+                <th>品牌</th>
+                <th>车系</th>
+                <th>车型</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in pagination %}
+            <tr>
+                <td>{{ order.orderNo }}</td>
+                <td>{{ order.loadOfficer ? order.loadOfficer.name : '' }}</td>
+                <td>{{ order.loadOfficer ? order.loadOfficer.mobile : '' }}</td>
+                <td>{{ order.company ? order.company.company : ''}}</td>
+                <td>{{ order.agencyName }}</td>
+                <td>{{ order.submitedAt |date("Y-m-d H:i:s")}}</td>
+
+                <td>{{ order.report.examer.name }}</td>
+                <td>{{ order.report.brand }}</td>
+                <td>{{ order.report.series }}</td>
+                <td>{{ order.report.model }}</td>
+                <td>
+                    <a class="btn-td" href="{{ path('order_show', { 'id': order.id }) }}">详情</a>
+                    {% if businessFactory.getFieldPolicy(order.company.company).recheckButton == false %}
+                        <span class="btn-not">审核</span>
+                    {% else %}
+                        <a class="btn-td" href="{{ path('report_recheck_edit', { 'order_id' : order.id }) }}">审核</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

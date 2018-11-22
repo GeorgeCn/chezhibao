@@ -1,0 +1,66 @@
+{% extends 'common/base_list.html.twig' %}
+
+{% block list_content %}
+    <table class="table">
+        <thead>
+			<tr>
+				<th>评估单号</th>
+				<th>品牌</th>
+				<th>车系</th>
+				<th>提交时间</th>
+				<th>退回时间</th>
+				<th>退回原因</th>
+				<th>操作</th>
+			</tr>
+        </thead>
+        <tbody>
+			{% for order in pagination %}
+				<tr>
+				    <td>{{ order.orderNo }}</td>
+				    <td>{{ order.report ? order.report.brand : '' }}</td>
+				    <td>{{ order.report ? order.report.series : '' }}</td>
+				    <td>{{ order.submitedAt |date("Y-m-d H:i:s")}}</td>
+				    <td>{{ order.lastBack ? order.lastBack.createdAt |date("Y-m-d H:i:s") : ''}}</td>
+                    <td data-custom-tips>
+                        {% set back = order.getLastBack %}
+                        {% set reasonMetadatas = orderLogic.matchBackReasonMetas(back.getReason) %}
+                        {% if back.getMainReason %} {{ back.getMainReason }}&nbsp;&nbsp;{% endif %}
+                        {% set break = 1 %}
+                        {% for metadata in reasonMetadatas if break == 1 %}
+                            {% if reasonMetadatas|length > 1 %}
+                                {{metadata.display}} ：{{metadata.value.value}}等多条&nbsp;&nbsp;
+                                {% set break = 0 %}
+                            {% else %}
+                                {{metadata.display}} ：{{metadata.value.value}}&nbsp;&nbsp;
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+					<td>
+                        <a class="btn-td confirmation" href="{{ path('order_back_disable', { 'id': order.id }) }}">撤单</a>
+                        <a class="btn-td" href="{{ path('order_edit', { 'id': order.id }) }}">修改</a>
+                    </td>		
+                </tr>
+			{% endfor %}
+        </tbody>
+	</table>   	   
+{% endblock %}
+
+{% block javascripts %}
+    {{parent()}}
+    <script>
+        $('.table-new-box').on("click",".confirmation",function(event) {
+            // return confirm('确定要撤单吗？');
+            event.preventDefault();
+            var href = $(this).attr('href');
+            commonMethod.prompt({
+                title:"是否撤单",
+                msgHTML:"确定要撤单吗？",
+                confirm:function(){
+                    window.location.href = href;
+                }
+            })
+        });
+    </script>
+
+
+{% endblock %}
